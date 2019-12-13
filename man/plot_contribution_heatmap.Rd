@@ -4,21 +4,30 @@
 \alias{plot_contribution_heatmap}
 \title{Plot signature contribution heatmap}
 \usage{
-plot_contribution_heatmap(contribution, sig_order, cluster_samples = TRUE,
-  method = "complete", plot_values = FALSE)
+plot_contribution_heatmap(contribution, sig_order, type,
+  cluster_samples = TRUE, cluster_mut_type, method = "complete",
+  plot_values = FALSE)
 }
 \arguments{
 \item{contribution}{Signature contribution matrix}
 
-\item{sig_order}{Character vector with the desired order of the signature names for plotting. Optional.}
+\item{sig_order}{(Optional) Character vector with the desired order of the signature names for plotting. Optional.}
 
-\item{cluster_samples}{Hierarchically cluster samples based on eucledian distance. Default = T.}
+\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
+'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
+Default is 'snv'}
 
-\item{method}{The agglomeration method to be used for hierarchical clustering. This should be one of 
+\item{cluster_samples}{(Optional) Hierarchically cluster samples based on eucledian distance. Default = TRUE.}
+
+\item{cluster_mut_type}{(Optional) Signatures subset parameter for clustering}
+
+\item{method}{(Optional) The agglomeration method to be used for hierarchical clustering. This should be one of 
 "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) 
-or "centroid" (= UPGMC). Default = "complete".}
+or "centroid" (= UPGMC).\cr
+Default = "complete".}
 
-\item{plot_values}{Plot relative contribution values in heatmap. Default = F.}
+\item{plot_values}{(Optional) Plot relative contribution values in heatmap.\cr
+Default = F.}
 }
 \value{
 Heatmap with relative contribution of each signature for each sample

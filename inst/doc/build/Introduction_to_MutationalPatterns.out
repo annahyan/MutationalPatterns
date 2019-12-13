@@ -1,0 +1,16 @@
+\BOOKMARK [1][]{section.1}{1 Introduction}{}% 1
+\BOOKMARK [1][]{section.2}{2 Data}{}% 2
+\BOOKMARK [2][]{subsection.2.1}{2.1 List reference genome}{section.2}% 3
+\BOOKMARK [2][]{subsection.2.2}{2.2 Load example data}{section.2}% 4
+\BOOKMARK [1][]{section.3}{3 Mutation characteristics}{}% 5
+\BOOKMARK [2][]{subsection.3.1}{3.1 Single base substitution types}{section.3}% 6
+\BOOKMARK [2][]{subsection.3.2}{3.2 Double base substitutions and indels}{section.3}% 7
+\BOOKMARK [2][]{subsection.3.3}{3.3 Mutation spectrum}{section.3}% 8
+\BOOKMARK [2][]{subsection.3.4}{3.4 96 mutational profile}{section.3}% 9
+\BOOKMARK [2][]{subsection.3.5}{3.5 Plot mutation profiles of different types}{section.3}% 10
+\BOOKMARK [1][]{section.4}{4 Mutational signatures}{}% 11
+\BOOKMARK [2][]{subsection.4.1}{4.1 De novo mutational signature extraction using NMF}{section.4}% 12
+\BOOKMARK [2][]{subsection.4.2}{4.2 Find optimal contribution of known signatures}{section.4}% 13
+\BOOKMARK [3][]{subsubsection.4.2.1}{4.2.1 COSMIC mutational signatures}{subsection.4.2}% 14
+\BOOKMARK [3][]{subsubsection.4.2.2}{4.2.2 Similarity between mutational profiles and COSMIC signatures}{subsection.4.2}% 15
+\BOOKMARK [3][]{subsubsection.4.2.3}{4.2.3 Find optimal contribution of COSMIC signatures to reconstruct mutational profiles}{subsection.4.2}% 16

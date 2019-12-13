@@ -4,7 +4,7 @@
 \alias{mut_strand}
 \title{Find strand of mutations}
 \usage{
-mut_strand(vcf, ranges, mode = "transcription")
+mut_strand(vcf, ranges, type, mode = "transcription")
 }
 \arguments{
 \item{vcf}{GRanges containing the VCF object}
@@ -12,6 +12,9 @@ mut_strand(vcf, ranges, mode = "transcription")
 \item{ranges}{GRanges object with the genomic ranges of:
 1. (transcription mode) the gene bodies with strand (+/-) information, or 
 2. (replication mode) the replication strand with 'strand_info' metadata}
+
+\item{type}{Optional. Get strand information for 1 or more mutation types.
+Options are 'snv', 'snv+dbs', 'snv+indel', 'dbs', 'dbs+indel', 'indel' or 'all'}
 
 \item{mode}{"transcription" or "replication", default = "transcription"}
 }

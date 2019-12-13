@@ -11,15 +11,18 @@ plot_cosine_heatmap(cos_sim_matrix, col_order, cluster_rows = TRUE,
 \item{cos_sim_matrix}{Matrix with pairwise cosine similarities.
 Result from \code{\link{cos_sim_matrix}}}
 
-\item{col_order}{Character vector with the desired order of the columns names for plotting. Optional.}
+\item{col_order}{(OptionaL) Character vector with the desired order of the columns names for plotting.}
 
-\item{cluster_rows}{Hierarchically cluster rows based on eucledian distance. Default = TRUE.}
+\item{cluster_rows}{(Optional) Hierarchically cluster rows based on eucledian distance.\cr
+Default = TRUE}
 
-\item{method}{The agglomeration method to be used for hierarchical clustering. This should be one of 
+\item{method}{(Optional) The agglomeration method to be used for hierarchical clustering. This should be one of 
 "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) 
-or "centroid" (= UPGMC). Default = "complete".}
+or "centroid" (= UPGMC).\cr
+Default = "complete"}
 
-\item{plot_values}{Plot cosine similarity values in heatmap. Default = FALSE.}
+\item{plot_values}{(Optional) Plot cosine similarity values in heatmap.\cr
+Default = FALSE}
 }
 \value{
 Heatmap with cosine similarities

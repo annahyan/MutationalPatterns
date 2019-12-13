@@ -4,13 +4,21 @@
 \alias{strand_occurrences}
 \title{Count occurrences per base substitution type and strand}
 \usage{
-strand_occurrences(mut_mat_s, by)
+strand_occurrences(mut_mat_s, by, type, method = "split")
 }
 \arguments{
-\item{mut_mat_s}{192 feature mutation count matrix, result from
+\item{mut_mat_s}{strand feature mutation count matrix, result from
 'mut_matrix_stranded()'}
 
-\item{by}{Character vector with grouping info, optional}
+\item{by}{(Optional) Character vector with grouping info}
+
+\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
+'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
+Default is 'snv'}
+
+\item{method}{(Optional) Character stating if all mutation types should be combined
+(='combine') in relative contribution or taking apart (= 'split'). 
+Default is 'split'}
 }
 \value{
 A data.frame with the total number of mutations and relative

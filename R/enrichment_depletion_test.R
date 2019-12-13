@@ -4,7 +4,7 @@
 #' enrichment depletion test.
 #'
 #' @param x data.frame result from genomic_distribution() 
-#' @param by Optional grouping variable, e.g. tissue type
+#' @param by (Optional) Grouping variable, e.g. tissue type
 #' @return data.frame with the observed and expected number of mutations per
 #' genomic region per group (by) or sample
 #'
@@ -37,22 +37,37 @@ enrichment_depletion_test = function(x, by = c())
     # Handle the 'by' parameter when necessary by aggregating x
     if (length(by) > 0)
     {
+        by = rep(by, length(unique(x$region)))
         x$by = by
         # Sum the columns while aggregating rows based on unique values
         # in 'by' and 'region'.
-        res2 = stats::aggregate(cbind(n_muts,
+        if ("mutation" %in% names(x))
+        {
+          res2 = stats::aggregate(cbind(n_muts,
+                                        surveyed_length,
+                                        surveyed_region_length,
+                                        observed) ~ by + region + mutation,
+                                  data = x, sum)
+        } else 
+        {
+          res2 = stats::aggregate(cbind(n_muts,
                                         surveyed_length,
                                         surveyed_region_length,
                                         observed) ~ by + region,
-                                data = x, sum)
+                                  data = x, sum)
+        }
     }
     else
     {
         res2 = x
         # In this case, the 'by' variable is 'sample' variable.
         res2$by = res2$sample
+        
         # Select output columns
-        res2 = res2[,c(9,1,3,4,6,8)]
+        if("mutation" %in% names(res2))
+          res2 = res2[,c(10,3,1,4,5,7,9)]
+        else
+          res2 = res2[,c(9,1,3,4,6,8)]
     }
 
     # Calculate probability and expected number of mutations

@@ -2,21 +2,24 @@
 % Please edit documentation in R/type_context.R
 \name{type_context}
 \alias{type_context}
-\title{Retrieve context of base substitution types}
+\title{Retrieve context of mutations}
 \usage{
-type_context(vcf, ref_genome)
+type_context(vcf, ref_genome, type)
 }
 \arguments{
 \item{vcf}{A CollapsedVCF object}
 
 \item{ref_genome}{Reference genome}
+
+\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
+'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
+Default is 'snv'}
 }
 \value{
 Mutation types and context character vectors in a named list
 }
 \description{
-A function to extract the bases 3' upstream and 5' downstream of the base
-substitution types.
+A function to extract the contexts of mutations for all mutation types
 }
 \examples{
 ## See the 'read_vcfs_as_granges()' example for how we obtained the
@@ -28,7 +31,7 @@ vcfs <- readRDS(system.file("states/read_vcfs_as_granges_output.rds",
 ref_genome <- "BSgenome.Hsapiens.UCSC.hg19"
 library(ref_genome, character.only = TRUE)
 
-type_context <- type_context(vcfs[[1]], ref_genome)
+type_context <- type_context(vcfs[[1]], ref_genome, type)
 
 }
 \seealso{

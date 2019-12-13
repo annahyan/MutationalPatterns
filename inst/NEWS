@@ -1,3 +1,94 @@
+MutationalPatterns v ? (Release date: ?)
+=====================================================
+
+Changes:
+
+* New features & parameter changes:
+  + Analyses for double base substitutions and indels are
+    now possible. This new feature affects almost all functions.
+    Mutation type selection is done by the 'type' argument in a function.
+    For functions which return a matrix, selecting multiple mutation
+    types will result in a list of matrices. For each mutation
+    type a matrix. Functions without 'type' argument also works for other
+    mutation types than snvs.
+  + Combined signature extraction with 'method' argument in
+    'extract_signatures'. Merged counts matrices of multiple
+    mutation types are used as input for NMF.
+  + New method to refit signatures added. Refit by solving a golden
+    ratio search from package deconstructSigs is implemented and
+    optional with 'method = golden-ratio-search' in 'fit_to_signatures'.
+    Also option added for signature selection based on contribution by
+    using the 'cutoff' argument.
+  + Combined mutation types counting. All types in one matrix with
+    argument 'method = "combine"' in 'mut_matrix'.
+  + Relative and absolute contribution plots in same grid for
+    'plot_contribution' with argument 'mode = "both"'. Also option
+    to plot signature contribution of all mutation types in one figure.
+  + Clustering contribution heatmap by mutation type. Cluster mutation
+    type will be shown as first type.
+  + For rainfall plots, mutation types can be plotted in one figure, or
+    in multiple figures in one grid with argument 'method'.
+  + 'Colors' argument in 'plot_signature_strand_bias' to give color
+    palette for mutation types.
+
+* New functions:
+  + check_mutation_type:
+    - Check the spelling of the user defined mutation types.
+  + cosmic_indel_context:
+    - Helper function of 'extract_indels' to transform indel information
+    into context from COSMIC.
+  + default_colors_ggplot:
+    - Get the default colors used in ggplot
+  + extract_indels:
+    - Extract indels with genomic context out of vcf files and transform
+    genomic context to predefined contexts.
+  + facet_nested:
+    - Helper function for ggplot to plot the indel mutation profile
+  + get_contexts_indel:
+    - Helper function of 'extract_indels' to get information about indels
+    from vcf file.
+  + golden_ratio_search_fitting:
+    - Wrapper function around deconstructSigs package to solve a golden
+    ratio search problem for signature fitting.
+  + indel_mutation_type:
+    - Change default settings for indels. Including variables for context
+    and plotting.
+  + indel_seq_flanks_start_end:
+    - Helper function for 'extract_indels' to get genomic flank information
+    of indels.
+  + least_squares_error_fitting:
+    - Solves the nonnegative least squares error problem for signature
+    fitting.
+  + mut_occurrences:
+    - Replacement of 'mut_96_occurrences', with counting of occurrences
+    of all mutation types.
+  + mut_strand_occurrences:
+    - Replacement of 'mut_192_occurrences' with count of strand occurrences
+    of all mutation types.
+  + n_bases_mh:
+    - Helper function of 'extract_indels' to get the number of bases in
+    microhomology around the indel.
+  + n_copies_along_flank:
+    - Helper function of 'extract_indels' to count the number of times a
+    indel is repeated in its flank.
+  + plot_profiles:
+    - Replacement of 'plot_96_profiles' to plot the profiles of all
+    mutation types.
+  + plot_strand_profiles:
+    - Replacement of 'plot_192_profiles' to plot the strand profiles of all
+    mutation types.
+
+* Deprecated functions:
+  + mut_192_occurrences
+    - Replaced by mut_strand_occurrences
+  + mut_96_occurrences
+    - Replaced by mut_96_occurrences
+  + plot_192_profile
+    - Replaced by plot_strand_profiles
+  + plot_96_profile
+    - Replaced by plot_profiles
+
+
 MutationalPatterns v1.6.2 (Release date: 2018-10-18)
 =====================================================
 

@@ -5,7 +5,8 @@
 \title{Make mutation count matrix of 96 trinucleotides with 
 strand information}
 \usage{
-mut_matrix_stranded(vcf_list, ref_genome, ranges, mode = "transcription")
+mut_matrix_stranded(vcf_list, ref_genome, ranges, mode = "transcription",
+  type, num_cores)
 }
 \arguments{
 \item{vcf_list}{List of collapsed vcf objects}
@@ -16,10 +17,18 @@ mut_matrix_stranded(vcf_list, ref_genome, ranges, mode = "transcription")
 1. (transcription mode) the gene bodies with strand (+/-) information, or 
 2. (replication mode) the replication strand with 'strand_info' metadata}
 
-\item{mode}{"transcription" or "replication", default = "transcription"}
+\item{mode}{(Optional) "transcription" or "replication", default = "transcription"}
+
+\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
+'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
+Default is 'snv'}
+
+\item{num_cores}{Number of cores used for parallel processing. If no value
+is given, then the number of available cores is autodetected.}
 }
 \value{
-192 mutation count matrix (96 X 2 strands)
+List of mutation count matrices for each mutation type. Number of different mutations
+for all types all doubled, because there are 2 strands
 }
 \description{
 Make a mutation count matrix with 192 features: 96 trinucleotides and 2 strands,

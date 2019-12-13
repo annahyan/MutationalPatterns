@@ -9,7 +9,7 @@ enrichment_depletion_test(x, by = c())
 \arguments{
 \item{x}{data.frame result from genomic_distribution()}
 
-\item{by}{Optional grouping variable, e.g. tissue type}
+\item{by}{(Optional) Grouping variable, e.g. tissue type}
 }
 \value{
 data.frame with the observed and expected number of mutations per

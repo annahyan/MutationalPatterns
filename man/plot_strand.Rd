@@ -4,15 +4,18 @@
 \alias{plot_strand}
 \title{Plot strand per base substitution type}
 \usage{
-plot_strand(strand_bias_df, mode = "relative", colors)
+plot_strand(strand_counts, mode = "relative", colors)
 }
 \arguments{
-\item{strand_bias_df}{data.frame, result from strand_bias function}
+\item{strand_counts}{A data.frame, result from strand_occurrences function}
 
-\item{mode}{Either "absolute" for absolute number of mutations, or
-"relative" for relative contribution, default = "relative"}
+\item{mode}{(Optional) Either "absolute" for absolute number of mutations, 
+"relative" for relative contribution or "both" for both.\cr
+Default = "relative"}
 
-\item{colors}{Optional color vector for plotting with 6 values}
+\item{colors}{(Optional) Named list with 6 value color vector "snv" for snv, 
+10 value color vector "dbs" for dbs.
+For indels give same number of colors as there are classes.}
 }
 \value{
 Barplot

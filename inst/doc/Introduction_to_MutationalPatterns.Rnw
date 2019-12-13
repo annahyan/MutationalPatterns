@@ -1,0 +1,1662 @@
+%\VignetteIndexEntry{Introduction to MutationalPatterns}
+\documentclass{article}
+\usepackage{float}
+\usepackage[natbibapa]{apacite}
+\bibliographystyle{apacite}
+
+<<style, eval=TRUE, echo=FALSE, results=tex>>=
+BiocStyle::latex(use.unsrturl=FALSE)
+@
+
+\title{Introduction to \Biocpkg{MutationalPatterns}}
+\author{Francis Blokzijl}
+\author{Roel Janssen}
+\author{Bastiaan Van der Roest}
+\author{Ruben van Boxtel}
+\author{Edwin Cuppen}
+\affil{University Medical Center Utrecht, Utrecht, The Netherlands}
+\date{\today}
+
+\begin{document} 
+\SweaveOpts{concordance=TRUE}
+
+\maketitle
+
+\tableofcontents
+
+\newpage{}
+
+<<options, echo=FALSE>>=
+options(width=96)
+library(ggplot2)
+@
+
+\section{Introduction}
+
+Mutational processes leave characteristic footprints in genomic DNA. This
+package provides a comprehensive set of flexible functions that allows
+researchers to easily evaluate and visualize a multitude of mutational patterns
+in base substitution catalogues of e.g. tumour samples or DNA-repair deficient
+cells. The package covers a wide range of patterns including: mutational
+signatures, transcriptional and replicative strand bias, genomic distribution
+and association with genomic features, which are collectively meaningful for
+studying the activity of mutational processes. The package provides
+functionalities for both extracting mutational signatures \emph{de novo} and
+determining the contribution of previously identified mutational signatures on
+a single sample level. MutationalPatterns integrates with common R genomic
+analysis workflows and allows easy association with (publicly available)
+annotation data.
+
+Background on the biological relevance of the different mutational patterns, a
+practical illustration of the package functionalities, comparison with similar
+tools and software packages and an elaborate discussion, are described in the
+MutationalPatterns article, which is published in Genome Medicine in 2018:
+  \url{https://doi.org/10.1186/s13073-018-0539-0}
+
+\newpage{}
+\section{Data}
+
+To perform the mutational pattern analyses, you need to load one or multiple
+VCF files with substitutions and/or indel calls and the corresponding reference
+genome.
+
+\subsection{List reference genome}
+
+List available genomes using \Biocpkg{BSgenome}:
+  
+<<loading_reference_data>>=
+library(BSgenome)
+head(available.genomes())
+@
+  
+Download and load your reference genome of interest:
+  
+<<loading_reference_data>>=
+ref_genome <- "BSgenome.Hsapiens.UCSC.hg19"
+library(ref_genome, character.only = TRUE)
+@
+  
+\subsection{Load example data}
+
+We provided an example data set with this package, which consists of a subset of
+somatic mutation catalogues of 9 normal human adult stem cells from 3 different
+tissues \citep{Blokzijl2016}. When own data is loaded, please pay attention that
+the files are in VCF format 4.2 or higher, which makes sure that all variants are 
+loaded correctly.
+
+Load the MutationalPatterns package:
+  
+<<load_package>>=
+library(MutationalPatterns)
+@
+
+Locate the VCF files of the example data:
+<<locate_files_e, eval = FALSE>>=
+vcf_files <- list.files(system.file("extdata", package="MutationalPatterns"),
+                        pattern = ".vcf", full.names = TRUE)
+@ 
+
+<<locate_files, echo = FALSE>>=
+vcf_files <- list.files("../inst/extdata",
+                        pattern = ".vcf", full.names = TRUE)
+@
+
+Define corresponding sample names for the VCF files:
+<<set_sample_names>>=
+sample_names <- c(
+  "colon1", "colon2", "colon3",
+  "intestine1", "intestine2", "intestine3",
+  "liver1", "liver2", "liver3")
+@
+
+Load the VCF files into a \texttt{GRangesList}:
+<<read_vcfs_as_granges>>=
+vcfs <- read_vcfs_as_granges(vcf_files, sample_names, ref_genome)
+summary(vcfs)
+@
+  
+Define relevant metadata on the samples, such as tissue type:
+<<store_tissue_variable>>=
+tissue <- c(rep("colon", 3), rep("intestine", 3), rep("liver", 3))
+@
+  
+  
+\section{Mutation characteristics}
+
+\subsection{Single base substitution types}
+
+We can retrieve base substitutions from the VCF GRanges object as "REF>ALT"
+using \Rfunction{mutations\_from\_vcf}:
+  
+<<mutations_from_vcf>>=
+muts = mutations_from_vcf(vcfs[[1]])
+head(muts, 12)
+@
+  
+We can retrieve the base substitutions from the VCF GRanges object and convert
+them to the 6 types of base substitution types that are distinguished by
+convention: C>A, C>G, C>T, T>A, T>C, T>G. For example, when the reference
+allele is G and the alternative allele is T (G>T), \Rfunction{mut\_type}
+returns the G:C>T:A mutation as a C>A mutation:
+  
+<<mut_type>>=
+types = mut_type(vcfs[[1]])
+head(types, 12)
+@
+  
+To retrieve the sequence context (one base upstream and one base downstream) of
+the single base substitutions in the VCF object from the reference genome, you can use
+the \Rfunction{mut\_context} function:
+  
+<<mut_context>>=
+context = mut_context(vcfs[[1]], ref_genome)
+head(context, 12)
+@
+  
+With \Rfunction{type\_context}, you can retrieve the types and contexts
+for all positions in the VCF GRanges object. For the base substitutions that are
+converted to the conventional base substitution types, the reverse complement of
+the sequence context is returned.
+
+<<type_context>>=
+type_context = type_context(vcfs[[1]], ref_genome)
+lapply(type_context, head, 12)
+@
+  
+With \Rfunction{mut\_type\_occurrences}, you can count mutation type
+occurrences for all VCF objects in the \texttt{GRangesList}. For
+C>T mutations, a distinction is made between C>T at CpG sites and other
+sites, as deamination of methylated cytosine at CpG sites is a common mutational
+process. For this reason, the reference genome is needed for this functionality.
+
+<<mut_type_occurrences>>=
+type_occurrences <- mut_type_occurrences(vcfs, ref_genome)
+type_occurrences
+@
+
+\subsection{Double base substitutions and indels}
+
+Not only single base substitutions can be retrieved from the VCF GRanges object,
+also double base substitutions and/or indels can be extracted,
+if they are present in the loaded VCF files. Double base substitutions have the 
+format "REF:NN > ALT:NN" or they are two SNVs with consecutive positions. Indels 
+must be in at least VCF format 4.2. That means that deletions have a REF with 
+the deletion length and an ALT with length 1, and insertions have a REF of 
+length 1 and an ALT with the insertion length. Moreover, the REF and ALT of
+indels only contains nucleotide letters (A, C, G and T), no other characters.
+
+These two types of mutations are retrieved the same way as the single base 
+substitutions: "REF>ALT", using \Rfunction{mutations\_from\_vcf}. 
+Therefore set the argument \texttt{type} to a vector of the wanted mutation
+types. When multiple mutation types are requested, the output will be a list of 
+mutation types.\\
+  
+<<mutations_from_vcf>>=
+muts = mutations_from_vcf(vcfs[[1]], type = c("dbs", "indel"))
+lapply(muts, head, 12)
+@
+
+To convert the double base substitutions to the 78 strand-agnostic types found
+in the COSMIC database, run the function \Rfunction{mut\_type}. The 1 basepair
+indels will also be converted to a "C" or "T" indel with this function:
+
+<<mut_type>>=
+types = mut_type(vcfs[[1]], type = c("dbs", "indel"))
+lapply(types, head, 12)
+@
+
+The insertions and deletions can be translated to a more clear definition, on
+which the indels can be grouped. Since there is no single intuitive and 
+naturally constrained set of indel mutation types, it is possible to give
+an own definition of indels and to set global variables for this definition.
+For this the function \Rfunction{indel\_mutation\_type} can be used. To set 
+the indel context following the COSMIC database, use:
+
+<<indel_mut_type>>=
+indel_mutation_type("cosmic")
+@
+
+Then the indel mutations can be translated with \Rfunction{mut\_context}:
+
+<<mut_context>>=
+context = mut_context(vcfs[[1]], ref_genome, type = "indel", indel = "cosmic")
+head(context, 12)
+@
+
+As with the single base substitutions, \Rfunction{type\_context} can be used
+to retrieve type and context information of all double base substitutions, 
+insertions and deletions. The function will return the type and context 
+information as a list of mutation types:
+
+<<type_context>>=
+type_context = type_context(vcfs[[1]], ref_genome, type = c("dbs","indel"))
+lapply(type_context, function(x) lapply(x, head, 10))
+@
+
+\subsection{Mutation spectrum}
+
+A mutation spectrum shows the relative contribution of each mutation type in
+the base substitution catalogs. The \Rfunction{plot\_spectrum} function plots
+the mean relative contribution of each of the 6 base substitution types over
+all samples. Error bars indicate standard deviation over all samples. The total
+number of mutations is indicated.
+
+<<plot_spectrum>>=
+p1 <- plot_spectrum(type_occurrences)
+@
+  
+Plot the mutation spectrum with distinction
+between C>T at CpG sites and other sites:
+  
+<<plot_spectrum_2>>=
+p2 <- plot_spectrum(type_occurrences, CT = TRUE)
+@
+  
+Plot spectrum without legend:
+<<plot_spectrum_3>>=
+p3 <- plot_spectrum(type_occurrences, CT = TRUE, legend = FALSE)
+@
+  
+The gridExtra package will be used throughout this vignette to combine multiple
+plots:
+<<combine_plot_spectrum_noeval, eval=FALSE>>=
+library("gridExtra")
+grid.arrange(p1, p2, p3, ncol=3, widths=c(3,3,1.75))
+@
+<<combine_plot_spectrum, echo=FALSE>>=
+library("gridExtra")
+ggsave("combine_plot_spectrum.pdf",
+  grid.arrange(p1, p2, p3, ncol=3, widths=c(3,3,1.75)),
+  width=10,
+  height=3)
+@
+  
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{combine_plot_spectrum}
+\end{center}
+\end{figure}
+
+You can facet the per sample group, e.g. plot the spectrum for each tissue
+separately:
+<<plot_spectrum_4>>=
+p4 <- plot_spectrum(type_occurrences, by = tissue, CT = TRUE, legend = TRUE)
+@
+  
+Define your own 7 colors for spectrum plotting:
+<<plot_spectrum_5>>=
+palette <- c("pink", "orange", "blue", "lightblue", "green", "red", "purple")
+p5 <- plot_spectrum(type_occurrences, CT=TRUE, legend=TRUE, colors=palette)
+@
+  
+<<combine_plot_spectrum_2_noeval, echo=FALSE>>=
+ggsave("combine_plot_spectrum_2.pdf", 
+       grid.arrange(p4, p5, ncol=2, widths=c(4,2.3)), 
+       width=10, 
+       height=3)
+@
+  
+<<combine_plot_spectrum_2, eval=FALSE>>=
+grid.arrange(p4, p5, ncol=2, widths=c(4,2.3))
+@
+  
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{combine_plot_spectrum_2}
+\end{center}
+\end{figure}
+
+\subsection{96 mutational profile}
+
+Make a 96 trinucleodide mutation count matrix:
+<<mut_matrix>>=
+mut_mat <- mut_matrix(vcf_list = vcfs, ref_genome = ref_genome)
+head(mut_mat)
+@
+  
+Plot the 96 profile of two samples:
+<<plot_96_profile_2_e, eval=FALSE>>=
+plot_profiles(mut_mat[,c(1,7)])
+@
+
+<<plot_96_profile_2, echo=FALSE>>=
+ggsave("plot_96_profile_2.pdf", 
+       plot_profiles(mut_mat[,c(1,7)]), 
+       width=10, 
+       height=3)
+@
+  
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_96_profile_2}
+\end{center}
+\end{figure}
+
+Plot 96 profile of two samples in a more condensed plotting format:
+<<plot_96_profile_3_e, eval=FALSE, width=7, height=3>>=
+plot_profiles(mut_mat[,c(1,7)], condensed = TRUE)
+@
+  
+<<plot_96_profile_3, echo=FALSE>>=
+ggsave("plot_96_profile_3.pdf", 
+       plot_profiles(mut_mat[,c(1,7)], condensed = TRUE), 
+       width=10, 
+       height=3)
+@
+  
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_96_profile_3}
+\end{center}
+\end{figure}
+
+\subsection{Plot mutation profiles of different types}
+
+To plot the mutation profiles of different mutation types (SBS, DBS
+and/or indels), first make a list of mutation count matrices:
+
+<<mut_matrix>>=
+mut_mat <- mut_matrix(vcf_list = vcfs, ref_genome = ref_genome, type = "all")
+lapply(mut_mat, head)
+@
+
+Make a list of two samples:
+<<sub_mat_matrix>>=
+mut_mat_sub <- list("snv" = mut_mat$snv[,c(1,7)],
+                    "dbs" = mut_mat$dbs[,c(1,7)],
+                    "indel" = mut_mat$indel[,c(1,7)])
+@
+
+Plot the mutation profiles of the two samples:
+<<plot_profiles_2e, eval=FALSE, width=7, height=3>>=
+plot_profiles(mut_mat_sub, type = "all")
+@
+
+<<plot_profiles_2, echo=FALSE>>=
+ggsave("plot_profiles_2.pdf", 
+       plot_profiles(mut_mat_sub, type = "all"),
+       width=10, 
+       height=10)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_profiles_2}
+\end{center}
+\end{figure}
+
+It is also possible to plot mutation profiles with all mutation types
+together.
+
+<<plot_profiles_3e, eval=FALSE>>=
+plot_profiles(mut_mat_sub, type = "all", method = "combine")
+@
+
+<<plot_profiles_3, echo=FALSE>>=
+ggsave("plot_profiles_3.pdf", 
+       plot_profiles(mut_mat_sub, type = "all", method = "combine"),
+       width=15, 
+       height=7)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_profiles_3}
+\end{center}
+\end{figure}
+
+\newpage{}
+\section{Mutational signatures}
+
+\subsection{\textit{De novo} mutational signature extraction using NMF}
+
+Mutational signatures are thought to represent mutational processes, and are
+characterized by a specific contribution of 96 single base substitution types,
+78 double bas substitutions types or indels. Mutational signatures can be
+extracted from your mutation count matrix, with non-negative matrix
+factorization (NMF). A critical parameter in NMF is the factorization rank,
+which is the number of mutational signatures. You can determine the optimal
+factorization rank using the NMF package \citep{Gaujoux2010}. As described in
+their paper:
+
+``...a common
+way of deciding on the rank is to try different values, compute some quality
+measure of the results, and choose the best value according to this quality
+criteria. The most common approach is to choose the smallest rank for which
+cophenetic correlation coefficient starts decreasing. Another approach is to
+choose the rank for which the plot of the residual sum of squares (RSS) between
+the input matrix and its estimate shows an inflection point.''
+
+Lets start with the single base substitutions. First add a small psuedocount
+to your mutation count matrix, such that there are no rows where the sum of
+the row is zero:
+
+<<psuedo_count>>=
+mut_mat <- mut_matrix(vcf_list = vcfs, ref_genome = ref_genome)
+mut_mat <- mut_mat + 0.0001
+@
+
+Use the NMF package to generate an estimate rank plot:
+<<use_nmf>>=
+library("NMF")
+estimate <- nmf(mut_mat, rank=2:5, method="brunet", nrun=10, seed=123456)
+@
+
+And plot it:
+<<estimate_rank_e, eval=FALSE>>=
+plot(estimate)
+@
+
+<<estimate_rank, echo = FALSE>>=
+ggsave("estimate_rank.pdf", 
+       plot(estimate), 
+       width=10, 
+       height=5)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{estimate_rank}
+\end{center}
+\end{figure}
+
+Extract 2 mutational signatures from the mutation count matrix with
+\Rfunction{extract\_signatures} (For larger datasets it is wise to perform more
+iterations by changing the nrun parameter to achieve stability and avoid local
+minima):
+
+<<extract_signatures>>=
+nmf_res <- extract_signatures(mut_mat, rank = 2, nrun = 10)
+@
+
+Assign signature names:
+<<add_column_names>>=
+colnames(nmf_res$signatures) <- c("Signature A", "Signature B")
+rownames(nmf_res$contribution) <- c("Signature A", "Signature B")
+@
+
+Plot the 96-profile of the signatures:
+<<plot_profiles_e, eval=FALSE>>=
+plot_profiles(nmf_res$signatures, condensed = TRUE)
+@
+
+<<plot_profiles, echo=FALSE>>=
+ggsave("plot_profiles.pdf",
+       plot_profiles(nmf_res$signatures, condensed = TRUE),
+       width = 10,
+       height = 7)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_profiles}
+\end{center}
+\end{figure}
+
+In order to extract signatures for all mutation types at once, make a list of 
+mutation matrices for each mutation type:
+
+<<mut_matrix_all_2>>=
+mut_mat <- mut_matrix(vcf_list = vcfs, ref_genome = ref_genome, type = "all")
+mut_mat <- lapply(mut_mat, function(x) x + 0.0001)
+@
+
+Generate a estimate rank plot with the NMF package for each mutation type and
+find the best ranks. Extract then the signatures from the mutation matrices
+with \Rfunction{extract\_signatures}. Use \texttt{type = "all"} to get all
+mutation types.
+
+<<extract_signatures_all>>=
+nmf_res <- extract_signatures(mut_mat,
+                              rank = c("snv" = 2, "dbs" = 2, "indel" = 2),
+                              type = "all",
+                              nrun = 10)
+@
+
+Assign signature names
+<<add_column_names>>=
+colnames(nmf_res$signatures$snv) <- c("SBS A", "SBS B")
+colnames(nmf_res$signatures$dbs) <- c("DBS A", "DBS B")
+colnames(nmf_res$signatures$indel) <- c("INDEL A", "INDEL B")
+rownames(nmf_res$contribution$snv) <- c("SBS A", "SBS B")
+rownames(nmf_res$contribution$dbs) <- c("DBS A", "DBS B")
+rownames(nmf_res$contribution$indel) <- c("INDEL A", "INDEL B")
+@
+
+Plot the profiles of the signatures:
+<<plot_profiles_all_e, eval=FALSE, width=7, height=3>>=
+plot_profiles(nmf_res$signatures, condensed = TRUE, type = "all")
+@
+
+<<plot_profiles_all, echo=FALSE>>=
+ggsave("plot_profiles_all.pdf",
+       plot_profiles(nmf_res$signatures, condensed = TRUE, type = "all"),
+       width = 15,
+       height = 12)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_profiles_all}
+\end{center}
+\end{figure}
+
+Visualize the contribution of the SBS signatures in a barplot:
+<<plot_contribution>>=
+pc1 <- plot_contribution(nmf_res$contribution, nmf_res$signature,
+                         mode = "relative")
+@
+
+Visualize the contribution of the signatures in absolute number of mutations:
+<<plot_contribution_2>>=
+pc2 <- plot_contribution(nmf_res$contribution, nmf_res$signature,
+                         mode = "absolute")
+@
+
+Combine the two plots:
+<<plot_contribution_2_fig_e, eval=FALSE>>=
+grid.arrange(pc1, pc2)
+@
+
+<<plot_contribution_2_fig, echo=FALSE>>=
+ggsave("plot_contribution2_fig.pdf",
+       grid.arrange(pc1, pc2),
+       width = 10,
+       height = 5)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_contribution2_fig}
+\end{center}
+\end{figure}
+
+Flip X and Y coordinates:
+
+<<plot_contribution_4_e, eval=FALSE>>=
+plot_contribution(nmf_res$contribution, nmf_res$signature,
+                         mode = "absolute", coord_flip = TRUE)
+@
+
+<<plot_contribution_4, echo=FALSE>>=
+ggsave("plot_contribution_4.pdf",
+       plot_contribution(nmf_res$contribution, nmf_res$signature,
+                         mode = "absolute", coord_flip = TRUE),
+       width=10,
+       height = 3)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_contribution_4}
+\end{center}
+\end{figure}
+
+To visualize the contribution of the signatures for all mutation types
+in both relative and absolute number of mutations, set 
+\texttt{type = "all"} and \texttt{mode = "both"}:
+
+<<plot_contribution_all_e, fig=TRUE, width=7, height=5, eval=FALSE>>=
+plot_contribution(nmf_res$contribution, nmf_res$signature,
+                 type = "all", mode = "both")
+@
+
+<<plot_contribution_all, echo=FALSE>>=
+ggsave("plot_contribution_all.pdf",
+       plot_contribution(nmf_res$contribution, nmf_res$signature,
+                         type = "all", mode = "both"),
+       width = 15,
+       height = 10)
+@
+
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_contribution_all}
+\end{center}
+\end{figure}
+
+The relative contribution of each signature for each sample can also be plotted
+as a heatmap with \Rfunction{plot\_contribution\_heatmap}, which might be easier
+to interpret and compare than stacked barplots. The samples can be
+hierarchically clustered based on their euclidean distance. The signatures can
+be plotted in a user-specified order.
+
+Plot SBS signature contribution as a heatmap with sample clustering dendrogram and
+a specified signature order:
+
+<<plot_contribution_heatmap>>=
+pch1 <- plot_contribution_heatmap(nmf_res$contribution,
+                                  sig_order = c("SBS B", "SBS A"))
+@
+
+Plot SBS signature contribution as a heatmap without sample clustering:
+<<plot_contribution_heatmap2_e>>=
+pch2 <- plot_contribution_heatmap(nmf_res$contribution, cluster_samples=FALSE)
+@
+
+Combine the plots into one figure:
+<<plot_contribution_heatmap2_e2, eval=FALSE>>=
+grid.arrange(pch1, pch2, ncol = 2, widths = c(2,1.6))
+@
+
+<<plot_contribution_heatmap2, echo=FALSE>>=
+ggsave("plot_contribution_heatmap2.pdf",
+       grid.arrange(pch1, pch2, ncol = 2, widths = c(2,1.6)),
+       width = 10,
+       height = 10)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_contribution_heatmap2.pdf}
+\end{center}
+\end{figure}
+
+When plotting the signature contribution of multiple mutation types, it is
+possible to cluster on a specified mutation type. The mutation type(s) on
+which the data will be clustered, will show up at the left side of the heatmap.
+Plot the signature contribution, clustered by DBS signatures, by setting
+\texttt{cluster\_mut\_type = "dbs"}:
+
+<<plot_contribution_heatmap_all_e, eval=FALSE>>=
+plot_contribution_heatmap(nmf_res$contribution, type = "all",
+                          cluster_mut_type = "dbs",
+                          plot_values = TRUE)
+@
+
+<<plot_contribution_heatmap_all, echo=FALSE>>=
+ggsave("plot_contribution_heatmap_all.pdf",
+       plot_contribution_heatmap(nmf_res$contribution, type = "all",
+                                 cluster_mut_type = "dbs",
+                                 plot_values = TRUE),
+       width = 10,
+       height = 10)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_contribution_heatmap_all}
+\end{center}
+\end{figure}
+
+In order to see the performance of the NMF algorithm, a reconstruction 
+of the count matrices are given by \Rfunction{extract\_signatures}.
+Compare a reconstructed 96 mutational profile of SNVs with the original 
+96 mutational profile of SNVs:
+
+<<plot_compare_profiles_e, eval=FALSE>>=
+plot_compare_profiles(mut_mat$snv[,1],
+                        nmf_res$snv$reconstructed[,1],
+                        profile_names = c("Original", "Reconstructed"),
+                        condensed = TRUE)
+@
+
+<<plot_compare_profiles, echo=FALSE>>=
+ggsave("plot_compare_profiles.pdf",
+       plot_compare_profiles(mut_mat$snv[,1],
+                             nmf_res$reconstructed$snv[,1],
+                             profile_names = c("Original", "Reconstructed"),
+                             condensed = TRUE),
+       width = 10,
+       height = 5.5)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_compare_profiles}
+\end{center}
+\end{figure}
+
+\subsection{Find optimal contribution of known signatures}
+
+\subsubsection{COSMIC mutational signatures}
+
+Download mutational signatures from the COSMIC website. As there are 
+multiple versions of the signatures, this vignette uses the signatures from
+COSMIC version 3 for SBS, DBS and indels. These signatures are available in
+numerical form from synapse.org ID syn12009743. Download here the referece
+whole genome signatures. Then load as follow:
+
+% <<download_cancer_signatures>>=
+% sp_url <- paste("https://cancer.sanger.ac.uk/cancergenome/assets/",
+%                 "signatures_probabilities.txt", sep = "")
+% 
+% snv_signatures = read.table(sp_url, sep = "\t", header = TRUE)
+% # Match the order of the mutation types to MutationalPatterns standard
+% new_order = match(row.names(mut_mat$snv), snv_signatures$Somatic.Mutation.Type)
+% # Reorder cancer signatures dataframe
+% snv_signatures = snv_signatures[as.vector(new_order),]
+% # Add trinucletiode changes names as row.names
+% row.names(snv_signatures) = snv_signatures$Somatic.Mutation.Type
+% # Keep only 96 contributions of the signatures in matrix
+% snv_signatures = as.matrix(snv_signatures[,4:33])
+% @
+ 
+<<load_signatures_e, eval = FALSE>>=
+# Read the SBS signatures file
+snv_signatures = read.csv("sigProfiler_SBS_signatures_v3_2019_05_22.csv")
+# Derive the 96 mutations
+snv_signatures$MutationType = sprintf("%s[%s]%s",
+                                      substr(snv_signatures$SubType, 1, 1),
+                                      snv_signatures$Type,
+                                      substr(snv_signatures$SubType, 3, 3))
+
+# Match the order of the mutation types to MutationalPatterns standard
+new_order = match(row.names(mut_mat$snv), snv_signatures$MutationType)
+# Reorder cancer signatures dataframe
+snv_signatures = snv_signatures[as.vector(new_order),]
+# Add trinucletiode changes names as row.names
+row.names(snv_signatures) = snv_signatures$MutationType
+# Keep only 96 contributions of the signatures in matrix
+snv_signatures = as.matrix(snv_signatures[,3:69])
+
+# Read the DBS signatures file
+dbs_signatures = read.csv("sigProfiler_DBS_signatures.csv")
+# Add mutation types as rownames
+rownames(dbs_signatures) = dbs_signatures$Mutation.Type
+# Keep only 10 DBS signatures
+dbs_signatures = as.matrix(dbs_signatures[,2:11])
+
+# Read the indel signatures file
+indel_signatures = read.csv("sigProfiler_ID_signatures.csv")
+# Add indel context as rownames
+rownames(indel_signatures) = INDEL_COSMIC
+# Keep only the 17 indel signatures
+indel_signatures = as.matrix(indel_signatures[,2:18])
+
+# Store all mutation types in one list
+cancer_signatures = list("snv" = snv_signatures,
+                         "dbs" = dbs_signatures,
+                         "indel" = indel_signatures)
+@
+
+<<load_signatures, echo = FALSE>>=
+snv_signatures = read.csv("../inst/extdata/sigProfiler_SBS_signatures_v3_2019_05_22.csv")
+snv_signatures$MutationType = sprintf("%s[%s]%s",
+                                      substr(snv_signatures$SubType, 1, 1),
+                                      snv_signatures$Type,
+                                      substr(snv_signatures$SubType, 3, 3))
+new_order = match(row.names(mut_mat$snv), snv_signatures$MutationType)
+snv_signatures = snv_signatures[as.vector(new_order),]
+row.names(snv_signatures) = snv_signatures$MutationType
+snv_signatures = as.matrix(snv_signatures[,3:69])
+
+dbs_signatures = read.csv(system.file("sigProfiler_DBS_signatures.csv",
+                                      package="MutationalPatterns"))
+rownames(dbs_signatures) = dbs_signatures$Mutation.Type
+dbs_signatures = as.matrix(dbs_signatures[,2:11])
+
+indel_signatures = read.csv(system.file("sigProfiler_ID_signatures.csv",
+                                        package = "MutationalPatterns"))
+rownames(indel_signatures) = INDEL_COSMIC
+indel_signatures = as.matrix(indel_signatures[,2:18])
+
+cancer_signatures = list("snv" = snv_signatures,
+                         "dbs" = dbs_signatures,
+                         "indel" = indel_signatures)
+@
+
+Plot mutational profile of the first two COSMIC SBS signatures:
+<<plot_profiles_COSMIC_e, eval=FALSE>>=
+plot_profiles(cancer_signatures$snv[,1:2], condensed = TRUE, ymax = "maximum")
+@
+
+<<plot_profiles_COSMIC, echo=FALSE>>=
+ggsave("plot_profiles_COSMIC.pdf",
+       plot_profiles(cancer_signatures$snv[,1:2], condensed = TRUE, ymax = "maximum"),
+       width = 7,
+       height = 3)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_profiles_COSMIC}
+\end{center}
+\end{figure}
+
+Hierarchically cluster the COSMIC SBS signatures based on their similarity with
+average linkage:
+
+<<cluster_COSMIC_e, eval = FALSE>>=
+hclust_cosmic = cluster_signatures(cancer_signatures$snv, method = "average")
+# store signatures in new order
+cosmic_order = colnames(cancer_signatures$snv)[hclust_cosmic$order]
+plot(hclust_cosmic)
+@
+
+<<cluster_COSMIC, echo = FALSE>>=
+hclust_cosmic = cluster_signatures(cancer_signatures$snv, method = "average")
+# store signatures in new order
+cosmic_order = colnames(cancer_signatures$snv)[hclust_cosmic$order]
+ggsave("cluster_COSMIC.pdf",
+       plot(hclust_cosmic),
+       width = 12,
+       height = 7)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{cluster_COSMIC}
+\end{center}
+\end{figure}
+
+The same can be done for DBS and indel signatures, by changing the 
+\texttt{type} argument to "all".
+
+\subsubsection{Similarity between mutational profiles and COSMIC signatures}
+
+The similarity between each mutational profile and each COSMIC signature, can be
+calculated with \Rfunction{cos\_sim\_matrix}, and visualized with
+\Rfunction{plot\_cosine\_heatmap}. The cosine similarity reflects how well each
+mutational profile can be explained by each signature individually. The
+advantage of this heatmap representation is that it shows in a glance the
+similarity in mutational profiles between samples, while at the same time
+providing information on which signatures are most prominent. The samples can be
+hierarchically clustered in \Rfunction{plot\_cosine\_heatmap}.
+
+The cosine similarity between two mutational profiles/signatures can be
+calculated with \Rfunction{cos\_sim}:
+
+<<cos_sim>>=
+cos_sim(mut_mat$snv[,1], cancer_signatures$snv[,1])
+@
+
+To do pairwise cosine similarity calculations of mutational profiles and COSMIC
+signatures, use the function \Rcode{cos\_sim\_matrix}:
+
+<<cos_sim_cosmic_samples>>=
+cos_sim_samples_signatures = cos_sim_matrix(mut_mat, cancer_signatures,
+                                            type = "all")
+lapply(cos_sim_samples_signatures, function(x) x[1:5,1:5])
+@
+
+Plot the cosine similarity heatmap of the SBS signatures:
+
+<<plot_cosine_heatmap_e, eval = FALSE>>=
+plot_cosine_heatmap(cos_sim_samples_signatures$snv,
+                    cluster_rows = TRUE)
+@
+
+<<plot_cosine_heatmap, echo = FALSE>>=
+ggsave("plot_cosine_heatmap.pdf",
+       plot_cosine_heatmap(cos_sim_samples_signatures$snv,
+                           cluster_rows = TRUE),
+       width = 12,
+       height = 5)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_cosine_heatmap}
+\end{center}
+\end{figure}
+
+\subsubsection{Find optimal contribution of COSMIC signatures to reconstruct mutational profiles}
+
+In addition to \textit{de novo} extraction of signatures, the contribution of
+any set of signatures to the mutational profile of a sample can be quantified.
+This unique feature is specifically useful for mutational signature analyses of
+small cohorts or individual samples, but also to relate own findings to known
+signatures and published findings. The  \Rfunction{fit\_to\_signatures} function
+has two options to find the optimal linear combination of mutational signatures
+that most closely reconstructs the mutation matrix: solving a non-negative
+least-squares constraints problem and performing a golden ratio search (as
+implemented in the deconstructSigs package from Rosenthal et al.
+\citep{Rosenthal2016}). The default option is the non-negative least-squares
+problem.
+
+First get new mutation matrices, without the 0.001 used by the NMF estimation:
+
+<<mut_mat_new>>=
+mut_mat <- mut_matrix(vcf_list = vcfs, ref_genome, type = "all")
+@
+
+Fit mutation matrices to the COSMIC signatures:
+
+<<fit_to_signatures>>=
+fit_res <- fit_to_signatures(mut_mat, cancer_signatures, type = "all")
+@
+
+Plot the optimal contribution of the COSMIC signatures in each sample as a
+stacked barplot.
+
+<<plot_contribution_3_noeval, eval=FALSE>>=
+# Select signatures with some contribution
+fit_res$contribution$snv <- fit_res$contribution$snv[
+  which(rowSums(fit_res$contribution$snv) > 10),]
+fit_res$contribution$dbs <- fit_res$contribution$dbs[
+  which(rowSums(fit_res$contribution$dbs) > 0.1),]
+fit_res$contribution$indel <- fit_res$contribution$indel[
+  which(rowSums(fit_res$contribution$indel) > 10),]
+
+# Plot contribution barplot
+plot_contribution(fit_res$contribution,
+                    cancer_signatures,
+                    coord_flip = FALSE,
+                    mode = "absolute")
+@
+
+<<plot_contribution_3, echo=FALSE>>=
+fit_res$contribution$snv <- fit_res$contribution$snv[which(rowSums(fit_res$contribution$snv) > 10),]
+fit_res$contribution$dbs <- fit_res$contribution$dbs[which(rowSums(fit_res$contribution$dbs) > 0.1),]
+fit_res$contribution$indel <- fit_res$contribution$indel[which(rowSums(fit_res$contribution$indel) > 10),]
+
+ggsave("plot_contribution_3.pdf",
+       plot_contribution(fit_res$contribution,
+                         cancer_signatures,
+                         type = "all",
+                         coord_flip = FALSE,
+                         mode = "absolute"),
+       width=15,
+       height = 15)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_contribution_3}
+\end{center}
+\end{figure}
+
+Results of the golden ratio search algorithm are only relative, so fit
+the mutation matrix with the golden ratio search and plot results from
+both methods in relative contribution:
+
+<<fit_to_signatures_grs>>=
+fit_res_grs <- fit_to_signatures(mut_mat, cancer_signatures, type = "snv",
+                             method = "golden-ratio-search")
+# Select signatures with some contribution
+select_grs <- which(rowSums(fit_res_grs$contribution) > 0.06)
+@
+
+In order to match colors when \Rfunction{plot\_contribution} is run for both
+the non-negative least squares problem and the golden ratio search, make a 
+palette of colors with the \\ \Rfunction{default\_colors\_ggplot} function:
+
+<<color_palette>>=
+colorvector <- default_colors_ggplot(ncol(cancer_signatures$snv))
+@
+
+Then plot the results of both algorithms:
+
+<<plot_contribution_nnls_grs>>=
+# Plot relative contribution from non-negative least squares
+select = match(rownames(fit_res$contribution$snv), colnames(cancer_signatures$snv))
+
+pc1 <- plot_contribution(fit_res$contribution,
+                   cancer_signatures$snv,
+                   coord_flip = FALSE,
+                   type = "snv",
+                   mode = "relative",
+                   palette = list("snv" = colorvector[select]))
+
+# Plot relative contribution from golden ratio search
+pc2 <- plot_contribution(fit_res_grs$contribution[select_grs,],
+                        cancer_signatures$snv[,select_grs],
+                        coord_flip = FALSE,
+                        mode = "relative",
+                        palette = list("snv" = colorvector[select_grs]))
+@
+
+Combine the two plots in one figure:
+
+<<plot_contribution_nnls_grs_fig_e, echo=FALSE>>=
+grid.arrange(pc1, pc2, ncol = 2, widths = c(2,2))
+@
+
+
+<<plot_contribution_nnls_grs_fig, echo=FALSE>>=
+ggsave("plot_contribution_nnls_grs.pdf",
+       grid.arrange(pc1, pc2, ncol = 2, widths = c(2,2)),
+       width = 15,
+       height = 10)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_contribution_nnls_grs}
+\end{center}
+\end{figure}
+
+The relative contributions of signatures to samples can be plotted as a
+heatmap. Plot the contribution heatmap of the SBS signatures:
+
+<<plot_contribution_heatmap3_e, eval=FALSE>>=
+plot_contribution_heatmap(fit_res$contribution$snv,
+                          cluster_samples = TRUE,
+                          method = "complete")
+@
+
+<<plot_contribution_heatmap3, echo=FALSE>>=
+ggsave("plot_contribution_heatmap3.pdf",
+  plot_contribution_heatmap(fit_res$contribution$snv,
+                            cluster_samples = TRUE,
+                            method = "complete"),
+  width = 8,
+  height = 3)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_contribution_heatmap3}
+\end{center}
+\end{figure}
+
+A quality control of the fitted signatures is to compare the reconstructed
+mutational profiles with the orignals. This can be done with the function 
+\Rfunction{plot\_compare\_profiles}. Compare the reconstructed mutational profile
+of indels of sample 1 with its original mutational profile of indels:
+<<plot_compare_profiles_2_e, eval=FALSE>>=
+plot_compare_profiles(mut_mat$indel[,1], fit_res$reconstructed$indel[,1],
+                        profile_names = c("Original", "Reconstructed"),
+                        condensed = TRUE)
+@
+
+<<plot_compare_profiles_2, echo=FALSE>>=
+ggsave("plot_compare_profiles_2.pdf",
+  plot_compare_profiles(mut_mat$indel[,1], fit_res$reconstructed$indel[,1],
+                        profile_names = c("Original", "Reconstructed"),
+                        condensed = TRUE),
+  width = 6,
+  height = 5.5)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_compare_profiles}
+\end{center}
+\end{figure}
+
+Calculate the cosine similarity between all original and reconstructed
+mutational profiles with \Rfunction{cos\_sim\_matrix}:
+
+<<cos_sim_ori_rec>>=
+# calculate all pairwise cosine similarities
+cos_sim_ori_rec <- cos_sim_matrix(mut_mat, fit_res$reconstructed, type = "all")
+# extract cosine similarities per sample between original and reconstructed
+cos_sim_ori_rec <- lapply(cos_sim_ori_rec, function(x) as.data.frame(diag(x)))
+@
+
+We can use ggplot to make a barplot of the cosine similarities between the
+original and reconstructed mutational profile of each sample. This clearly
+shows how well each mutational profile can be reconstructed with the COSMIC
+mutational signatures. Two identical profiles have a cosine similarity of 1.
+The lower the cosine similarity between original and reconstructed, the less
+well the original mutational profile can be reconstructed with the COSMIC
+signatures. You could use, for example, cosine similarity of 0.95 as a cutoff.
+
+<<cos_sim_ori_rec>>=
+# Adjust data frame for plotting with gpplot
+for (i in 1:length(cos_sim_ori_rec)){
+  colnames(cos_sim_ori_rec[[i]]) = "cos_sim"
+  cos_sim_ori_rec[[i]]$sample = row.names(cos_sim_ori_rec[[i]])
+}
+@
+
+Plot the cosine similarities for the SBS signatures:
+
+<<plot_cos_sim_ori_rec_e, eval=FALSE>>=
+# Load ggplot2
+library(ggplot2)
+# Make barplot
+ggplot(cos_sim_ori_rec$snv, aes(y=cos_sim, x=sample)) +
+  geom_bar(stat="identity", fill = "skyblue4") +
+  coord_cartesian(ylim=c(0.8, 1)) +
+  # coord_flip(ylim=c(0.8,1)) +
+  ylab("Cosine similarity\n original VS reconstructed") +
+  xlab("") +
+  # Reverse order of the samples such that first is up
+  # xlim(rev(levels(factor(cos_sim_ori_rec$sample)))) +
+  theme_bw() +
+  theme(panel.grid.minor.y=element_blank(),
+        panel.grid.major.y=element_blank()) +
+  # Add cut.off line
+  geom_hline(aes(yintercept=.95))
+@
+
+<<plot_cos_sim_ori_rec, echo=FALSE>>=
+# Load ggplot2
+library(ggplot2)
+# Make barplot
+ggsave("plot_cos_sim_ori_rec.pdf",
+  ggplot(cos_sim_ori_rec$snv, aes(y=cos_sim, x=sample)) +
+    geom_bar(stat="identity", fill = "skyblue4") +
+    coord_cartesian(ylim=c(0.8, 1)) +
+    # coord_flip(ylim=c(0.8,1)) +
+    ylab("Cosine similarity\n original VS reconstructed") +
+    xlab("") +
+    # Reverse order of the samples such that first is up
+    # xlim(rev(levels(factor(cos_sim_ori_rec$sample)))) +
+    theme_bw() +
+    theme(panel.grid.minor.y=element_blank(),
+          panel.grid.major.y=element_blank()) +
+    # Add cut.off line
+    geom_hline(aes(yintercept=.95)),
+  width = 6,
+  height = 3)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_cos_sim_ori_rec}
+\end{center}
+\end{figure}
+
+\section{Strand bias analyses}
+
+\subsection{Transcriptional strand bias analysis}
+
+For the mutations within genes it can be determined whether the mutation is
+on the transcribed or non-transcribed strand, which can be used to evaluate
+the involvement of transcription-coupled repair. To this end, it is determined
+whether the "C" or "T" base (since by convention we regard base substitutions
+as C>X or T>X) are on the same strand as the gene definition. Single base
+substitions on the same strand as the gene definitions are considered
+"untranscribed", and on the opposite strand of gene bodies as "transcribed",
+since the gene definitions report the coding or sense strand, which is
+untranscribed. No strand information is reported for base substitution that
+overlap with more than one gene body on different strands.
+
+Alike the single base substitutions, double base substitutions are
+converted to defined set of double bases. These bases are either on the same
+strand as a gene definition, consider them "untranscribed", or on the other
+strand, consider them "transcribed". Indels do not have such a conversion,
+therefore losing strand information based on mutations.
+
+Get gene definitions for your reference genome:
+
+<<get_genes>>=
+# For example get known genes table from UCSC for hg19 using
+# biocLite("TxDb.Hsapiens.UCSC.hg19.knownGene")
+library("TxDb.Hsapiens.UCSC.hg19.knownGene")
+genes_hg19 <- genes(TxDb.Hsapiens.UCSC.hg19.knownGene)
+genes_hg19
+@
+
+Get transcriptional strand information for all SBS and DBS positions in the
+first VCF object with \Rfunction{mut\_strand}. This function returns ``-'' for
+positions outside gene bodies, and positions that overlap with more than one
+gene on different strands.
+
+<<mut_strand>>=
+strand = mut_strand(vcfs[[1]], genes_hg19, type = c("snv", "dbs"))
+lapply(strand, head, 10)
+@
+
+Make mutation count matrix with transcriptional strand information (96
+trinucleotides * 2 strands = 192 features for SBS and 78 substitutions * 2
+strands = 156 features for DBS). NB: only those mutations that are
+located within gene bodies are counted.
+
+<<mut_matrix_stranded>>=
+mut_mat_s <- mut_matrix_stranded(vcfs, ref_genome, genes_hg19,
+                                 type = c("snv", "dbs"))
+lapply(mut_mat_s, function(x) x[1:5,1:5])
+@
+
+Count the number of mutations on each strand, per tissue, per mutation type:
+
+<<strand_occurrences>>=
+strand_counts <- strand_occurrences(mut_mat_s, by=tissue,
+                                    type = c("snv", "dbs"))
+lapply(strand_counts, head)
+@
+
+Perform Poisson test for strand asymmetry significance testing:
+
+<<strand_bias_test>>=
+strand_bias <- strand_bias_test(strand_counts,
+                                type = c("snv", "dbs"))
+strand_bias
+@
+
+Plot the mutation spectrum with strand distinction:
+<<plot_strand>>=
+ps1 <- plot_strand(strand_counts, mode = "relative")
+@
+
+Plot the effect size (log2(untranscribed/transcribed) of the strand bias.
+Asteriks indicate significant strand bias.
+<<plot_strand_bias_3>>=
+ps2 <- plot_strand_bias(strand_bias)
+@
+
+Combine the plots into one figure:
+<<plot_strand_bias_e, eval=FALSE>>=
+grid.arrange(ps1, ps2)
+@
+
+<<plot_strand_bias, echo=FALSE>>=
+ggsave("plot_strand_bias.pdf",
+       grid.arrange(ps1,ps2),
+       width = 12,
+       height = 12)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_strand_bias}
+\end{center}
+\end{figure}
+
+
+\subsection{Replicative strand bias analysis}
+
+The involvement of replication-associated mechanisms can be evaluated by
+testing for a mutational bias between the leading and lagging strand. The
+replication strand is dependent on the locations of replication origins from
+which DNA replication is fired. However, replication timing is dynamic and
+cell-type specific, which makes replication strand determination less
+straightforward than transcriptional strand bias analysis. Replication timing
+profiles can be generated with Repli-Seq experiments. Once the replication
+direction is defined, a strand asymmetry analysis can be performed similarly as
+the transcription strand bias analysis.
+
+Read example bed file provided with the package with replication direction
+annotation:
+
+<<repli_file>>=
+repli_file = system.file("extdata/ReplicationDirectionRegions.bed",
+                           package = "MutationalPatterns")
+repli_strand = read.table(repli_file, header = TRUE)
+# Store in GRanges object
+repli_strand_granges = GRanges(seqnames = repli_strand$Chr,
+  ranges = IRanges(start = repli_strand$Start + 1,
+                   end = repli_strand$Stop),
+  strand_info = factor(repli_strand$Class))
+# UCSC seqlevelsstyle
+seqlevelsStyle(repli_strand_granges) = "UCSC"
+repli_strand_granges
+@
+
+The GRanges object should have a ``strand\_info'' metadata column, which
+contains only two different annotations, e.g. ``left'' and ``right'', or
+``leading'' and ``lagging''. The genomic ranges cannot overlap, to allow only
+one annotation per location.
+
+Get replicative strand information for all positions in the first VCF
+object. No strand information ``-'' is returned for base substitutions in
+unannotated genomic regions. Indels can also be tested for replication
+strand bias, since the strand information is not based on conversion of
+mutations.
+
+<<strand_from_vcf_rep>>=
+strand_rep <- mut_strand(vcfs[[1]], repli_strand_granges, mode = "replication",
+                         type = "all")
+lapply(strand_rep, head, 10)
+@
+
+Make mutation count matrices with transcriptional strand information.
+
+<<mut_matrix_stranded_rep>>=
+mut_mat_s_rep <- mut_matrix_stranded(vcfs, ref_genome, repli_strand_granges,
+                                     mode = "replication",
+                                     type = "all")
+lapply(mut_mat_s_rep, function(x) x[1:5, 1:5])
+@
+
+The levels of the "strand\_info" metadata in the GRanges object determines the
+order in which the strands are reported in the mutation matrix that is returned
+by \Rfunction{mut\_matrix\_stranded}, so if you want to count right before left,
+you can specify this, before you run \Rfunction{mut\_matrix\_stranded}:
+
+<<specify_levels>>=
+repli_strand_granges$strand_info <- factor(repli_strand_granges$strand_info,
+                                           levels = c("right", "left"))
+mut_mat_s_rep2 <- mut_matrix_stranded(vcfs, ref_genome, repli_strand_granges,
+                                      mode = "replication",
+                                      type = "all")
+lapply(mut_mat_s_rep2, function(x) x[1:5, 1:5])
+@
+
+Count the number of mutations on each strand, per tissue, per mutation type:
+
+<<strand_occurrences_rep>>=
+strand_counts_rep <- strand_occurrences(mut_mat_s_rep, by=tissue,
+                                        type = "all")
+lapply(strand_counts_rep, head)
+@
+
+Perform Poisson test for strand asymmetry significance testing:
+
+<<strand_bias_test_rep>>=
+strand_bias_rep <- strand_bias_test(strand_counts_rep,
+                                    type = "all")
+strand_bias_rep
+@
+
+Plot the mutation spectrum with strand distinction:
+
+<<plot_strand_rep>>=
+ps1 <- plot_strand(strand_counts_rep, mode = "relative")
+@
+
+Plot the effect size (log2(untranscribed/transcribed) of the strand bias.
+Asteriks indicate significant strand bias.
+
+<<plot_strand_bias_rep2>>=
+ps2 <- plot_strand_bias(strand_bias_rep)
+@
+
+Combine the plots into one figure:
+<<plot_strand_bias_rep_e, eval=FALSE>>=
+grid.arrange(ps1, ps2)
+@
+
+<<plot_strand_bias_rep, echo=FALSE>>=
+ggsave("plot_strand_bias_rep.pdf",
+       grid.arrange(ps1, ps2),
+       width=12,
+       height = 12)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_strand_bias_rep}
+\end{center}
+\end{figure}
+
+\subsection{Extract signatures with strand bias}
+
+Extract 2 signatures for each mutation type from mutation count matrix with
+strand features:
+
+<<extract_signatures>>=
+nmf_res_strand <- extract_signatures(mut_mat_s_rep, type = "all", rank = 2, nrun = 1)
+
+# Provide signature names
+colnames(nmf_res_strand$signatures$snv) <- c("SBS A", "SBS B")
+colnames(nmf_res_strand$signatures$dbs) <- c("DBS A", "DBS B")
+colnames(nmf_res_strand$signatures$indel) <- c("INDEL A", "INDEL B")
+@
+
+Plot signatures with 192 features:
+
+<<plot_192>>=
+a <- plot_strand_profiles(nmf_res_strand$signatures, condensed = TRUE,
+                          mode = "replication",
+                          type = "all")
+@
+
+Plot strand bias per mutation type for each signature with significance test:
+<<plot_strand_bias>>=
+b <- plot_signature_strand_bias(nmf_res_strand$signatures,
+                                type = "all")
+@
+
+Combine the plots into one figure:
+<<plot_192_profile_noeval, eval=FALSE>>=
+grid.arrange(a, b, ncol = 2, widths = c(5, 1.8))
+@
+
+<<plot_192_profile, echo=FALSE>>=
+ggsave("plot_192_profile.pdf",
+       grid.arrange(a, b, ncol = 2, widths = c(5, 1.8)),
+       width = 15,
+       height = 12)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_192_profile}
+\end{center}
+\end{figure}
+
+
+\section{Genomic distribution}
+
+\subsection{Rainfall plot}
+
+A rainfall plot visualizes mutation types and intermutation distance. Rainfall
+plots can be used to visualize the distribution of mutations along the genome
+or a subset of chromosomes. The y-axis corresponds to the distance of a
+mutation with the previous mutation and is log10 transformed. Drop-downs from
+the plots indicate clusters or ``hotspots'' of mutations.
+
+Make rainfall plot of single base substitutions from sample 1 over all
+autosomal chromosomes
+
+<<plot_rainfall_noeval, eval=FALSE>>=
+# Define autosomal chromosomes
+chromosomes <- seqnames(get(ref_genome))[1:22]
+
+# Make a rainfall plot
+plot_rainfall(vcfs[[1]], title = names(vcfs[1]),
+                chromosomes = chromosomes, cex = 1.5, ylim = 1e+09)
+@
+
+<<plot_rainfall, echo=FALSE>>=
+# Define autosomal chromosomes
+chromosomes <- seqnames(get(ref_genome))[1:22]
+
+# Make a rainfall plot
+ggsave("plot_rainfall.pdf",
+       plot_rainfall(vcfs[[1]], title = names(vcfs[1]),
+                     chromosomes = chromosomes, cex = 1.5, ylim = 1e+09),
+       width=9,
+       height=3)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_rainfall}
+\end{center}
+\end{figure}
+
+Also make rainfall plots for DBS and indels:
+
+<<plot_rainfall_nosbs_noeval, eval = FALSE>>=
+# Define autosomal chromosomes
+chromosomes <- seqnames(get(ref_genome))[1:22]
+
+# Make a rainfall plot
+plot_rainfall(vcfs[[1]], title = names(vcfs[1]),
+              chromosomes = chromosomes,
+              type = c("dbs", "indel"),
+              cex = 1.5, ylim = 1e+09)
+@
+
+<<plot_rainfall, echo=FALSE>>=
+# Define autosomal chromosomes
+chromosomes <- seqnames(get(ref_genome))[1:22]
+
+# Make a rainfall plot
+ggsave("plot_rainfall_dbs_indel.pdf",
+       plot_rainfall(vcfs[[1]], title = names(vcfs[1]),
+                     type = c("dbs", "indel"),
+                     chromosomes = chromosomes, cex = 1.5, ylim = 1e+09),
+       width=12,
+       height=3)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_rainfall_dbs_indel}
+\end{center}
+\end{figure}
+
+% % Make rainfall plot of the first sample over chromosome 1:
+% %
+% % \begin{figure}[H]
+% % \begin{center}
+% % <<plot_rainfall_2, fig=TRUE, width=6, height=3>>=
+% % chromosomes <- seqnames(get(ref_genome))[1]
+% % plot_rainfall(vcfs[[1]], title = names(vcfs[1]),
+% %                 chromosomes = chromosomes[1], cex = 2, ylim = 1e+09)
+% % @
+% % \end{center}
+% % \end{figure}
+% 
+\subsection{Enrichment or depletion of mutations in genomic regions}
+
+Test for enrichment or depletion of mutations in certain genomic regions, such
+as promoters, CTCF binding sites and transcription factor binding sites.  To
+use your own genomic region definitions (based on e.g. ChipSeq experiments)
+specify your genomic regions in a named list of GRanges objects.  Alternatively,
+use publicly available genomic annotation data, like in the example below.
+
+\subsubsection{Example: regulation annotation data from Ensembl using
+    \Biocpkg{biomaRt}}
+
+The following example displays how to download promoter, CTCF binding sites and
+transcription factor binding sites regions for
+genome build hg19 from Ensembl using \Biocpkg{biomaRt}.  For other datasets,
+see the  \Biocpkg{biomaRt} documentation \citep{Durinck2005}.
+
+To install \Biocpkg{biomaRt}, uncomment the following lines:
+<<install_biomaRt, eval=FALSE>>=
+source("https://bioconductor.org/biocLite.R")
+biocLite("biomaRt")
+@
+
+Load the \Biocpkg{biomaRt} package.
+<<load_biomart>>=
+library(biomaRt)
+@
+
+Download genomic regions. NB: Here we take some shortcuts by loading the results
+from our example data. The corresponding code for downloading this data can be
+found above the command we run:
+
+<<download_using_biomaRt>>=
+# regulatory <- useEnsembl(biomart="regulation",
+#                          dataset="hsapiens_regulatory_feature",
+#                          GRCh = 37)
+
+## Download the regulatory CTCF binding sites and convert them to
+## a GRanges object.
+# CTCF <- getBM(attributes = c('chromosome_name',
+#                             'chromosome_start',
+#                             'chromosome_end',
+#                             'feature_type_name',
+#                             'cell_type_name'),
+#              filters = "regulatory_feature_type_name",
+#              values = "CTCF Binding Site",
+#              mart = regulatory)
+#
+# CTCF_g <- reduce(GRanges(CTCF$chromosome_name,
+#                 IRanges(CTCF$chromosome_start,
+#                 CTCF$chromosome_end)))
+
+CTCF_g <- readRDS(system.file("states/CTCF_g_data.rds",
+                    package="MutationalPatterns"))
+
+## Download the promoter regions and convert them to a GRanges object.
+
+# promoter = getBM(attributes = c('chromosome_name', 'chromosome_start',
+#                                 'chromosome_end', 'feature_type_name'),
+#                  filters = "regulatory_feature_type_name",
+#                  values = "Promoter",
+#                  mart = regulatory)
+# promoter_g = reduce(GRanges(promoter$chromosome_name,
+#                     IRanges(promoter$chromosome_start,
+#                             promoter$chromosome_end)))
+
+promoter_g <- readRDS(system.file("states/promoter_g_data.rds",
+                        package="MutationalPatterns"))
+
+## Download the promoter flanking regions and convert them to a GRanges object.
+
+# flanking = getBM(attributes = c('chromosome_name',
+#                                 'chromosome_start',
+#                                 'chromosome_end',
+#                                 'feature_type_name'),
+#                  filters = "regulatory_feature_type_name",
+#                  values = "Promoter Flanking Region",
+#                  mart = regulatory)
+# flanking_g = reduce(GRanges(
+#                        flanking$chromosome_name,
+#                        IRanges(flanking$chromosome_start,
+#                        flanking$chromosome_end)))
+
+flanking_g <- readRDS(system.file("states/promoter_flanking_g_data.rds",
+                                    package="MutationalPatterns"))
+@
+
+Combine all genomic regions (GRanges objects) in a named list:
+
+<<combine_genomic_regions>>=
+regions <- GRangesList(promoter_g, flanking_g, CTCF_g)
+
+names(regions) <- c("Promoter", "Promoter flanking", "CTCF")
+@
+
+Use the same chromosome naming convention consistently:
+
+<<combine_genomic_regions_2>>=
+seqlevelsStyle(regions) <- "UCSC"
+@
+
+\subsection{Test for significant depletion or enrichment in genomic regions}
+
+It is necessary to include a list with Granges of regions that were surveyed
+in your analysis for each sample, that is: positions in the genome at which
+you have enough high quality reads to call a mutation. This can
+be determined using e.g. CallableLoci tool by GATK. If you would not include the
+surveyed area in your analysis, you might for example see a depletion of
+mutations in a certain genomic region that is solely a result from a low
+coverage in that region, and therefore does not represent an actual depletion
+of mutations.
+
+We provided an example surveyed region data file with the package. For simplicity,
+here we use the same surveyed file for each sample. For a proper analysis, determine
+the surveyed area per sample and use these in your analysis.
+
+Download the example surveyed region data:
+
+<<download_bed_data>>=
+## Get the filename with surveyed/callable regions
+surveyed_file <- system.file("extdata/callableloci-sample.bed",
+                             package = "MutationalPatterns")
+
+## Import the file using rtracklayer and use the UCSC naming standard
+library(rtracklayer)
+surveyed <- import(surveyed_file)
+seqlevelsStyle(surveyed) <- "UCSC"
+
+## For this example we use the same surveyed file for each sample.
+surveyed_list <- rep(list(surveyed), 9)
+@
+
+Test for enrichment or depletion of mutations in your defined genomic
+regions using a binomial test.  For this test, the chance of observing a
+mutation is calculated as the total number of mutations, divided by the
+total number of surveyed bases.
+
+<<genomic_distribution>>=
+## Calculate the number of observed and expected number of mutations in
+## each genomic regions for each sample.
+distr <- genomic_distribution(vcfs, surveyed_list, regions, type = "all")
+@
+
+<<enrichment_depletion_test>>=
+## Perform the enrichment/depletion test by tissue type.
+distr_test <- enrichment_depletion_test(distr, by = tissue)
+head(distr_test)
+@
+
+<<plot_enrichment_depletion_e, eval=FALSE>>=
+plot_enrichment_depletion(distr_test)
+@
+
+<<plot_enrichment_depletion, echo=FALSE>>=
+ggsave("plot_enrichment_depletion.pdf",
+       plot_enrichment_depletion(distr_test),
+       width=12,
+       height = 10)
+@
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{plot_enrichment_depletion}
+\end{center}
+\end{figure}
+
+\bibliography{references}
+
+\section{Session Information}
+<<sessionInfo, eval=TRUE, echo=FALSE, results=tex>>=
+toLatex(sessionInfo())
+@
+
+\end{document}

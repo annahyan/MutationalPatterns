@@ -6,27 +6,42 @@
 #' @param vcf CollapsedVCF object with mutations
 #' @param surveyed GRanges object with regions of the genome that were surveyed
 #' @param region GRanges object with genomic region(s)
+#' @param type (Optional) A character vector stating which type of mutation is to be extracted: 
+#' 'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
+#' Default is 'snv'
 #' @importFrom GenomeInfoDb seqlevelsStyle
 #' @noRd
 #' @return A data.frame containing the overlapping mutations for a
 #' genomic region.
 
-intersect_with_region = function(vcf, surveyed, region)
+intersect_with_region = function(vcf, surveyed, region, type)
 {
+    nref = nchar(as.character(vcf$REF))
+    nalt = nchar(as.character(unlist(vcf$ALT)))
+  
+    type = check_mutation_type(type)
+    
+    if (type == "snv") { i = which(nref==1 & nalt==1) }
+    else if (type == "dbs") { i = which(nref==2 & nalt==2) }
+    else if (type == "indel") { i = which(nref != nalt & 
+                                            (nref == 1 | nalt == 1)) }
+  
+    vcf = vcf[i,]
+    
+    # Check if chromosome names are the same in the objects
+    if (seqlevelsStyle(vcf) != seqlevelsStyle(surveyed))
+      stop(paste("The chromosome names (seqlevels) of the VCF and the",
+                 "surveyed GRanges object do not match."))
+    
+    if (seqlevelsStyle(region) != seqlevelsStyle(surveyed))
+      stop(paste("The chromosome names (seqlevels) of the surveyed and",
+                 "the region GRanges object do not match."))
+    
     # Number of mutations in vcf file
     n_muts = length(vcf)
 
     # Number of base pairs that were surveyed
     surveyed_length = sum(as.numeric(width(surveyed)))
-
-    # Check if chromosome names are the same in the objects
-    if (seqlevelsStyle(vcf) != seqlevelsStyle(surveyed))
-        stop(paste("The chromosome names (seqlevels) of the VCF and the",
-                    "surveyed GRanges object do not match."))
-
-    if (seqlevelsStyle(region) != seqlevelsStyle(surveyed))
-        stop(paste("The chromosome names (seqlevels) of the surveyed and",
-                    "the region GRanges object do not match."))
 
     # Intersect genomic region and surveyed region
     surveyed_region = intersect(surveyed, region, ignore.strand = TRUE)

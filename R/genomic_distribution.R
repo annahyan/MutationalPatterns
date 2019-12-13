@@ -8,6 +8,9 @@
 #' the genome that have been surveyed (e.g. determined using GATK CallableLoci).
 #' @param region_list A GRangesList or a list with GRanges objects containing
 #' locations of genomic regions.
+#' @param type (Optional) A character vector stating which type of mutation is to be extracted: 
+#' 'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
+#' Default is 'snv'
 #'
 #' @return A data.frame containing the number observed and number of expected
 #' mutations in each genomic region.
@@ -132,7 +135,7 @@
 #'
 #' @export
 
-genomic_distribution = function(vcf_list, surveyed_list, region_list)
+genomic_distribution = function(vcf_list, surveyed_list, region_list, type)
 {
     if (length(vcf_list) != length(surveyed_list))
         stop("vcf_list and surveyed_list must have the same length")
@@ -141,19 +144,26 @@ genomic_distribution = function(vcf_list, surveyed_list, region_list)
         stop(paste( "Please set the names of region_list using:",
                     "    names(region_list) <- c(\"regionA\", \"regionB\", ...)",
                     sep="\n"))
-
+    
+    type = check_mutation_type(type)
+  
     df = data.frame()
     for(j in 1:length(region_list) )
     {
         for(i in 1:length(vcf_list) )
         {
-            res = intersect_with_region(vcf_list[[i]],
-                                        surveyed_list[[i]],
-                                        region_list[[j]])
-            res$region = names(region_list)[j]
-            res$sample = names(vcf_list)[i]
-            res = res[,c(7,8,1:6)]
-            df = rbind(df, res)
+            for(m in type)
+            {
+                res = intersect_with_region(vcf_list[[i]],
+                                            surveyed_list[[i]],
+                                            region_list[[j]],
+                                            type = m)
+                res$region = names(region_list)[j]
+                res$sample = names(vcf_list)[i]
+                res$mutation = m
+                res = res[,c(7,8,9,1:6)]
+                df = rbind(df, res)
+            }
         }
     }
 

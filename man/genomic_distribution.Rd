@@ -4,7 +4,7 @@
 \alias{genomic_distribution}
 \title{Find overlaps between mutations and a genomic region.}
 \usage{
-genomic_distribution(vcf_list, surveyed_list, region_list)
+genomic_distribution(vcf_list, surveyed_list, region_list, type)
 }
 \arguments{
 \item{vcf_list}{A GRangesList or a list with VCF GRanges objects.}
@@ -14,6 +14,10 @@ the genome that have been surveyed (e.g. determined using GATK CallableLoci).}
 
 \item{region_list}{A GRangesList or a list with GRanges objects containing
 locations of genomic regions.}
+
+\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
+'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
+Default is 'snv'}
 }
 \value{
 A data.frame containing the number observed and number of expected

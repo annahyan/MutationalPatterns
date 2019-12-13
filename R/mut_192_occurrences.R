@@ -13,28 +13,34 @@
 
 mut_192_occurrences = function(type_context, strand)
 {
-  # get possible strand values
-  values = levels(strand)
   
-  idx1 = which(strand == values[1])
-  idx2 = which(strand == values[2])
+  warning(paste("This function will be deprecated soon,",
+                "use 'mut_strand_occurrences' instead"))
   
-  # get type context for both vcf subsets
-  type_context_1 = lapply(type_context, function(x) x[idx1])
-  type_context_2 = lapply(type_context, function(x) x[idx2])
+  vector = mut_strand_occurrences(type_context, strand, mode = "snv")
   
-  # make 96-trinucleotide count vector per set
-  vector1 = mut_96_occurrences(type_context_1)
-  vector2 = mut_96_occurrences(type_context_2)
+  # # get possible strand values
+  # values = levels(strand)
+  # 
+  # idx1 = which(strand == values[1])
+  # idx2 = which(strand == values[2])
+  # 
+  # # get type context for both vcf subsets
+  # type_context_1 = lapply(type_context, function(x) x[idx1])
+  # type_context_2 = lapply(type_context, function(x) x[idx2])
+  # 
+  # # make 96-trinucleotide count vector per set
+  # vector1 = mut_96_occurrences(type_context_1)
+  # vector2 = mut_96_occurrences(type_context_2)
+  # 
+  # # add names
+  # names_1 = paste(TRIPLETS_96, values[1], sep = "-")
+  # names_2 = paste(TRIPLETS_96, values[2], sep = "-")
+  # 
+  # # combine vectors in alternating fashion
+  # vector = c(rbind(vector1, vector2))
+  # names = c(rbind(names_1, names_2))
+  # names(vector) = names
   
-  # add names
-  names_1 = paste(TRIPLETS_96, values[1], sep = "-")
-  names_2 = paste(TRIPLETS_96, values[2], sep = "-")
-  
-  # combine vectors in alternating fashion
-  vector = c(rbind(vector1, vector2))
-  names = c(rbind(names_1, names_2))
-  names(vector) = names
-
   return(vector)
 }

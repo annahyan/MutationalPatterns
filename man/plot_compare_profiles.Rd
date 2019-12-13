@@ -2,35 +2,39 @@
 % Please edit documentation in R/plot_compare_profiles.R
 \name{plot_compare_profiles}
 \alias{plot_compare_profiles}
-\title{Compare two 96 mutation profiles}
+\title{Compare two mutational profiles}
 \usage{
 plot_compare_profiles(profile1, profile2, profile_names = c("profile 1",
   "profile 2"), profile_ymax = 0.2, diff_ylim = c(-0.02, 0.02), colors,
   condensed = FALSE)
 }
 \arguments{
-\item{profile1}{First 96 mutation profile}
+\item{profile1}{First mutational profile}
 
-\item{profile2}{Second 96 mutation profile}
+\item{profile2}{Second mutational profile}
 
-\item{profile_names}{Character vector with names of the mutations profiles
-used for plotting, default = c("profile 1", "profile 2")}
+\item{profile_names}{(Optional) Character vector with names of the mutations profiles
+used for plotting.\cr
+Default = c("profile 1", "profile 2")}
 
-\item{profile_ymax}{Maximum value of y-axis (relative contribution) for
-profile plotting, default = 0.2}
+\item{profile_ymax}{(Optional) Maximum value of y-axis (relative contribution) for
+profile plotting.\cr
+Default = 0.2}
 
-\item{diff_ylim}{Y-axis limits for profile difference plot,
-default = c(-0.02, 0.02)}
+\item{diff_ylim}{(Optional) Y-axis limits for profile difference plot.\cr
+Default = c(-0.02, 0.02)}
 
-\item{colors}{6 value color vector}
+\item{colors}{(Optional) List of color vectors with same length as mutational classes per type:\cr
+6 for SNV, 10 for DBS and number of indel classes for wanted context (6 for "predefined" and 16 for "cosmic").\cr
+Default colors are predefined in MutationalPatterns}
 
-\item{condensed}{More condensed plotting format. Default = F.}
+\item{condensed}{(Optional) More condensed plotting format. Default = F.}
 }
 \value{
-96 spectrum plot of profile 1, profile 2 and their difference
+mutational profile plot of profile 1, profile 2 and their difference
 }
 \description{
-Plots two 96 mutation profiles and their difference, reports the residual
+Plots two mutational profiles and their difference, reports the residual
 sum of squares (RSS).
 }
 \examples{
