@@ -4,25 +4,19 @@
 \alias{mut_context}
 \title{Retrieve context of base substitutions}
 \usage{
-mut_context(vcf, ref_genome, type)
+mut_context(vcf, ref_genome)
 }
 \arguments{
 \item{vcf}{A Granges object}
 
 \item{ref_genome}{Reference genome}
-
-\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
-'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
-Default is 'snv'}
 }
 \value{
 Character vector with the context of the base substitutions
 }
 \description{
 A function to extract the bases 3' upstream and 5' downstream of the base
-substitutions from the reference genome. The function is also able to extract
-the indel context from the COSMIC database or the predefined database given
-by this package
+substitutions from the reference genome
 }
 \examples{
 ## See the 'read_vcfs_as_granges()' example for how we obtained the
@@ -34,7 +28,7 @@ vcfs <- readRDS(system.file("states/read_vcfs_as_granges_output.rds",
 ref_genome <- "BSgenome.Hsapiens.UCSC.hg19"
 library(ref_genome, character.only = TRUE)
 
-mut_context <- mut_context(vcfs[[1]], ref_genome, type)
+mut_context <- mut_context(vcfs[[1]], ref_genome)
 
 }
 \seealso{

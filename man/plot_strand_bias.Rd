@@ -4,17 +4,12 @@
 \alias{plot_strand_bias}
 \title{Plot strand bias per base substitution type per group}
 \usage{
-plot_strand_bias(strand_bias, colors, max_yaxis = FALSE)
+plot_strand_bias(strand_bias, colors)
 }
 \arguments{
-\item{strand_bias}{A data.frame, result from strand_bias function}
+\item{strand_bias}{data.frame, result from strand_bias function}
 
-\item{colors}{(Optional) Named list with 6 value color vector "snv" for snv, 
-10 value color vector "dbs" for dbs.
-For indels give same number of colors as there are classes.}
-
-\item{max_yaxis}{(Optional) Binary option to set y axis to maximum value of all
-mutation types. Default is 'max = FALSE'}
+\item{colors}{Optional color vector with 6 values for plotting}
 }
 \value{
 Barplot

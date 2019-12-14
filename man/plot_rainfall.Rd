@@ -4,8 +4,8 @@
 \alias{plot_rainfall}
 \title{Plot genomic rainfall}
 \usage{
-plot_rainfall(vcf, chromosomes, type, method = "split", title = "",
-  colors, cex = 2.5, cex_text = 3, ylim = 1e+08)
+plot_rainfall(vcf, chromosomes, title = "", colors, cex = 2.5,
+  cex_text = 3, ylim = 1e+08)
 }
 \arguments{
 \item{vcf}{CollapsedVCF object}
@@ -13,26 +13,15 @@ plot_rainfall(vcf, chromosomes, type, method = "split", title = "",
 \item{chromosomes}{Vector of chromosome/contig names of the reference
 genome to be plotted}
 
-\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
-'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
-Default is 'snv'}
+\item{title}{Optional plot title}
 
-\item{method}{(Optional) Character stating how to plot the results. method = "split" will give 
-seperate plots for each mutation type, whereas method = "combine" will give one plot with all
-mutation types.\cr
-Default is "split"}
+\item{colors}{Vector of 6 colors used for plotting}
 
-\item{title}{(Optional) Plot title}
+\item{cex}{Point size}
 
-\item{colors}{(Optional) Named list with 6 value color vector "snv" for snv, 
-10 value color vector "dbs" for dbs.
-For indels give same number of colors as there are classes. \cr}
+\item{cex_text}{Text size}
 
-\item{cex}{(Optional) Point size, default = 2.5}
-
-\item{cex_text}{(Optional) Text size, default = 3}
-
-\item{ylim}{(Optional) Maximum y value (genomic distance), default = 1e+8}
+\item{ylim}{Maximum y value (genomic distance)}
 }
 \value{
 Rainfall plot

@@ -1,18 +1,16 @@
 #' Plot cosine similarity heatmap
 #' 
 #' Plot pairwise cosine similarities in a heatmap.
-#'  
+#' 
+#' 
 #' @param cos_sim_matrix Matrix with pairwise cosine similarities.
 #'                       Result from \code{\link{cos_sim_matrix}}
-#' @param col_order (OptionaL) Character vector with the desired order of the columns names for plotting. 
-#' @param cluster_rows (Optional) Hierarchically cluster rows based on eucledian distance.\cr
-#' Default = TRUE
-#' @param method (Optional) The agglomeration method to be used for hierarchical clustering. This should be one of 
+#' @param col_order Character vector with the desired order of the columns names for plotting. Optional.
+#' @param cluster_rows Hierarchically cluster rows based on eucledian distance. Default = TRUE.
+#' @param method The agglomeration method to be used for hierarchical clustering. This should be one of 
 #' "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) 
-#' or "centroid" (= UPGMC).\cr
-#' Default = "complete"
-#' @param plot_values (Optional) Plot cosine similarity values in heatmap.\cr
-#' Default = FALSE
+#' or "centroid" (= UPGMC). Default = "complete".
+#' @param plot_values Plot cosine similarity values in heatmap. Default = FALSE.
 #'
 #' @return Heatmap with cosine similarities
 #'
@@ -65,17 +63,8 @@
 #' 
 #' @export
 
-plot_cosine_heatmap = function(cos_sim_matrix, 
-                               col_order, 
-                               cluster_rows = TRUE, 
-                               method = "complete", 
-                               plot_values = FALSE)
+plot_cosine_heatmap = function(cos_sim_matrix, col_order, cluster_rows = TRUE, method = "complete", plot_values = FALSE)
 {
-  if(class(cos_sim_matrix) == "list")
-  {
-    cos_sim_matrix = do.call(cbind, cos_sim_matrix)
-  }
-  
   # check explained argument
   if(class(cos_sim_matrix) != "matrix")
   {stop("cos_sim_matrix must be a matrix")}

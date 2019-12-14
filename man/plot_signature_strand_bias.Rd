@@ -4,24 +4,16 @@
 \alias{plot_signature_strand_bias}
 \title{Plot signature strand bias}
 \usage{
-plot_signature_strand_bias(signatures_strand_bias, type, colors)
+plot_signature_strand_bias(signatures_strand_bias)
 }
 \arguments{
-\item{signatures_strand_bias}{Named list of signatures matrices}
-
-\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
-'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
-Default is 'snv'}
-
-\item{colors}{(Optional) Named list with 6 value color vector "snv" for snv, 10 value color vector "dbs" for dbs.
-For indels give same number of colors as there are classes. \cr
-'native' contains 6 classes and 'cosmic' contains 16 classes}
+\item{signatures_strand_bias}{Signature matrix with 192 features}
 }
 \value{
 Barplot
 }
 \description{
-Plot strand bias per mutation type for SNV, DBS and indels.
+Plot strand bias per mutation type for each signature.
 }
 \examples{
 ## See the 'mut_matrix()' example for how we obtained the following

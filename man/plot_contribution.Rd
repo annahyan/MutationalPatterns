@@ -4,37 +4,24 @@
 \alias{plot_contribution}
 \title{Plot signature contribution barplot}
 \usage{
-plot_contribution(contribution, signatures, type, index = c(),
-  coord_flip = FALSE, mode = "relative", method = "split",
-  palette = c())
+plot_contribution(contribution, signatures, index = c(), coord_flip = FALSE,
+  mode = "relative", palette = c())
 }
 \arguments{
-\item{contribution}{List of signature contribution matrices}
+\item{contribution}{Signature contribution matrix}
 
-\item{signatures}{List of signature matrices}
+\item{signatures}{Signature matrix}
 
-\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
-'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
-Default is 'snv'}
+\item{index}{optional sample subset parameter}
 
-\item{index}{(Optional) Sample subset parameter}
+\item{coord_flip}{Flip X and Y coordinates, default = FALSE}
 
-\item{coord_flip}{(Optional) Flip X and Y coordinates, default = FALSE}
+\item{mode}{"relative" or "absolute"; to plot the relative contribution or
+absolute number of mutations, default = "relative"}
 
-\item{mode}{(Optional) Character stating to "relative" or "absolute" contribution of
-mutations. Also possible to plot "both".\cr 
-Default = "relative"}
-
-\item{method}{(Optional) Character stating how to use the data. 
-\itemize{
-  \item{"split":} { Each mutation type has seperate count matrix}
-  \item{"combine":} { Combined count matrix of all mutation types}
-}   
-Default is "split"}
-
-\item{palette}{(Optional) A list of color palette like c("#FF0000", "#00FF00", "9999CC")
-for each mutation type that will be used as colors in the plot.\cr
-By default, ggplot2's colors are used to generate a palette.}
+\item{palette}{A color palette like c("#FF0000", "#00FF00", "9999CC") that
+will be used as colors in the plot.  By default, ggplot2's colors are used
+to generate a palette.}
 }
 \value{
 Stacked barplot with contribution of each signature for each sample

@@ -2,35 +2,22 @@
 % Please edit documentation in R/extract_signatures.R
 \name{extract_signatures}
 \alias{extract_signatures}
-\title{Extract mutational signatures from mutation matrix using NMF}
+\title{Extract mutational signatures from 96 mutation matrix using NMF}
 \usage{
-extract_signatures(mut_matrix, type, rank, nrun = 200,
-  method = "split")
+extract_signatures(mut_matrix, rank, nrun = 200)
 }
 \arguments{
-\item{mut_matrix}{Named list with mutation matrix of single or double substitution and/or indels.
-Optional to give a matrix object as mutation count matrix. When two mutation types are given in 
-the same matrix, the data is treated as "combined" and combined signatures will be returned.}
-
-\item{type}{(Optional) A character vector stating which type of mutation is to be extracted: 
-'snv', 'dbs' and/or 'indel'. All mutation types can also be chosen by 'type = all'.\cr
-Default is 'snv'}
+\item{mut_matrix}{96 mutation count matrix}
 
 \item{rank}{Number of signatures to extract}
 
-\item{nrun}{(Optional) Number of iterations, default = 200}
-
-\item{method}{(Optional) Character stating how to use the data. method = "split" will give 
-results for each mutation type seperately, whereas method = "combine" will give 
-combined signatures.\cr
-Default is "split"}
+\item{nrun}{Number of iterations, default = 200}
 }
 \value{
-Named list of mutation matrix, signatures and signature contribution for
-each mutation type (method = "split") or all mutation types together (method = "combine")
+Named list of mutation matrix, signatures and signature contribution
 }
 \description{
-Decomposes count matrix of mutation type into signatures and contribution of
+Decomposes trinucleotide count matrix into signatures and contribution of
 those signatures to the spectra of the samples/vcf files.
 }
 \examples{
