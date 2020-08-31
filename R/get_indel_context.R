@@ -37,16 +37,29 @@ get_indel_context <- function(vcf_list, ref_genome) {
   # Check that the seqnames of the gr and ref_genome match
   .check_chroms(vcf_list, ref_genome)
 
-  # Turn grl into list if needed.
-  if (inherits(vcf_list, "CompressedGRangesList")) {
-    vcf_list <- as.list(vcf_list)
-  }
-
-  # Get indel context per sample
+  # Convert list to grl if necessary
   if (inherits(vcf_list, "list")) {
-    grl <- purrr::map(vcf_list, function(x) .get_indel_context_gr(x, ref_genome)) %>%
-      GenomicRanges::GRangesList()
+    vcf_list <- GenomicRanges::GRangesList(vcf_list)
+  }
+ 
+  if (inherits(vcf_list, "CompressedGRangesList")){
+    
+    # Unlist the GrangesList into a single GRanges object.
+    gr <- BiocGenerics::unlist(vcf_list, use.names = FALSE)
+    
+    # Link samples to mutations
+    nr_muts <- S4Vectors::elementNROWS(vcf_list)
+    gr$INTERNAL_SAMPLENAME <- rep(names(nr_muts), times = nr_muts)
+    
+    # Get mutation context
+    gr <- .get_indel_context_gr(gr, ref_genome)
+    
+    # Split the GRanges back into a list.
+    sample_indx <- gr$INTERNAL_SAMPLENAME
+    gr$INTERNAL_SAMPLENAME <- NULL
+    grl <- S4Vectors::split(gr, sample_indx)
     return(grl)
+  
   } else if (inherits(vcf_list, "GRanges")) {
     gr <- .get_indel_context_gr(vcf_list, ref_genome)
     return(gr)
