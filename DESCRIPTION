@@ -25,6 +25,8 @@ Authors@R: c(
     comment = c(ORCID = "0000-0002-8084-8444")),
     person("Roel", "Janssen", role = "aut",
     comment = c(ORCID = "0000-0003-4324-5350")),
+    person("Jurrian", "de Kanter", role = "ctb",
+    comment = c(ORCID = "0000-0001-5665-3711")),
     person("Rurika", "Oka", email = "R.Oka@prinsesmaximacentrum.nl", role = "cre",
     comment = c(ORCID = "0000-0003-4107-7250")),
     person("Ruben", "van Boxtel", role = c("aut", "cph"),

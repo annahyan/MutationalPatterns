@@ -7,7 +7,7 @@
 plot_bootstrapped_contribution(
   contri_boots,
   mode = c("absolute", "relative"),
-  plot_type = c("jitter", "boxplot")
+  plot_type = c("jitter", "boxplot", "dotplot")
 )
 }
 \arguments{
@@ -16,7 +16,7 @@ plot_bootstrapped_contribution(
 \item{mode}{Either "absolute" for absolute number of mutations, or
 "relative" for relative contribution, default = "absolute"}
 
-\item{plot_type}{Either "jitter" for a jitter plot or "boxplot" for a boxplot}
+\item{plot_type}{Either "jitter" for a jitter plot, "boxplot" for a boxplot, or "dotplot" for a dotplot}
 }
 \value{
 A ggplot2 graph
@@ -41,4 +41,7 @@ plot_bootstrapped_contribution(contri_boots, mode = "relative")
 
 ## Plot bootstrapped contribution with a boxplot
 plot_bootstrapped_contribution(contri_boots, plot_type = "boxplot")
+
+## Plot bootstrapped contribution with a dotplot
+plot_bootstrapped_contribution(contri_boots, plot_type = "dotplot", mode = "absolute")
 }

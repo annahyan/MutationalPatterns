@@ -15,6 +15,9 @@ author:
   affiliation:
     - Princess Maxima Center, Utrecht, The Netherlands
   email: R.Oka@prinsesmaximacentrum.nl
+- name: Jurrian de Kanter
+  affiliation:
+    - Princess Maxima Center, Utrecht, The Netherlands
 - name: Ruben van Boxtel
   affiliation:
     - Princess Maxima Center, Utrecht, The Netherlands
@@ -790,11 +793,13 @@ bootstrap iteration.
 plot_bootstrapped_contribution(contri_boots)
 ```
 
-You can also visualize this using a relative y-axis and a boxplot:
+You can also visualize this using the relative contribution and a dotplot.
+Here, the color of the dot shows the percentage of iterations in which the signature is found (contribution > 0),
+and the size of the dot represents the average contribution of that signature (in the iterations in which the contribution was higher than 0).
 ```{r plot_bootstrapped_refit_rel_boxtplot}
 plot_bootstrapped_contribution(contri_boots, 
                                mode = "relative", 
-                               plot_type = "boxplot")
+                               plot_type = "dotplot")
 ```
 
 We can see that SBS1 is relatively stable in the first sample. However, SBS5 is
