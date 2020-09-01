@@ -7,7 +7,7 @@
 #' @param contri_boots  matrix showing  signature contributions across bootstrap iterations.
 #' @param mode Either "absolute" for absolute number of mutations, or
 #' "relative" for relative contribution, default = "absolute"
-#' @param plot_type Either "jitter" for a jitter plot or "boxplot" for a boxplot
+#' @param plot_type Either "jitter" for a jitter plot, "boxplot" for a boxplot, or "dotplot" for a dotplot
 #'
 #' @return A ggplot2 graph
 #' @export
@@ -28,9 +28,12 @@
 #'
 #' ## Plot bootstrapped contribution with a boxplot
 #' plot_bootstrapped_contribution(contri_boots, plot_type = "boxplot")
+#' 
+#' ## Plot bootstrapped contribution with a dotplot
+#' plot_bootstrapped_contribution(contri_boots, plot_type = "dotplot", mode = "absolute")
 plot_bootstrapped_contribution <- function(contri_boots,
                                            mode = c("absolute", "relative"),
-                                           plot_type = c("jitter", "boxplot")) {
+                                           plot_type = c("jitter", "boxplot", "dotplot")) {
   mode <- match.arg(mode)
   plot_type <- match.arg(plot_type)
 
@@ -63,7 +66,8 @@ plot_bootstrapped_contribution <- function(contri_boots,
     # Create basis for jitter figure
     fig <- ggplot(contri_tb, aes(x = sig, y = contri, color = sig)) +
       geom_jitter(stat = "identity", height = jitter_height, size = 0.3) +
-      scale_color_discrete(guide = FALSE)
+      scale_color_discrete(guide = FALSE) +
+      facet_grid(sample ~ .)
   } else if (plot_type == "boxplot") {
     # Calculate values for boxplot
     contri_tb2 <- contri_tb %>%
@@ -78,12 +82,24 @@ plot_bootstrapped_contribution <- function(contri_boots,
     fig <- ggplot(contri_tb2, aes(x = sig, y = mean, fill = sig)) +
       geom_bar(stat = "identity") +
       geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.2) +
-      scale_fill_discrete(guide = FALSE)
+      scale_fill_discrete(guide = FALSE) +
+      facet_grid(sample ~ .)
+  } else if (plot_type == "dotplot") {
+    contri_tb3 <- contri_tb %>%
+      dplyr::group_by(sample, sig) %>%
+      dplyr::summarise(
+        mean =  mean(contri[contri != 0]),
+        percentage = sum(contri != 0)/dplyr::n()
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::filter(!is.na(mean))
+    fig = ggplot(contri_tb3, aes(x = sig, y = sample)) +
+      geom_point(aes(color = percentage, size = mean)) +
+      scale_color_distiller(palette = "RdYlBu")
   }
-
-  # Add faceting and extra labels to figure.
-  fig <- fig +
-    facet_grid(sample ~ .) +
+  
+  ## Add extra labels to figure for all types
+  fig = fig +
     labs(x = "Signature", y = ylab_text) +
     theme_classic() +
     theme(
@@ -91,6 +107,9 @@ plot_bootstrapped_contribution <- function(contri_boots,
       text = element_text(size = 12),
       strip.text.y = element_text(size = 8)
     )
-
+  if (plot_type == 'dotplot') {
+    fig = fig + 
+      theme(panel.grid.major = element_line(colour = "gray95"))
+  }
   return(fig)
 }
