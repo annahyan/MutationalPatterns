@@ -4,7 +4,7 @@
 \alias{fit_to_signatures_strict}
 \title{Fit mutational signatures to a mutation matrix with less overfitting}
 \usage{
-fit_to_signatures_strict(mut_matrix, signatures, max_delta = 0.05)
+fit_to_signatures_strict(mut_matrix, signatures, max_delta = 0.004)
 }
 \arguments{
 \item{mut_matrix}{mutation count matrix (dimensions: x mutation types
@@ -48,7 +48,7 @@ mut_mat <- readRDS(system.file("states/mut_mat_data.rds",
 signatures <- get_known_signatures()
 
 ## Fit to signatures strict
-strict_refit <- fit_to_signatures_strict(mut_mat, signatures, max_delta = 0.05)
+strict_refit <- fit_to_signatures_strict(mut_mat, signatures, max_delta = 0.004)
 
 ## fit_res similar to 'fit_to_signatures()'
 fit_res <- strict_refit$fit_res

@@ -43,14 +43,14 @@
 #' signatures <- get_known_signatures()
 #'
 #' ## Fit to signatures strict
-#' strict_refit <- fit_to_signatures_strict(mut_mat, signatures, max_delta = 0.05)
+#' strict_refit <- fit_to_signatures_strict(mut_mat, signatures, max_delta = 0.004)
 #'
 #' ## fit_res similar to 'fit_to_signatures()'
 #' fit_res <- strict_refit$fit_res
 #'
 #' ## list of ggplots that shows how the cosine similarity was reduced during the iterations
 #' fig_l <- strict_refit$sim_decay_fig
-fit_to_signatures_strict <- function(mut_matrix, signatures, max_delta = 0.05) {
+fit_to_signatures_strict <- function(mut_matrix, signatures, max_delta = 0.004) {
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
