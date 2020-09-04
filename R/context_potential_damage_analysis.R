@@ -92,7 +92,7 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
   }
 
   # Get substitution and contexts
-  substitution <- stringr::str_replace(contexts, "\\w\\[(.*)\\]\\w", "\\1")
+  substitution <- stringr::str_replace(contexts, "\\w.*\\[(.*)\\]\\w.*", "\\1")
   l_context <- stringr::str_remove(contexts, "\\[.*")
   r_context <- stringr::str_remove(contexts, ".*\\]")
   ori_bases <- stringr::str_replace(contexts, "\\[(.*)>.*\\]", "\\1")
