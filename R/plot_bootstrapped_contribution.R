@@ -88,18 +88,21 @@ plot_bootstrapped_contribution <- function(contri_boots,
     contri_tb3 <- contri_tb %>%
       dplyr::group_by(sample, sig) %>%
       dplyr::summarise(
-        mean =  mean(contri[contri != 0]),
+        mean = mean(contri[contri != 0]),
         percentage = sum(contri != 0)/dplyr::n()
       ) %>%
       dplyr::ungroup() %>%
-      dplyr::filter(!is.na(mean))
-    fig = ggplot(contri_tb3, aes(x = sig, y = sample)) +
+      dplyr::filter(!is.na(mean)) %>% 
+      dplyr::mutate(sample = factor(sample, levels = rev(levels(sample))))
+    fig <- ggplot(contri_tb3, aes(x = sig, y = sample)) +
       geom_point(aes(color = percentage, size = mean)) +
-      scale_color_distiller(palette = "RdYlBu")
+      scale_color_distiller(palette = "RdYlBu", limits = c(0, 1)) +
+      scale_size_continuous(range = c(1,15)) +
+      labs(size = "mean contribution", colour = "percentage contribution")
   }
   
   ## Add extra labels to figure for all types
-  fig = fig +
+  fig <- fig +
     labs(x = "Signature", y = ylab_text) +
     theme_classic() +
     theme(
@@ -108,7 +111,7 @@ plot_bootstrapped_contribution <- function(contri_boots,
       strip.text.y = element_text(size = 8)
     )
   if (plot_type == 'dotplot') {
-    fig = fig + 
+    fig <- fig + 
       theme(panel.grid.major = element_line(colour = "gray95"))
   }
   return(fig)
