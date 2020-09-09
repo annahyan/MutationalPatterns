@@ -47,7 +47,7 @@
 #' ## It's also possible to create a contribution heatmap with text values
 #' output_text <- plot_contribution_heatmap(nmf_res$contribution, plot_values = TRUE)
 #'
-#' ## IThis function can also be used on the result of a signature refitting analysis.
+#' ## This function can also be used on the result of a signature refitting analysis.
 #' ## Here we load a existing result as an example.
 #' snv_refit <- readRDS(system.file("states/strict_snv_refit.rds",
 #'   package = "MutationalPatterns"
