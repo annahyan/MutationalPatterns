@@ -39,7 +39,7 @@ plot_bootstrapped_contribution <- function(contri_boots,
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
-  sig <- contri <- lower <- upper <- NULL
+  sig <- contri <- lower <- upper <- percentage <- NULL
 
   # Change variables based on relative or absolute mode.
   if (mode == "relative") {
