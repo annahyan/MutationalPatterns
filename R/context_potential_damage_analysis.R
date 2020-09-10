@@ -114,7 +114,9 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
       l_context = l_context[[1]],
       r_context = r_context[[1]],
       .groups = "drop_last"
-    )
+    ) %>% 
+    dplyr::mutate(mut_pos = stringr::str_length(l_context) + 1,
+                  rev_mut_pos = stringr::str_length(r_context) + 1)
 
 
   # Perform damage analysis per context.
@@ -210,9 +212,15 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
   alt_bases <- contexts_tb$alt_bases[[1]]
   l_context <- contexts_tb$l_context
   r_context <- contexts_tb$r_context
-
+  mut_pos <- contexts_tb$mut_pos
+  rev_mut_pos <- contexts_tb$rev_mut_pos
+  
   # Count muttypes for forward context
-  muttype_counts <- .single_context_damage_analysis_strand(ori_bases, ref_base, alt_bases, seqs) %>%
+  muttype_counts <- .single_context_damage_analysis_strand(ori_bases, 
+                                                           ref_base, 
+                                                           alt_bases, 
+                                                           seqs, 
+                                                           mut_pos) %>%
     dplyr::mutate(context = paste0(l_context, "[", ref_base, ">", alt_base, "]", r_context)) %>%
     dplyr::select(type, context, n)
 
@@ -231,7 +239,11 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
     as.character()
 
   # Count muttypes for reverse context
-  muttype_counts_rev <- .single_context_damage_analysis_strand(rev_ori_bases, rev_ref_base, rev_alt_bases, seqs)
+  muttype_counts_rev <- .single_context_damage_analysis_strand(rev_ori_bases, 
+                                                               rev_ref_base, 
+                                                               rev_alt_bases, 
+                                                               seqs,
+                                                               rev_mut_pos)
 
   # Combine forward and reverse context
   muttype_counts$n <- muttype_counts$n + muttype_counts_rev$n
@@ -260,7 +272,7 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
 #' for one mutation context on one strand.
 #' @noRd
 #'
-.single_context_damage_analysis_strand <- function(ori_bases, ref_base, alt_bases, seqs) {
+.single_context_damage_analysis_strand <- function(ori_bases, ref_base, alt_bases, seqs, mut_pos) {
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
@@ -268,7 +280,7 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
 
   # Determine reference codons and mutation location
   ori_bases_biostring <- Biostrings::DNAString(ori_bases)
-  ref_mut_loc_l <- purrr::map(as.list(seqs), .get_ref_codons, ori_bases_biostring)
+  ref_mut_loc_l <- purrr::map(as.list(seqs), .get_ref_codons, ori_bases_biostring, mut_pos)
 
   # Get ref codons from list
   ref_codons_l <- purrr::map(ref_mut_loc_l, "ref_codons")
@@ -305,13 +317,13 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
 #' the position of the possible mutation in the codon.
 #' @noRd
 #'
-.get_ref_codons <- function(seq, ori_bases) {
+.get_ref_codons <- function(seq, ori_bases, mut_pos) {
 
   # Determine locations of context in dna
   locs <- Biostrings::matchPattern(ori_bases, seq)
 
   # Determine locations of mut in dna
-  locs_mutbase <- end(locs) - (end(locs) - start(locs)) / 2
+  locs_mutbase <- start(locs) + mut_pos - 1
 
   # Get the reference codons
   exon_codons <- Biostrings::codons(seq)
