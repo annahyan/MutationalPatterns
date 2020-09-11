@@ -46,11 +46,16 @@ alternative amino acids, the number of 'stop_gains', 'mismatches' and
 'synonymous mutations' is determined. This is then normalized per
 mutation context.
 For example, mutations with the ACA context could be located in the third
-position of a codon like TAC. This might happen 200 times in the supplied genes.
-This TAC codon could then be mutated in either a TAA, TAG or a TAT. The first two
-of these options would induce a stop codon, while the third one would be synonymous.
-By summing up all codons the number of stop_gains', 'mismatches' and
-'synonymous mutations' is determined per mutation context.
+position of a codon like TAC. This might happen 200 times in the supplied
+genes. This TAC codon could then be mutated in either a TAA, TAG or a TAT.
+The first two of these options would induce a stop codon, while the third one
+would be synonymous. By summing up all codons the number of stop_gains',
+'mismatches' and 'synonymous mutations' is determined per mutation context.
+For mismatches the blosum62 score is also calculated. This is a score based
+on the BLOSUM62 matrix, that describes how similar two amino acids are. This
+score is normalized over the total amount of possible mismatches. A lower
+score means that the amino acids in the mismatches are more dissimilar. More
+dissimilar amino acids are more likely to have a detrimental effect.
 }
 \examples{
 

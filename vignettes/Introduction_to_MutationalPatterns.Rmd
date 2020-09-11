@@ -856,9 +856,10 @@ plot_cosine_heatmap(cos_sim_samples, cluster_rows = TRUE, cluster_cols = TRUE)
 
 ## Signature potential damage analysis
 
-Some signatures are more likely than others to have functional effects, by causing "stop gain" or "mismatch" mutations.
-With MutationalPatterns it's possible to analyze how likely it is for a signature to either cause "stop gain", "mismatch"
-or "synonymous" mutations for a set of genes of interest.
+Some signatures are more likely than others to have functional effects, by
+causing "stop gain" or "mismatch" mutations. With MutationalPatterns it's
+possible to analyze how likely it is for a signature to either cause "stop
+gain", "mismatch" or "synonymous" mutations for a set of genes of interest.
 
 First you need to load a transcription annotation database.
 ```{r get_transcription_annotation_ojbect}
@@ -879,7 +880,9 @@ gene_ids <- c(7157, 3845, 4893, 673, 675, 1029, 8289, 5728, 7015)
 
 Now the ratio of "stop gain", "mismatch" and "synonymous" mutations can be
 determined per genomic context. The total number of possible mutations per
-context is also given.
+context is also given. Finally, a blosum62 score is given for the mismatches. A
+lower score means that the amino acids in the mismatches are more dissimilar.
+More dissimilar amino acids are more likely to have a detrimental effect.
 ```{r context_potential_damage_analysis}
 contexts <- rownames(mut_mat)
 context_mismatches <- context_potential_damage_analysis(contexts, txdb, ref_genome, gene_ids)

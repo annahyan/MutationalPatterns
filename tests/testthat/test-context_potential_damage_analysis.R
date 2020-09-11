@@ -33,8 +33,8 @@ test_that("Output has correct class", {
 })
 
 test_that("Output has correct size", {
-  expect_equal(dim(output), c(288, 4))
-  expect_equal(dim(output_verbose), c(288, 4))
+  expect_equal(dim(output), c(288, 5))
+  expect_equal(dim(output_verbose), c(288, 5))
 })
 
 # Expected
