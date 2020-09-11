@@ -29,7 +29,7 @@ surveyed_file <- system.file("extdata/callableloci-sample.bed",
 )
 
 library(rtracklayer)
-surveyed <- import(surveyed_file)
+surveyed <- rtracklayer::import(surveyed_file)
 seqlevelsStyle(surveyed) <- "UCSC"
 
 # Use the same callable loci for all samples.
