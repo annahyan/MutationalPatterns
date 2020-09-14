@@ -197,7 +197,7 @@ read_vcfs_as_granges <- function(vcf_files,
   GenomeInfoDb::genome(gr) <- genome_name
 
   # Filter for variants with the correct seqlevels
-  if (group != "all") {
+  if (group != "none") {
     tryCatch(
       error = function(cnd) {
         message(conditionMessage(cnd))
