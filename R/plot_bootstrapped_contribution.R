@@ -61,6 +61,9 @@ plot_bootstrapped_contribution <- function(contri_boots,
       sample = factor(sample, levels = unique(sample)),
       sig = factor(sig, levels = unique(sig))
     )
+  
+  # Determine number of signatures
+  nr_sigs <- length(unique(contri_tb$sig))
 
   if (plot_type == "jitter") {
     # Create basis for jitter figure
@@ -94,10 +97,19 @@ plot_bootstrapped_contribution <- function(contri_boots,
       dplyr::ungroup() %>%
       dplyr::filter(!is.na(mean)) %>% 
       dplyr::mutate(sample = factor(sample, levels = rev(levels(sample))))
+    
+    max_dot_size <- dplyr::case_when(
+      nr_sigs >= 40 ~ 5,
+      nr_sigs >= 30 ~ 7,
+      nr_sigs >= 20 ~ 8,
+      nr_sigs >= 10 ~ 10,
+      TRUE ~ 15
+    )
+    
     fig <- ggplot(contri_tb3, aes(x = sig, y = sample)) +
       geom_point(aes(color = percentage, size = mean)) +
       scale_color_distiller(palette = "RdYlBu", limits = c(0, 1)) +
-      scale_size_continuous(range = c(1,15)) +
+      scale_size_continuous(range = c(1,max_dot_size)) +
       labs(size = "mean contribution", colour = "percentage contribution")
   }
   
@@ -112,7 +124,7 @@ plot_bootstrapped_contribution <- function(contri_boots,
     )
   if (plot_type == 'dotplot') {
     fig <- fig + 
-      theme(panel.grid.major = element_line(colour = "gray95"))
+      theme(panel.grid.major = element_line(colour = "gray92"))
   }
   return(fig)
 }
