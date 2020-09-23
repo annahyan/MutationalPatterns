@@ -38,7 +38,7 @@ A tibble containing the amount of lesions segregation per sample
 }
 \description{
 This function calculates lesion segregation for a GRangesList or GRanges object.
-Lesion segregation is a large scale Watson versus Crick strand assymetry caused by
+Lesion segregation is a large scale Watson versus Crick strand asymmetry caused by
 many DNA lesions occurring during a single cell cycle.
 It was first described in Aitken et al., 2020, Nature.
 See their paper for a more in-depth discussion of this phenomenon.
