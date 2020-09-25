@@ -35,17 +35,17 @@ mutational context could be. N gives the total number of possible mutations
 per context.
 }
 \details{
-The function works by first selecting the longest transcript per gene.
-The coding sequence (cds) of this transcript is then assembled. Next, the function
-loops over the reference contexts. For each context (and it's reverse complement),
-all possible mutation locations are determined.
-It's also determined whether these locations are the first, second
-or third base of the cds codon (mut loc). Each unique combination of codon and
-mut loc is then counted. For each combination the reference amino acid and the
-possible alternative amino acids are determined. By comparing the reference and
-alternative amino acids, the number of 'stop_gains', 'mismatches' and
-'synonymous mutations' is determined. This is then normalized per
-mutation context.
+The function works by first selecting the longest transcript per gene. The
+coding sequence (cds) of this transcript is then assembled. Next, the
+function loops over the reference contexts. For each context (and it's
+reverse complement), all possible mutation locations are determined. Splice
+site mutations are removed at this stage. It's also determined whether these
+locations are the first, second or third base of the cds codon (mut loc).
+Each unique combination of codon and mut loc is then counted. For each
+combination the reference amino acid and the possible alternative amino acids
+are determined. By comparing the reference and alternative amino acids, the
+number of 'stop_gains', 'mismatches' and 'synonymous mutations' is
+determined. This is then normalized per mutation context.
 For example, mutations with the ACA context could be located in the third
 position of a codon like TAC. This might happen 200 times in the supplied
 genes. This TAC codon could then be mutated in either a TAA, TAG or a TAT.
@@ -59,15 +59,9 @@ score is normalized over the total amount of possible mismatches. A lower
 score means that the amino acids in the mismatches are more dissimilar. More
 dissimilar amino acids are more likely to have a detrimental effect. 
 
-To identify splice sites sequences around the splice locations are used
+To identify splice sites, sequences around the splice locations are used
 instead of the cds. The 2 bases 5' and 2 bases 3' of a splice site are
-considered to be splice site mutation locations. However, mutations located
-here can also still be coding mutations and might therefore be counted twice.
-For example, a mutation might be both synonymous and a splice site mutations.
-Additionally, because the other contexts are searched for within the cds,
-some incorrect 'synonymous', 'mismatch' or 'stop gain' hits can be found near
-the splice sites. However, because this only influences a small part of the
-exons, the impact on the final results will be insignificant.
+considered to be splice site mutation locations.
 }
 \examples{
 
