@@ -110,7 +110,9 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
   ref_genome <- BSgenome::getBSgenome(ref_genome)
   
   # Get DNA of exons. This is strand specific, so I don't need to worry about this.
-  seqs <- .get_cds_sequences(txdb, ref_genome, gene_ids)
+  cds_tx <- .get_cds_ranges(txdb, gene_ids)
+  seqs <- .get_cds_sequences(cds_tx, ref_genome)
+  
 
   if (verbose) {
     message("Finished getting the coding sequences.")
@@ -158,7 +160,7 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
     dplyr::mutate(context = factor(context, levels = unique(context)))
 
   # Perform damage analysis for splice sites
-  splice_muts_tb <- .potential_splice_site_damage(contexts_tb, txdb, ref_genome, gene_ids)
+  splice_muts_tb <- .potential_splice_site_damage(contexts_tb, cds_tx, ref_genome)
 
   #Combine mismatches tibble with splice site tibble
   mismatches <- rbind(mismatches, splice_muts_tb) %>%
@@ -176,18 +178,14 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
 #'
 #' Per gene the longest transcript is used.
 #'
-#' @param txdb Transcription annotation database
+#' @param cds_tx GRangesList object containing the cds ranges of genes
 #' @param ref_genome BSGenome reference genome object
-#' @param gene_ids Entrez gene ids
 #'
 #' @return DNAStringSet containing the cds sequences
 #' @noRd
 #'
-.get_cds_sequences <- function(txdb, ref_genome, gene_ids) {
+.get_cds_sequences <- function(cds_tx, ref_genome) {
   
-  # Get cds GRanges
-  cds_tx <- .get_cds_ranges(txdb, gene_ids)
-
   # Get sequences (per cds per transcript.)
   seqs <- Biostrings::getSeq(ref_genome, cds_tx)
 
@@ -488,14 +486,13 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
 #' Determine potential splice site damage
 #' 
 #' @param contexts_tb A tibble containing the mutational contexts
-#' @param txdb Transcription annotation database
+#' @param cds_tx GRangesList object containing the cds ranges of genes
 #' @param ref_genome BSGenome reference genome object
-#' @param gene_ids Entrez gene ids
 #'
 #' @return tibble containing splice site damage
 #' @noRd
 #'
-.potential_splice_site_damage = function(contexts_tb, txdb, ref_genome, gene_ids){
+.potential_splice_site_damage = function(contexts_tb, cds_tx, ref_genome){
   
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
@@ -505,7 +502,7 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
   # Get splice site sequences
   context_l <- max(c(stringr::str_length(contexts_tb$l_context), 
                      stringr::str_length(contexts_tb$r_context)))
-  splice_seqs <- .get_splice_site_sequences(txdb, ref_genome, gene_ids, context_l)
+  splice_seqs <- .get_splice_site_sequences(cds_tx, ref_genome, context_l)
   
   
   # Determine nr matched splices per context
@@ -577,22 +574,17 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
 #' the context is taken. This way potential mutations in 
 #' the 4 bases can be found.
 #'
-#' @param txdb Transcription annotation database
+#' @param cds_tx GRangesList object containing the cds ranges of genes
 #' @param ref_genome BSGenome reference genome object
-#' @param gene_ids Entrez gene ids
 #' @param context_l Mutation context length
 #'
 #' @return DNAStringSet containing the splice site sequences
 #' @noRd
 #'
-.get_splice_site_sequences = function(txdb, ref_genome, gene_ids, context_l) {
+.get_splice_site_sequences = function(cds_tx, ref_genome, context_l) {
   
   # Get cds GRanges
-  cds_tx <- .get_cds_ranges(txdb, gene_ids)
-  splice_grl <- purrr::map(as.list(cds_tx), 
-                           .get_splice_site_ranges,
-                           context_l) %>% 
-    GenomicRanges::GRangesList()
+ splice_grl = .get_splice_site_ranges(cds_tx, context_l)
   
   # Get sequences (per cds per transcript.)
   seqs <- Biostrings::getSeq(ref_genome, splice_grl) %>% 
@@ -601,15 +593,33 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
   return(seqs)
 }
 
-#' Get splice site ranges for supplied genes
+
+
+#' Get splice site ranges for supplied genes.
 #'
-#' @param cds_gr GRangesList containing the cds ranges of genes
+#' @param cds_tx GRangesList object containing the cds ranges of genes
 #' @param context_l Mutation context length
 #'
 #' @return GRangesList containing the splice site ranges of genes
 #' @noRd
 #'
-.get_splice_site_ranges = function(cds_gr, context_l){
+.get_splice_site_ranges = function(cds_tx, context_l){
+  splice_grl <- purrr::map(as.list(cds_tx), 
+                           .get_splice_site_ranges_gr,
+                           context_l) %>% 
+    GenomicRanges::GRangesList()
+  return(splice_grl)
+}
+
+#' Get splice site ranges for one gene.
+#'
+#' @param cds_gr GRanges containing the cds ranges of one gene
+#' @param context_l Mutation context length
+#'
+#' @return GRanges containing the splice site ranges of one gene
+#' @noRd
+#'
+.get_splice_site_ranges_gr = function(cds_gr, context_l){
   
   # Create separate GRanges for start and end of splice sites.
   start_splice <- end_splice <- cds_gr
