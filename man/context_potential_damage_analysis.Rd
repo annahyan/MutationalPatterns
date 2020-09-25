@@ -24,14 +24,15 @@ context_potential_damage_analysis(
 \item{verbose}{Boolean. Determines whether progress is printed. (Default: FALSE)}
 }
 \value{
-A tibble with the ratio of 'stop gain', 'mismatch' and 'synonymous' mutations
-per mutation context.
+A tibble with the ratio of 'stop gain', 'mismatch', 'synonymous' and 
+'splice site' mutations per mutation context.
 }
 \description{
-The ratio of possible 'stop gain', 'mismatches' and 'synonymous mutations' is
-counted per mutational context. This is done for the supplied ENTREZ gene ids.
-This way it can be determined how damaging a mutational context could be.
-N gives the total number of possible mutations per context.
+The ratio of possible 'stop gain', 'mismatches', 'synonymous mutations' and
+'splice site mutations' is counted per mutational context. This is done for
+the supplied ENTREZ gene ids. This way it can be determined how damaging a
+mutational context could be. N gives the total number of possible mutations
+per context.
 }
 \details{
 The function works by first selecting the longest transcript per gene.
@@ -51,11 +52,22 @@ genes. This TAC codon could then be mutated in either a TAA, TAG or a TAT.
 The first two of these options would induce a stop codon, while the third one
 would be synonymous. By summing up all codons the number of stop_gains',
 'mismatches' and 'synonymous mutations' is determined per mutation context.
+
 For mismatches the blosum62 score is also calculated. This is a score based
 on the BLOSUM62 matrix, that describes how similar two amino acids are. This
 score is normalized over the total amount of possible mismatches. A lower
 score means that the amino acids in the mismatches are more dissimilar. More
-dissimilar amino acids are more likely to have a detrimental effect.
+dissimilar amino acids are more likely to have a detrimental effect. 
+
+To identify splice sites sequences around the splice locations are used
+instead of the cds. The 2 bases 5' and 2 bases 3' of a splice site are
+considered to be splice site mutation locations. However, mutations located
+here can also still be coding mutations and might therefore be counted twice.
+For example, a mutation might be both synonymous and a splice site mutations.
+Additionally, because the other contexts are searched for within the cds,
+some incorrect 'synonymous', 'mismatch' or 'stop gain' hits can be found near
+the splice sites. However, because this only influences a small part of the
+exons, the impact on the final results will be insignificant.
 }
 \examples{
 
@@ -92,4 +104,5 @@ context_potential_damage_analysis(contexts, txdb, ref_genome, gene_ids)
 ## This can be usefull when it's running slowly,
 ## which can happen when you are using many gene_ids.
 context_potential_damage_analysis(contexts, txdb, ref_genome, gene_ids, verbose = TRUE)
+
 }

@@ -11,34 +11,42 @@ signature_potential_damage_analysis(signatures, contexts, context_mismatches)
 
 \item{contexts}{Vector of mutational contexts to use for the analysis.}
 
-\item{context_mismatches}{A tibble with the ratio of 'stop gain', 'mismatch' and 'synonymous' mutations
-per mutation context.}
+\item{context_mismatches}{A tibble with the ratio of 'stop gain', 'mismatch', 
+'synonymous' and 'splice site' mutations per mutation context.}
 }
 \value{
-A tibble with the ratio of 'stop gain', 'mismatch' and 'synonymous' mutations
-per signature.
+A tibble with the ratio of 'stop gain', 'mismatch', 'synonymous' 
+and 'splice site' mutations per signature.
 }
 \description{
-The ratio of possible 'stop gain', 'mismatches' and 'synonymous mutations' is
-counted per signature. Normalized ratios are also given. These were
-calculated by dividing the ratios in each signature, by the ratios of a
-completely "flat" signature. A normalized ratio of 2 for "stop gain"
-mutations, means that a signature is twice as likely to cause "stop gain"
-mutations, compared to a completely random "flat" signature. N is the number
-of possible mutations per context, multiplied by the signature contribution
-per context, summed over all contexts. For mismatches the blosum62 score is
-also calculated. A lower score means that the amino acids in the mismatches
-are more dissimilar. More dissimilar amino acids are more likely to have a
-detrimental effect. Normalized blosum62 scores are also given. These are
-calculated by substracting the score of a completely "flat" signature from
-the base blosum62 scores.
+The ratio of possible 'stop gain', 'mismatches', 'synonymous mutations' and
+'splice site mutations' is counted per signature. Normalized ratios are also
+given. These were calculated by dividing the ratios in each signature, by the
+ratios of a completely "flat" signature. A normalized ratio of 2 for "stop
+gain" mutations, means that a signature is twice as likely to cause "stop
+gain" mutations, compared to a completely random "flat" signature. N is the
+number of possible mutations per context, multiplied by the signature
+contribution per context, summed over all contexts. For mismatches the
+blosum62 score is also calculated. A lower score means that the amino acids
+in the mismatches are more dissimilar. More dissimilar amino acids are more
+likely to have a detrimental effect. Normalized blosum62 scores are also
+given. These are calculated by substracting the score of a completely "flat"
+signature from the base blosum62 scores.
 }
 \details{
-The function uses a tibble with the ratio of 'stop gain', 'mismatch' and
-'synonymous' mutations per mutation context as its input. For each signature
-these ratios are linearly combined based on the signature weights. They are
-then divided by a "flat" signature to get the normalized ratios. The blosum62
-scores are also linearly combined based on the signature weights.
+The function uses a tibble with the ratio of 'stop gain', 'mismatch',
+'synonymous' and 'splice site' mutations per mutation context as its input.
+For each signature these ratios are linearly combined based on the signature
+weights. They are then divided by a "flat" signature to get the normalized
+ratios. The blosum62 scores are also linearly combined based on the signature
+weights.
+
+Please take into account that this is a relatively basic analysis, that only
+looks at mutational contexts. It does not take into account that signatures
+can be influenced by open/closed chromatin, strand biases, hairpins or other
+epigenetic features. This analysis is meant to give an indication, not a
+definitive answer, of how damaging a signature might be. Further analyses
+might be required, especially when using signatures in a clinical context.
 }
 \examples{
 

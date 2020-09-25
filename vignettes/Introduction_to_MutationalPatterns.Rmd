@@ -513,6 +513,7 @@ dataset you could try higher ranks. The highest value in the plot is the
 mathematically optimal number of signatures. (A note of warning: The
 mathematically optimal number doesn't necessarily make biological sense.)
 ```{r use_bayesnmf, message=FALSE}
+# BiocManager::install("ccfindR")
 library("ccfindR")
 sc <- scNMFSet(count = mut_mat)
 set.seed(4)
@@ -859,12 +860,19 @@ plot_cosine_heatmap(cos_sim_samples, cluster_rows = TRUE, cluster_cols = TRUE)
 Some signatures are more likely than others to have functional effects, by
 causing "stop gain" or "mismatch" mutations. With MutationalPatterns it's
 possible to analyze how likely it is for a signature to either cause "stop
-gain", "mismatch" or "synonymous" mutations for a set of genes of interest.
+gain", "mismatch", "synonymous" or "splice site" mutations for a set of genes of
+interest. Please take into account that this is a relatively basic analysis,
+that only looks at mutational contexts. Other features like open/closed
+chromatin are not taken into account. This analysis is meant to give an
+indication, not a definitive answer, of how damaging a signature might be.
 
-First you need to load a transcription annotation database.
+First you need to load a transcription annotation database and make sure some
+dependencies are installed.
 ```{r get_transcription_annotation_ojbect}
 # For example get known genes table from UCSC for hg19 using
 # BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene")
+# BiocManager::install("AnnotationDbi")
+# BiocManager::install("GenomicFeatures")
 library("TxDb.Hsapiens.UCSC.hg19.knownGene")
 txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
 ```
@@ -878,7 +886,7 @@ A useful list of cancer genes can be found here: https://cancer.sanger.ac.uk/cos
 gene_ids <- c(7157, 3845, 4893, 673, 675, 1029, 8289, 5728, 7015)
 ```
 
-Now the ratio of "stop gain", "mismatch" and "synonymous" mutations can be
+Now the ratio of "stop gain", "mismatch", "synonymous" and "splice site" mutations can be
 determined per genomic context. The total number of possible mutations per
 context is also given. Finally, a blosum62 score is given for the mismatches. A
 lower score means that the amino acids in the mismatches are more dissimilar.
