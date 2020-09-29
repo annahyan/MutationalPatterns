@@ -1411,13 +1411,13 @@ mut_mat_long <- lengthen_mut_matrix(mut_mat_region)
 mut_mat_long[1:5, 1:5]
 ```
 
-You can now plot this using `plot_long_profile`. The arguments of
+You can now plot this using `plot_profile_region`. The arguments of
 `plot_96_profile` can also be used with this function. The options for the
 y-axis are the same as for `plot_spectrum_region`. However, by default no
 normalization is performed for the number of variants per genomic region,
 because of the often limited number of mutations per mutation type.
-```{r plot_long_profile, fig.wide=TRUE}
-plot_long_profile(mut_mat_long[, c(1, 4, 7)])
+```{r plot_profile_region, fig.wide=TRUE}
+plot_profile_region(mut_mat_long[, c(1, 4, 7)])
 ```
 
 NB: Since the "mut_mat_long" is a mutation matrix, you could perform NMF on it.

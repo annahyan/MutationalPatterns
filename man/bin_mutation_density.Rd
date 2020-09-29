@@ -53,7 +53,7 @@ dens_grl_man <- bin_mutation_density(grl, ref_genome, man_dens_cutoffs = c(0, 2e
 \seealso{
 Other genomic_regions: 
 \code{\link{lengthen_mut_matrix}()},
-\code{\link{plot_long_profile}()},
+\code{\link{plot_profile_region}()},
 \code{\link{plot_spectrum_region}()},
 \code{\link{split_muts_region}()}
 }

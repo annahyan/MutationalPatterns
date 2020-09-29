@@ -1,4 +1,4 @@
-context("test-plot_long_profile")
+context("test-plot_profile_region")
 
 # Read the long mutation matrix information:
 input <- readRDS(system.file("states/mut_mat_longregions.rds",
@@ -6,10 +6,10 @@ input <- readRDS(system.file("states/mut_mat_longregions.rds",
 ))
 
 ## Plot the 96-profile of three samples
-output <- plot_long_profile(input)
-output_relative_sample_feature <- plot_long_profile(input, mode = "relative_sample_feature")
-output_absolute <- plot_long_profile(input, mode = "absolute")
-output_condensed <- plot_long_profile(input, condensed = TRUE)
+output <- plot_profile_region(input)
+output_relative_sample_feature <- plot_profile_region(input, mode = "relative_sample_feature")
+output_absolute <- plot_profile_region(input, mode = "absolute")
+output_condensed <- plot_profile_region(input, condensed = TRUE)
 
 test_that("Output has correct class", {
   expect_true(inherits(output, c("gg")))

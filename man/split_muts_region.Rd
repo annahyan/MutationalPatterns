@@ -60,7 +60,7 @@ split_muts_region(grl, regions, include_other = FALSE)
 Other genomic_regions: 
 \code{\link{bin_mutation_density}()},
 \code{\link{lengthen_mut_matrix}()},
-\code{\link{plot_long_profile}()},
+\code{\link{plot_profile_region}()},
 \code{\link{plot_spectrum_region}()}
 }
 \concept{genomic_regions}

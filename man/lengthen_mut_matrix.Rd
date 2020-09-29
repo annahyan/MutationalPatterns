@@ -21,7 +21,7 @@ the feature 'C[C>T]G Promoter'. The number of rows in the matrix will thus be
 multiplied by the number of regions.
 After using 'split_muts_region()', use 'mut_matrix()' to get a mut_matrix that can be used
 for this function.
-The result can be plotted with plot_long_profile, but could also be used for NMF, refitting ect.
+The result can be plotted with plot_profile_region, but could also be used for NMF, refitting ect.
 }
 \examples{
 
@@ -48,7 +48,7 @@ lengthen_mut_matrix(indel_counts_split)
 \seealso{
 Other genomic_regions: 
 \code{\link{bin_mutation_density}()},
-\code{\link{plot_long_profile}()},
+\code{\link{plot_profile_region}()},
 \code{\link{plot_spectrum_region}()},
 \code{\link{split_muts_region}()}
 }

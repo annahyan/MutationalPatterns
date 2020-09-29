@@ -8,7 +8,7 @@
 #' multiplied by the number of regions.
 #' After using 'split_muts_region()', use 'mut_matrix()' to get a mut_matrix that can be used
 #' for this function.
-#' The result can be plotted with plot_long_profile, but could also be used for NMF, refitting ect.
+#' The result can be plotted with plot_profile_region, but could also be used for NMF, refitting ect.
 #' @param mut_matrix Mutation matrix
 #' @return mut_matrix
 #'

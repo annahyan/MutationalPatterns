@@ -27,14 +27,14 @@
 #' ))
 #'
 #' ## Plot the 96-profile of three samples
-#' plot_long_profile(mut_mat_long[, c(1, 4, 7)])
+#' plot_profile_region(mut_mat_long[, c(1, 4, 7)])
 #' @seealso
 #' \code{\link{mut_matrix}}
 #' @family genomic_regions
 #'
 #' @export
 #'
-plot_long_profile <- function(mut_matrix, mode = c("relative_sample", "relative_sample_feature", "absolute"), colors = NULL, ymax = 0.2, condensed = FALSE) {
+plot_profile_region <- function(mut_matrix, mode = c("relative_sample", "relative_sample_feature", "absolute"), colors = NULL, ymax = 0.2, condensed = FALSE) {
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
