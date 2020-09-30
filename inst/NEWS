@@ -37,7 +37,7 @@ Changes:
   Lesion segregation can also be visualized with the plot_lesion_segregation function.
   + mut_matrix and mut_matrix_stranded are now vectorized, which improves
   their runtime.
-  + The potential damage that a signature can do can be determined by looking at the number of 
+  + The potential damage that a signature can do, can be determined by looking at the number of 
   "stop gain", "mismatch", "synonymous" or "splice site" mutations it could cause in a user 
   supplied set of genes. This is first done per mutational context with the 
   context_potential_damage_analysis function. Its output can then be used with the 
@@ -45,7 +45,7 @@ Changes:
   + The COSMIC signatures have been updated to version 3.1 (Alexandrov, L.B. et al., 2020, Nature).
   Additionally, we added the SIGNAL and Sparse signatures 
   (Andrea Degasperi et al., 2020, Nature Cancer; Daniele Ramazzotti et al., 2019, Bioarchive).
-  Signatures can now be easily retreived with the get_known_signatures function.
+  Signatures can now be easily retrieved with the get_known_signatures function.
   + The plot_spectrum function can now plot individual samples as points.
   + The plot_spectrum function can now use a 95% confidence interval (default), 
   standard deviation or standard error of the mean for its error bars. Previously,
@@ -80,8 +80,10 @@ Changes:
   reference genome. Clear error messages are generated when this is not the case.
   + The plot_contribution function no longer requires a signature matrix as input,
   when working on signature refitting data.
-  + Instead of supplying the name of a BSgenome object, as an argument to functions
+  + Instead of supplying the name of a BSgenome object as an argument to functions
   that require it, users can now also directly use the object itself.
+  + A new vignette has been made for the new version of the package.
+  + Some functions have been rewritten for clarity.
   
 * bugfixes
   + A bug in the mut_strand function caused incorrect results for replication strand bias 
@@ -89,7 +91,7 @@ Changes:
   + The binomial_test function is now properly two-sided.
   + The plot_rainfall function now sorts its input. This prevents incorrect results
   on unsorted input.
-  + The mutations_from_vcf didn't work on empty GRanges objects. This is now fixed.
+  + The mutations_from_vcf function didn't work on empty GRanges objects. This is now fixed.
   + Removed messages about using certain variables as a "grouping variable".
   + Removed warnings about using alpha as a variable.
   + The read_vcfs_as_granges function no longer throws an error, when trying to read
@@ -97,14 +99,18 @@ Changes:
   + The alignment of angled x-axes on plots has been fixed. This issue was most notable
   for the heatmaps.
   + The read_vcfs_as_granges function no longer supplies a genome name to the internally
-  used readVcf function. This fixed an issue caused by updated to the seqnames dependency.
-  + When the seqlevelStyle can’t be changed by read_vcfs_as_granges or when the 
-  filtering of seqlevel groups doesn’t work, this is said in a clear error message. 
-  It’s now possible to not change the seqlevelstyle to circumvent these errors.
+  used readVcf function. This fixed an issue caused by updates to the seqnames dependency.
+  + A clear error message is thrown in cases where the 'seqlevelsStyle' can’t be changed by 
+  read_vcfs_as_granges or when the filtering of seqlevel groups doesn’t work. 
+  It’s now possible to not change the 'seqlevelsStyle' with read_vcfs_as_granges to 
+  circumvent these errors.
   + The defunct functions mutation_context, mutation_types, strand_from_vcf and
   explained_by_signatures have been removed.
   + The plot_rainfall function plots "chr1" as 1, to save space. This is now 
   case-insesitive, so it will also work on "Chr1".
+
+* Other
+  + The author info has been updated.
 
 MutationalPatterns v1.6.2 (Release date: 2018-10-18)
 =====================================================
