@@ -13,6 +13,7 @@
 #'              * 'none' Do not plot any error bars;
 #' @param colors Optional color vector with 7 values
 #' @param legend Plot legend, default = TRUE
+#' @param condensed More condensed plotting format. Default = F.
 #' @return Spectrum plot
 #'
 #' @import ggplot2
@@ -57,6 +58,14 @@
 #' ## Or plot the spectrum per sample. Error bars are set to 'none', because they can't be plotted.
 #' plot_spectrum(type_occurrences, by = names(vcfs), CT = TRUE, error_bars = "none")
 #'
+#' ## Plot it in a more condensed manner, 
+#' ## which is is ideal for publications.
+#' plot_spectrum(type_occurrences, 
+#' by = names(vcfs), 
+#' CT = TRUE, 
+#' error_bars = "none",
+#' condensed = TRUE)
+#'
 #' ## You can also set custom colors.
 #' my_colors <- c(
 #'   "pink", "orange", "blue", "lightblue",
@@ -75,8 +84,14 @@
 #'
 #' @export
 
-plot_spectrum <- function(type_occurrences, CT = FALSE, by = NA, indv_points = FALSE,
-                          error_bars = c("95%_CI", "stdev", "SEM", "none"), colors = NA, legend = TRUE) {
+plot_spectrum <- function(type_occurrences, 
+                          CT = FALSE, 
+                          by = NA, 
+                          indv_points = FALSE,
+                          error_bars = c("95%_CI", "stdev", "SEM", "none"), 
+                          colors = NA, 
+                          legend = TRUE,
+                          condensed = FALSE) {
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
   value <- nmuts <- sub_type <- variable <- error_pos <- stdev <- total_mutations <- NULL
@@ -157,12 +172,22 @@ plot_spectrum <- function(type_occurrences, CT = FALSE, by = NA, indv_points = F
     tb_per_sample$value[CpG] <- tb_per_sample$value[other] + tb_per_sample$value[CpG]
   }
 
+  # Change plotting parameters based on whether plot should be condensed.
+  if (condensed == TRUE) {
+    width <- 1
+    spacing <- 0
+  } else {
+    width <- 0.9
+    spacing <- 0.5
+  }
+  
   # Make barplot
   plot <- ggplot(data = tb, aes(
     x = sub_type,
     y = mean,
     fill = variable,
-    group = sub_type
+    group = sub_type,
+    width = width
   )) +
     geom_bar(stat = "identity") +
     scale_fill_manual(values = colors, name = "Point mutation type") +
@@ -172,7 +197,8 @@ plot_spectrum <- function(type_occurrences, CT = FALSE, by = NA, indv_points = F
     theme(
       axis.ticks = element_blank(),
       axis.text.x = element_blank(),
-      panel.grid.major.x = element_blank()
+      panel.grid.major.x = element_blank(),
+      panel.spacing.x = unit(spacing, "lines")
     )
 
   # Add individual points

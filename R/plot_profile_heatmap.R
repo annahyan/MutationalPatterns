@@ -8,7 +8,8 @@
 #' @param by Optional grouping variable
 #' @param max Maximum value used for plotting the relative contributions.
 #'   Contributions that are higher will have the maximum colour. (Default: 0.02)
-#'
+#' @param condensed More condensed plotting format. Default = F.
+#' 
 #' @return A ggplot object
 #' @export
 #' @importFrom magrittr %>%
@@ -50,7 +51,15 @@
 #'   by = colnames(mut_mat_extended),
 #'   max = 0.05
 #' )
-plot_profile_heatmap <- function(mut_matrix, by = NA, max = 0.02) {
+#' 
+#' 
+#' ## Create a condensed heatmap of extended profile
+#' plot_profile_heatmap(mut_mat_extended, condensed = TRUE)
+
+plot_profile_heatmap <- function(mut_matrix, 
+                                 by = NA, 
+                                 max = 0.02,
+                                 condensed = FALSE) {
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
@@ -149,8 +158,19 @@ plot_profile_heatmap <- function(mut_matrix, by = NA, max = 0.02) {
     axis_size <- 3
   }
 
+  # Change plotting parameters based on whether plot should be condensed.
+  if (condensed == TRUE) {
+    spacing <- 0
+  } else {
+    spacing <- 0.5
+  }
+  
+  
+  
   # Create plot
-  fig <- ggplot(tb, aes(x = r_context, y = l_context, fill = rel_nrmuts)) +
+  fig <- ggplot(tb, aes(x = r_context, 
+                        y = l_context, 
+                        fill = rel_nrmuts)) +
     geom_raster() +
     scale_fill_distiller(
       palette = "YlGnBu",
@@ -164,7 +184,9 @@ plot_profile_heatmap <- function(mut_matrix, by = NA, max = 0.02) {
     theme(
       axis.text.y = element_text(size = axis_size),
       axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = axis_size),
-      panel.grid.major = element_blank(), panel.grid.minor = element_blank()
+      panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+      panel.spacing.x = unit(spacing, "lines"),
+      panel.spacing.y = unit(spacing, "lines")
     )
 
   return(fig)

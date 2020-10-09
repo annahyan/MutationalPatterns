@@ -37,6 +37,7 @@
 #'              * 'none' Do not plot any error bars;
 #' @param colors Optional color vector with 7 values
 #' @param legend Plot legend, default = TRUE
+#' @param condensed More condensed plotting format. Default = F.
 #' @return Spectrum plot by genomic region
 #'
 #' @import ggplot2
@@ -93,6 +94,14 @@
 #' )
 #'
 #' plot_spectrum_region(type_occurrences, by = sample_names, error_bars = "none")
+#' 
+#' ## Plot it in a more condensed manner, 
+#' ## which is is ideal for publications.
+#' plot_spectrum_region(type_occurrences, 
+#' by = sample_names, 
+#' error_bars = "none", 
+#' condensed = TRUE)
+#' 
 #' @seealso
 #' \code{\link{read_vcfs_as_granges}},
 #' \code{\link{mut_type_occurrences}},
@@ -107,7 +116,8 @@ plot_spectrum_region <- function(type_occurrences,
                                  indv_points = FALSE,
                                  error_bars = c("95%_CI", "stdev", "SEM", "none"),
                                  colors = NULL,
-                                 legend = TRUE) {
+                                 legend = TRUE,
+                                 condensed = FALSE) {
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
@@ -204,18 +214,29 @@ plot_spectrum_region <- function(type_occurrences,
   facet_labs_y <- stringr::str_c(tot_muts_tb$by, " (n = ", tot_muts_tb$tot_muts, ")")
   names(facet_labs_y) <- tot_muts_tb$by
 
+  # Change plotting parameters based on whether plot should be condensed.
+  if (condensed == TRUE) {
+    spacing <- 0
+  } else {
+    spacing <- 0.5
+  }
+  
   # Create figure
   # Suppress warning about using alpha.
   withCallingHandlers(
     {
-      fig <- ggplot(tb, aes(x = type, y = freq, fill = type, alpha = feature)) +
+      fig <- ggplot(tb, aes(x = type, 
+                            y = freq, 
+                            fill = type, 
+                            alpha = feature)) +
         geom_bar(stat = "identity", position = "dodge", colour = "black", cex = 0.5) +
         facet_grid(. ~ by, labeller = labeller(by = facet_labs_y)) +
         scale_fill_manual(values = colors) +
         scale_alpha_discrete(range = c(1, 0.4)) +
         labs(y = y_lab, x = "") +
         scale_x_discrete(breaks = NULL) +
-        theme_bw()
+        theme_bw() +
+        theme(panel.spacing.x = unit(spacing, "lines"))
     },
     warning = function(w) {
       if (grepl("Using alpha for a discrete variable is not advised.", conditionMessage(w))) {

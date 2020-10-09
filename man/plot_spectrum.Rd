@@ -11,7 +11,8 @@ plot_spectrum(
   indv_points = FALSE,
   error_bars = c("95\%_CI", "stdev", "SEM", "none"),
   colors = NA,
-  legend = TRUE
+  legend = TRUE,
+  condensed = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ as points, default = FALSE}
 \item{colors}{Optional color vector with 7 values}
 
 \item{legend}{Plot legend, default = TRUE}
+
+\item{condensed}{More condensed plotting format. Default = F.}
 }
 \value{
 Spectrum plot
@@ -79,6 +82,14 @@ plot_spectrum(type_occurrences, by = tissue, CT = TRUE)
 
 ## Or plot the spectrum per sample. Error bars are set to 'none', because they can't be plotted.
 plot_spectrum(type_occurrences, by = names(vcfs), CT = TRUE, error_bars = "none")
+
+## Plot it in a more condensed manner, 
+## which is is ideal for publications.
+plot_spectrum(type_occurrences, 
+by = names(vcfs), 
+CT = TRUE, 
+error_bars = "none",
+condensed = TRUE)
 
 ## You can also set custom colors.
 my_colors <- c(

@@ -4,7 +4,7 @@
 \alias{plot_profile_heatmap}
 \title{Plot a mutation matrix as a heatmap}
 \usage{
-plot_profile_heatmap(mut_matrix, by = NA, max = 0.02)
+plot_profile_heatmap(mut_matrix, by = NA, max = 0.02, condensed = FALSE)
 }
 \arguments{
 \item{mut_matrix}{Matrix containing mutation counts.}
@@ -13,6 +13,8 @@ plot_profile_heatmap(mut_matrix, by = NA, max = 0.02)
 
 \item{max}{Maximum value used for plotting the relative contributions.
 Contributions that are higher will have the maximum colour. (Default: 0.02)}
+
+\item{condensed}{More condensed plotting format. Default = F.}
 }
 \value{
 A ggplot object
@@ -55,6 +57,10 @@ plot_profile_heatmap(mut_mat_extended,
   by = colnames(mut_mat_extended),
   max = 0.05
 )
+
+
+## Create a condensed heatmap of extended profile
+plot_profile_heatmap(mut_mat_extended, condensed = TRUE)
 }
 \seealso{
 \code{\link{mut_matrix}},

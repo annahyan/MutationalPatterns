@@ -11,7 +11,8 @@ plot_spectrum_region(
   indv_points = FALSE,
   error_bars = c("95\%_CI", "stdev", "SEM", "none"),
   colors = NULL,
-  legend = TRUE
+  legend = TRUE,
+  condensed = FALSE
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ as points, default = FALSE}
 \item{colors}{Optional color vector with 7 values}
 
 \item{legend}{Plot legend, default = TRUE}
+
+\item{condensed}{More condensed plotting format. Default = F.}
 }
 \value{
 Spectrum plot by genomic region
@@ -113,6 +116,14 @@ sample_names <- c(
 )
 
 plot_spectrum_region(type_occurrences, by = sample_names, error_bars = "none")
+
+## Plot it in a more condensed manner, 
+## which is is ideal for publications.
+plot_spectrum_region(type_occurrences, 
+by = sample_names, 
+error_bars = "none", 
+condensed = TRUE)
+
 }
 \seealso{
 \code{\link{read_vcfs_as_granges}},
