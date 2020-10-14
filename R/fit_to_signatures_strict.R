@@ -233,6 +233,7 @@ fit_to_signatures_strict <- function(mut_matrix, signatures, max_delta = 0.004) 
       x = "Removed signatures",
       y = paste0("Cosine similarity (max delta: ", max_delta, ")")
     ) +
+    theme_classic() +
     theme(
       axis.text.x = element_text(angle = 90, size = 10, hjust = 1, vjust = 0.5),
       text = element_text(size = 12)
