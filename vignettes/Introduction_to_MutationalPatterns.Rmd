@@ -335,6 +335,10 @@ You can visualize this matrix with a heatmap.
 plot_profile_heatmap(mut_mat_ext_context, by = tissue)
 ```
 
+You can also visualize this with a riverplot.
+```{r riverplot, fig.wide=TRUE}
+plot_river(mut_mat_ext_context[,c(1,4)])
+```
 
 ## Indels
 
@@ -1206,7 +1210,7 @@ data, like in the example below.
 The following example displays how to download promoter, CTCF binding sites and
 transcription factor binding sites regions for
 genome build hg19 from Ensembl using Biocpkg("biomaRt"). For other datasets,
-see the Biocpkg("biomaRt") documentation [@Durinck2005]. 
+see the `r Biocpkg("biomaRt")` documentation [@Durinck2005]. 
 (Remember to install this package before trying to use it.)
 
 

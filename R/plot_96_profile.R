@@ -37,7 +37,8 @@
 #' plot_96_profile(nmf_res$signatures)
 #' @seealso
 #' \code{\link{mut_matrix}},
-#' \code{\link{plot_profile_heatmap}}
+#' \code{\link{plot_profile_heatmap}},
+#' \code{\link{plot_river}}
 #'
 #' @export
 

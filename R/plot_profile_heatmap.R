@@ -13,10 +13,12 @@
 #' @return A ggplot object
 #' @export
 #' @importFrom magrittr %>%
-#'
+#' @import ggplot2
+#' 
 #' @seealso
 #' \code{\link{mut_matrix}},
-#' \code{\link{plot_96_profile}}
+#' \code{\link{plot_96_profile}},
+#' \code{\link{plot_river}}
 #' @examples
 #'
 #' ## See the 'mut_matrix()' examples for how we obtained the

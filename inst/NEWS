@@ -1,4 +1,4 @@
-MutationalPatterns v2.99.2 (Release date: 2020-10-01)
+MutationalPatterns v2.99.3 (Release date: 2020-10-14)
 
 Changes:
 
@@ -16,7 +16,9 @@ Changes:
   read_vcfs_as_granges is also supported.
   + The mut_matrix, mut_matrix_stranded, mut_context and type_context functions now 
   support a wider mutational context.
-  + Mutational profiles can be visualized as a heatmap with the plot_profile_heatmap 
+  + Mutational SNV profiles can be visualized as a heatmap with the plot_profile_heatmap 
+  function. This supports profiles that have a wider context.
+  + Mutational SNV profiles can be visualized as a riverplot with the plot_river
   function. This supports profiles that have a wider context.
   + Added the fit_to_signatures_strict function. This function allows for more
   stringent signature refitting, which doesn't suffer from overfitting.

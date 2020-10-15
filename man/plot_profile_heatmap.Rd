@@ -64,5 +64,6 @@ plot_profile_heatmap(mut_mat_extended, condensed = TRUE)
 }
 \seealso{
 \code{\link{mut_matrix}},
-\code{\link{plot_96_profile}}
+\code{\link{plot_96_profile}},
+\code{\link{plot_river}}
 }
