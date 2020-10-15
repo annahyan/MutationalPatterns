@@ -47,16 +47,29 @@ test_that("autosomal filter works", {
 })
 
 test_that("unfiltered works", {
-  # We use the reference genome that best fits the sample data here
-  # to make sure the contig names automatically match.
-  ref_genome <- "BSgenome.Hsapiens.1000genomes.hs37d5"
+
+  ref_genome <- "BSgenome.Hsapiens.UCSC.hg19"
   library(ref_genome, character.only = TRUE)
 
   output <- read_vcfs_as_granges(vcfs, sample_names, ref_genome, "none")
-  expected <- seqlevels(BSgenome::getBSgenome(ref_genome))
-
-  proper_subset <- all(seqlevels(output) %in% expected)
-  expect_equal(proper_subset, TRUE)
+  expected <- c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", 
+                "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", 
+                "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22", 
+                "chrX", "chrY", "chrM", "GL000207.1", "GL000226.1", "GL000229.1", 
+                "GL000231.1", "GL000210.1", "GL000239.1", "GL000235.1", "GL000201.1", 
+                "GL000247.1", "GL000245.1", "GL000197.1", "GL000203.1", "GL000246.1", 
+                "GL000249.1", "GL000196.1", "GL000248.1", "GL000244.1", "GL000238.1", 
+                "GL000202.1", "GL000234.1", "GL000232.1", "GL000206.1", "GL000240.1", 
+                "GL000236.1", "GL000241.1", "GL000243.1", "GL000242.1", "GL000230.1", 
+                "GL000237.1", "GL000233.1", "GL000204.1", "GL000198.1", "GL000208.1", 
+                "GL000191.1", "GL000227.1", "GL000228.1", "GL000214.1", "GL000221.1", 
+                "GL000209.1", "GL000218.1", "GL000220.1", "GL000213.1", "GL000211.1", 
+                "GL000199.1", "GL000217.1", "GL000216.1", "GL000215.1", "GL000205.1", 
+                "GL000219.1", "GL000224.1", "GL000223.1", "GL000195.1", "GL000212.1", 
+                "GL000222.1", "GL000200.1", "GL000193.1", "GL000194.1", "GL000225.1", 
+                "GL000192.1")
+  
+  expect_equal(seqlevels(output), expected)
 })
 
 
