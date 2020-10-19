@@ -66,7 +66,7 @@ plot_river = function(mut_matrix, condensed = FALSE){
     # Split left and right context from mutations
     context_m <- mut_matrix %>% 
         rownames() %>% 
-        stringr::str_split("\\[|\\]", simplify = T)
+        stringr::str_split("\\[|\\]", simplify = TRUE)
     
     # Split contexts into single bases
     left_m <- stringr::str_split(context_m[,1], "", simplify = TRUE)
@@ -110,7 +110,8 @@ plot_river = function(mut_matrix, condensed = FALSE){
                             names_to = "sample_name", 
                             values_to = "nrmuts") %>% 
         dplyr::mutate(pos = stringr::str_remove(pos, "pos_"),
-            pos = factor(pos, levels = unique(pos)))
+            pos = factor(pos, levels = unique(pos)),
+            type = factor(type, levels = unique(type)))
     return(lodes_tb)
 }
 
@@ -136,8 +137,9 @@ plot_river = function(mut_matrix, condensed = FALSE){
      colours_v <- c("#EF2D56", "#446DF6","#6FAB94", "#FFBC63", 
                   "#2EBAED", "#000000", "#DE1C14", "#D4D2D2", 
                   "#ADCC54", "#F0D0CE")
-    names(colours_v) <- c("T", "C", "A", "G", "C>A", "C>G", "C>T", "T>A", "T>C", "T>G")
-    used_colours <- colours_v[levels(lodes_tb$type)]
+    types <- c("T", "C", "A", "G", "C>A", "C>G", "C>T", "T>A", "T>C", "T>G")
+    typesin <- types %in% unique(lodes_tb$type)
+    used_colours <- colours_v[typesin]
     
     # Change plotting parameters based on whether plot should be condensed.
     if (condensed == TRUE) {
@@ -161,7 +163,7 @@ plot_river = function(mut_matrix, condensed = FALSE){
         geom_text(stat = StatStratum, size = 3, colour = "white") +
         facet_grid(sample_name ~ ., scales = "free_y") +
         scale_fill_manual(values = used_colours) +
-        labs(x = "Pos", y = "Nr mutations") +
+        labs(x = "Position", y = "Nr mutations") +
         theme_bw() +
         theme(panel.spacing.y = unit(spacing, "lines"))
     
