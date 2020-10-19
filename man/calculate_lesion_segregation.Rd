@@ -7,7 +7,7 @@
 calculate_lesion_segregation(
   vcf_list,
   sample_names,
-  test = c("binomial", "walf-wolfowitz", "rl20"),
+  test = c("binomial", "wald-wolfowitz", "rl20"),
   split_by_type = FALSE,
   ref_genome = NA,
   chromosomes = NA
@@ -20,7 +20,7 @@ calculate_lesion_segregation(
 
 \item{test}{The statistical test that should be used. Possible values:
 * 'binomial' Binomial test based on the number of strand switches. (Default);
-* 'walf-wolfowitz' Statistical test that checks if the strands are randomly distibuted.;
+* 'wald-wolfowitz' Statistical test that checks if the strands are randomly distibuted.;
 * 'rl20' Calculates rl20 value and the genomic span of the associated runs set.;}
 
 \item{split_by_type}{Boolean describing whether the lesion
@@ -46,7 +46,7 @@ This function can perform three different types of test to calculate lesion segr
 The first method is unique to this package, while the other two were also used by
 Aitken et al., 2020.
 The 'binomial' test is based on how often consecutive mutations are on different strands.
-The 'walf-wolfowitz' test checks if the strands are randomly distributed. It's not known
+The 'wald-wolfowitz' test checks if the strands are randomly distributed. It's not known
 which method is superior.
 The 'rl20' test looks at run sizes (The number of consecutive mutations on the same strand).
 This is less suspectible to local strand assymetries and kataegis, but doesn't generate a p-value.
@@ -93,10 +93,10 @@ lesion_segretation_by_type <- calculate_lesion_segregation(grl, sample_names,
   split_by_type = TRUE, ref_genome = ref_genome
 )
 
-## Calculate lesion segregation using the walf-wolfowitz test.
-lesion_segregation_walf <- calculate_lesion_segregation(grl,
+## Calculate lesion segregation using the wald-wolfowitz test.
+lesion_segregation_wald <- calculate_lesion_segregation(grl,
   sample_names,
-  test = "walf-wolfowitz"
+  test = "wald-wolfowitz"
 )
 
 ## Calculate lesion segregation using the rl20.

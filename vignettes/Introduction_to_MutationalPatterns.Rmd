@@ -1524,14 +1524,14 @@ lesion_seg_type <- calculate_lesion_segregation(grl,
 ```
  
  
-The second mode of `calculate_lesion_segregation` uses the Walf-Wolfowitz test,
+The second mode of `calculate_lesion_segregation` uses the Wald-Wolfowitz test,
 which was used by @Aitken2020 This test checks whether the Watson and Crick
 strands are randomly distributed. It's results should generally be similar to
 the first mode.
-```{r calculate_lesion_segregation_walf}
-lesion_segretation_walf <- calculate_lesion_segregation(grl, sample_names, 
-                                                        test = "walf-wolfowitz")
-head(lesion_segretation_walf)
+```{r calculate_lesion_segregation_wald}
+lesion_segretation_wald <- calculate_lesion_segregation(grl, sample_names, 
+                                                        test = "wald-wolfowitz")
+head(lesion_segretation_wald)
 ```
 
 This statistical test can also be influenced by events such as kataegis and 

@@ -20,9 +20,9 @@ output <- calculate_lesion_segregation(grl, sample_names)
 output_per_type <- calculate_lesion_segregation(grl, sample_names,
   split_by_type = TRUE, ref_genome = ref_genome
 )
-output_walf <- calculate_lesion_segregation(grl,
+output_wald <- calculate_lesion_segregation(grl,
   sample_names,
-  test = "walf-wolfowitz"
+  test = "wald-wolfowitz"
 )
 
 ## Calculate lesion segregation using the rl20.
@@ -38,14 +38,14 @@ output_rl20 <- calculate_lesion_segregation(grl,
 test_that("Output has correct class", {
   expect_true(inherits(output, c("tbl_df")))
   expect_true(inherits(output_per_type, c("tbl_df")))
-  expect_true(inherits(output_walf, c("tbl_df")))
+  expect_true(inherits(output_wald, c("tbl_df")))
   expect_true(inherits(output_rl20, c("tbl_df")))
 })
 
 test_that("Output has correct dimensions", {
   expect_equal(dim(output), c(9, 8))
   expect_equal(dim(output_per_type), c(9, 8))
-  expect_equal(dim(output_walf), c(9, 5))
+  expect_equal(dim(output_wald), c(9, 5))
   expect_equal(dim(output_rl20), c(9, 5))
 })
 
@@ -66,7 +66,7 @@ test_that("An error is thrown when the arguments are incorrectly combined", {
   )
   expect_error(
     {
-      calculate_lesion_segregation(grl, sample_names, test = "walf-wolfowitz", split_by_type = TRUE)
+      calculate_lesion_segregation(grl, sample_names, test = "wald-wolfowitz", split_by_type = TRUE)
     },
     "The 'split_by_type' argument can only be used with the binomial test"
   )

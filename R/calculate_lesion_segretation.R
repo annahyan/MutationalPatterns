@@ -9,7 +9,7 @@
 #' The first method is unique to this package, while the other two were also used by
 #' Aitken et al., 2020.
 #' The 'binomial' test is based on how often consecutive mutations are on different strands.
-#' The 'walf-wolfowitz' test checks if the strands are randomly distributed. It's not known
+#' The 'wald-wolfowitz' test checks if the strands are randomly distributed. It's not known
 #' which method is superior.
 #' The 'rl20' test looks at run sizes (The number of consecutive mutations on the same strand).
 #' This is less suspectible to local strand assymetries and kataegis, but doesn't generate a p-value.
@@ -32,7 +32,7 @@
 #' @param sample_names The name of the sample
 #' @param test The statistical test that should be used. Possible values:
 #'              * 'binomial' Binomial test based on the number of strand switches. (Default);
-#'              * 'walf-wolfowitz' Statistical test that checks if the strands are randomly distibuted.;
+#'              * 'wald-wolfowitz' Statistical test that checks if the strands are randomly distibuted.;
 #'              * 'rl20' Calculates rl20 value and the genomic span of the associated runs set.;
 #' @param split_by_type Boolean describing whether the lesion
 #' segregation should be calculated for all SNVs together or per 96 substitution context. (Default: FALSE)
@@ -75,10 +75,10 @@
 #'   split_by_type = TRUE, ref_genome = ref_genome
 #' )
 #'
-#' ## Calculate lesion segregation using the walf-wolfowitz test.
-#' lesion_segregation_walf <- calculate_lesion_segregation(grl,
+#' ## Calculate lesion segregation using the wald-wolfowitz test.
+#' lesion_segregation_wald <- calculate_lesion_segregation(grl,
 #'   sample_names,
-#'   test = "walf-wolfowitz"
+#'   test = "wald-wolfowitz"
 #' )
 #'
 #' ## Calculate lesion segregation using the rl20.
@@ -91,7 +91,7 @@
 #' )
 calculate_lesion_segregation <- function(vcf_list,
                                          sample_names,
-                                         test = c("binomial", "walf-wolfowitz", "rl20"),
+                                         test = c("binomial", "wald-wolfowitz", "rl20"),
                                          split_by_type = FALSE,
                                          ref_genome = NA,
                                          chromosomes = NA) {
@@ -166,8 +166,9 @@ calculate_lesion_segregation <- function(vcf_list,
 #' @param sample_name The name of the sample
 #' @param test The statistical test that should be used. Possible values:
 #'              * 'binomial' Binomial test based on the number of strand switches. (Default);
-#'              * 'walf-wolfowitz' Statistical test that checks if the strands are randomly
+#'              * 'wald-wolfowitz' Statistical test that checks if the strands are randomly
 #'              distributed.;
+#'              * 'rl20' Calculates rl20 value and the genomic span of the associated runs set.;
 #' @param split_by_type Boolean describing whether the lesion
 #' segregation should be calculated for all SNVs together or per 96 substitution context.
 #' @param ref_genome A string matching the name of a BSgenome library
@@ -181,7 +182,7 @@ calculate_lesion_segregation <- function(vcf_list,
 #'
 .calculate_lesion_segregation_gr <- function(gr,
                                              sample_name = "sample",
-                                             test = c("binomial", "walf-wolfowitz", "rl20"),
+                                             test = c("binomial", "wald-wolfowitz", "rl20"),
                                              split_by_type = FALSE,
                                              ref_genome = NA,
                                              chromosomes = NA) {
@@ -266,9 +267,9 @@ calculate_lesion_segregation <- function(vcf_list,
       nr_strand_switches = res$statistic,
       max_possible_switches = res$parameter
     )
-  } else if (test == "walf-wolfowitz") {
-    # calculate if there is a significant deviation using the walf_wolfowitz_test
-    wolfowitz <- .walf_wolfowitz_test(tb$strand)
+  } else if (test == "wald-wolfowitz") {
+    # calculate if there is a significant deviation using the wald_wolfowitz_test
+    wolfowitz <- .wald_wolfowitz_test(tb$strand)
     stat_tb <- tibble::tibble(
       p.value = wolfowitz$p,
       sd = wolfowitz$sd,
@@ -365,7 +366,7 @@ calculate_lesion_segregation <- function(vcf_list,
 }
 
 
-#' Perform the walf_wofowitz test for strands.
+#' Perform the wald_wofowitz test for strands.
 #'
 #' This statistical test, tests whether each element in the sequence is
 #' independently drawn from the same distribution.
@@ -376,7 +377,7 @@ calculate_lesion_segregation <- function(vcf_list,
 #'
 #' @noRd
 #'
-.walf_wolfowitz_test <- function(strands) {
+.wald_wolfowitz_test <- function(strands) {
 
   # Remove factor
   strands <- as.character(strands)
