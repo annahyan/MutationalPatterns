@@ -1,6 +1,6 @@
 #' Plots the correlation between bootstrapped signature contributions
 #'
-#' This function plots the correlation between signatures.
+#' This function plots the pearson correlation between signatures.
 #' This can be done per sample or for all samples together.
 #' It returns a list of the created figures.
 #'
