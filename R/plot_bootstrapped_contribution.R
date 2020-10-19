@@ -47,7 +47,7 @@ plot_bootstrapped_contribution <- function(contri_boots,
     ylab_text <- "Relative mutation contribution"
     jitter_height <- 0.02
   } else {
-    ylab_text <- "Mean nr contributed mutations"
+    ylab_text <- "Nr. contributed mutations"
     jitter_height <- 0.2
   }
 
@@ -70,7 +70,8 @@ plot_bootstrapped_contribution <- function(contri_boots,
     fig <- ggplot(contri_tb, aes(x = sig, y = contri, color = sig)) +
       geom_jitter(stat = "identity", height = jitter_height, size = 0.3) +
       scale_color_discrete(guide = FALSE) +
-      facet_grid(sample ~ .)
+      facet_grid(sample ~ .) +
+      labs(y = ylab_text)
   } else if (plot_type == "boxplot") {
     # Calculate values for boxplot
     contri_tb2 <- contri_tb %>%
@@ -86,7 +87,8 @@ plot_bootstrapped_contribution <- function(contri_boots,
       geom_bar(stat = "identity") +
       geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.2) +
       scale_fill_discrete(guide = FALSE) +
-      facet_grid(sample ~ .)
+      facet_grid(sample ~ .) +
+      labs(y = ylab_text)
   } else if (plot_type == "dotplot") {
     contri_tb3 <- contri_tb %>%
       dplyr::group_by(sample, sig) %>%
@@ -110,12 +112,14 @@ plot_bootstrapped_contribution <- function(contri_boots,
       geom_point(aes(color = percentage, size = mean)) +
       scale_color_distiller(palette = "RdYlBu", limits = c(0, 1)) +
       scale_size_continuous(range = c(1,max_dot_size)) +
-      labs(size = "mean contribution", colour = "percentage contribution")
+      labs(size = "mean contribution", 
+           colour = "percentage contribution",
+           y = "Sample")
   }
   
   ## Add extra labels to figure for all types
   fig <- fig +
-    labs(x = "Signature", y = ylab_text) +
+    labs(x = "Signature") +
     theme_classic() +
     theme(
       axis.text.x = element_text(angle = 90, size = 10, hjust = 1, vjust = 0.5),
