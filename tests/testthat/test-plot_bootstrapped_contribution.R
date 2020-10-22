@@ -14,6 +14,6 @@ test_that("Output has correct class", {
   output <- plot_bootstrapped_contribution(contri_boots, mode = "relative")
   expect_true(inherits(output, c("gg")))
 
-  output <- plot_bootstrapped_contribution(contri_boots, plot_type = "boxplot")
+  output <- plot_bootstrapped_contribution(contri_boots, plot_type = "barplot")
   expect_true(inherits(output, c("gg")))
 })

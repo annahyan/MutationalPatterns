@@ -7,7 +7,7 @@
 plot_bootstrapped_contribution(
   contri_boots,
   mode = c("absolute", "relative"),
-  plot_type = c("jitter", "boxplot", "dotplot")
+  plot_type = c("jitter", "barplot", "dotplot")
 )
 }
 \arguments{
@@ -16,7 +16,7 @@ plot_bootstrapped_contribution(
 \item{mode}{Either "absolute" for absolute number of mutations, or
 "relative" for relative contribution, default = "absolute"}
 
-\item{plot_type}{Either "jitter" for a jitter plot, "boxplot" for a boxplot, or "dotplot" for a dotplot}
+\item{plot_type}{Either "jitter" for a jitter plot, "barplot" for a barplot, or "dotplot" for a dotplot}
 }
 \value{
 A ggplot2 graph
@@ -24,7 +24,7 @@ A ggplot2 graph
 \description{
 Plot the signature contributions retrieved with 'fit_to_signatures_bootstrapped'.
 The function can plot both the absolute or the relative signature contribution.
-The graph can be plotted as either a jitter plot or as a boxplot.
+The graph can be plotted as either a jitter plot or as a barplot.
 }
 \examples{
 ## Get the bootstrapped signature contributions
@@ -39,8 +39,8 @@ plot_bootstrapped_contribution(contri_boots)
 ## Plot bootstrapped contribution with relative contributions
 plot_bootstrapped_contribution(contri_boots, mode = "relative")
 
-## Plot bootstrapped contribution with a boxplot
-plot_bootstrapped_contribution(contri_boots, plot_type = "boxplot")
+## Plot bootstrapped contribution with a barplot
+plot_bootstrapped_contribution(contri_boots, plot_type = "barplot")
 
 ## Plot bootstrapped contribution with a dotplot
 plot_bootstrapped_contribution(contri_boots, plot_type = "dotplot", mode = "absolute")

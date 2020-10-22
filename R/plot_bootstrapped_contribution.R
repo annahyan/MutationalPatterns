@@ -2,12 +2,12 @@
 #'
 #' Plot the signature contributions retrieved with 'fit_to_signatures_bootstrapped'.
 #' The function can plot both the absolute or the relative signature contribution.
-#' The graph can be plotted as either a jitter plot or as a boxplot.
+#' The graph can be plotted as either a jitter plot or as a barplot.
 #'
 #' @param contri_boots  matrix showing  signature contributions across bootstrap iterations.
 #' @param mode Either "absolute" for absolute number of mutations, or
 #' "relative" for relative contribution, default = "absolute"
-#' @param plot_type Either "jitter" for a jitter plot, "boxplot" for a boxplot, or "dotplot" for a dotplot
+#' @param plot_type Either "jitter" for a jitter plot, "barplot" for a barplot, or "dotplot" for a dotplot
 #'
 #' @return A ggplot2 graph
 #' @export
@@ -26,14 +26,14 @@
 #' ## Plot bootstrapped contribution with relative contributions
 #' plot_bootstrapped_contribution(contri_boots, mode = "relative")
 #'
-#' ## Plot bootstrapped contribution with a boxplot
-#' plot_bootstrapped_contribution(contri_boots, plot_type = "boxplot")
+#' ## Plot bootstrapped contribution with a barplot
+#' plot_bootstrapped_contribution(contri_boots, plot_type = "barplot")
 #' 
 #' ## Plot bootstrapped contribution with a dotplot
 #' plot_bootstrapped_contribution(contri_boots, plot_type = "dotplot", mode = "absolute")
 plot_bootstrapped_contribution <- function(contri_boots,
                                            mode = c("absolute", "relative"),
-                                           plot_type = c("jitter", "boxplot", "dotplot")) {
+                                           plot_type = c("jitter", "barplot", "dotplot")) {
   mode <- match.arg(mode)
   plot_type <- match.arg(plot_type)
 
@@ -72,8 +72,8 @@ plot_bootstrapped_contribution <- function(contri_boots,
       scale_color_discrete(guide = FALSE) +
       facet_grid(sample ~ .) +
       labs(y = ylab_text)
-  } else if (plot_type == "boxplot") {
-    # Calculate values for boxplot
+  } else if (plot_type == "barplot") {
+    # Calculate values for barplot
     contri_tb2 <- contri_tb %>%
       dplyr::group_by(sample, sig) %>%
       dplyr::summarise(
@@ -82,7 +82,7 @@ plot_bootstrapped_contribution <- function(contri_boots,
         upper = quantile(contri, 0.975)
       ) %>%
       dplyr::ungroup()
-    # Create basis for boxplot figure
+    # Create basis for barplot figure
     fig <- ggplot(contri_tb2, aes(x = sig, y = mean, fill = sig)) +
       geom_bar(stat = "identity") +
       geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.2) +
