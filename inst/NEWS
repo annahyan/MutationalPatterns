@@ -1,3 +1,12 @@
+MutationalPatterns v2.99.7 (Release date: 2020-10-28)
+
+Changes:
+
+* Bugfix
+  + The last five COSMIC SNV signatures contained incorrect context orders. This has now been fixed
+  by using the latest COSMIC version (3.1.1). These also contain more digits after the decimal.
+
+
 MutationalPatterns v2.99.5 (Release date: 2020-10-19)
 
 Changes:

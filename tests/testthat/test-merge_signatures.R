@@ -23,9 +23,9 @@ test_that("Output has correct class", {
 
 
 test_that("Output sizes are correct", {
-  expect_equal(dim(output), c(96, 44))
+  expect_equal(dim(output), c(96, 43))
   expect_equal(dim(output_strict), c(96, 52))
-  expect_equal(dim(output_char), c(96, 44))
+  expect_equal(dim(output_char), c(96, 43))
 })
 
 test_that("Signature names are correct", {
@@ -33,10 +33,10 @@ test_that("Signature names are correct", {
     "SBS1", "SBS2", "SBS7a", "SBS7b", "SBS7c", "SBS7d", "SBS9",
     "SBS10a", "SBS10b", "SBS11", "SBS13", "SBS14", "SBS16", "SBS17a",
     "SBS17b", "SBS20", "SBS21", "SBS22", "SBS25", "SBS28", "SBS30",
-    "SBS32", "SBS33", "SBS34", "SBS35", "SBS38", "SBS39", "SBS41",
-    "SBS42", "SBS44", "SBS84", "SBS85", "SBS86", "SBS87", "SBS88",
+    "SBS32", "SBS33", "SBS34", "SBS35", "SBS38", "SBS41",
+    "SBS42", "SBS44", "SBS84", "SBS85", "SBS87", "SBS88",
     "SBS89", "SBS90", "SBS36;SBS18", "SBS15;SBS6", "SBS29;SBS24",
-    "SBS40;SBS3;SBS5", "SBS8;SBS4", "SBS26;SBS12;SBS37", "SBS23;SBS19;SBS31"
+    "SBS40;SBS3;SBS5", "SBS8;SBS4", "SBS26;SBS12;SBS37", "SBS86;SBS39", "SBS23;SBS19;SBS31"
   ))
   expect_equal(colnames(output_strict), c(
     "SBS1", "SBS2", "SBS3", "SBS4", "SBS5", "SBS6", "SBS7a", "SBS7b",
@@ -52,10 +52,10 @@ test_that("Signature names are correct", {
     "SBS1", "SBS2", "SBS7a", "SBS7b", "SBS7c", "SBS7d", "SBS9",
     "SBS10a", "SBS10b", "SBS11", "SBS13", "SBS14", "SBS16", "SBS17a",
     "SBS17b", "SBS20", "SBS21", "SBS22", "SBS25", "SBS28", "SBS30",
-    "SBS32", "SBS33", "SBS34", "SBS35", "SBS38", "SBS39", "SBS41",
-    "SBS42", "SBS44", "SBS84", "SBS85", "SBS86", "SBS87", "SBS88",
+    "SBS32", "SBS33", "SBS34", "SBS35", "SBS38", "SBS41",
+    "SBS42", "SBS44", "SBS84", "SBS85", "SBS87", "SBS88",
     "SBS89", "SBS90", "SBS36_SBS18", "SBS15_SBS6", "SBS29_SBS24",
-    "SBS40_SBS3_SBS5", "SBS8_SBS4", "SBS26_SBS12_SBS37", "SBS23_SBS19_SBS31"
+    "SBS40_SBS3_SBS5", "SBS8_SBS4", "SBS26_SBS12_SBS37", "SBS86_SBS39", "SBS23_SBS19_SBS31"
   ))
 })
 
