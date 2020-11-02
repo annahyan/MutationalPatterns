@@ -113,6 +113,8 @@ saveRDS(mut_mat_longregion, "inst/states/mut_mat_longregions.rds")
 
 
 #Create context potential damage tibble
+txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+
 contexts = rownames(mut_mat)
 gene_ids = c(7157, 3845, 4893, 673, 675, 1029, 8289, 5728, 7015)
 context_mismatches = context_potential_damage_analysis(contexts, txdb, ref_genome, gene_ids)
