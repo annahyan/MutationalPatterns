@@ -28,6 +28,6 @@ A raw version of the new vignette can be found
 ## Bioconductor version
 
 Please use [Bioconductor](http://bioconductor.org/packages/MutationalPatterns/)
-to install the released version of this package.  In [Introduction to MutationalPatterns](http://bioconductor.org/packages/release/bioc/vignettes/MutationalPatterns/inst/doc/Introduction_to_MutationalPatterns.pdf) you can find
+to install the released version of this package.  In [Introduction to MutationalPatterns](https://bioconductor.org/packages/release/bioc/vignettes/MutationalPatterns/inst/doc/Introduction_to_MutationalPatterns.html) you can find
 comprehensive examples and explanations for the functions this package
 provides.
