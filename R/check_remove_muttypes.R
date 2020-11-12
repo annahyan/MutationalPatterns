@@ -61,7 +61,7 @@
 #' @return Invisibly returns its input when it succeeds.
 #'
 
-.check_no_snvs <- function(grl) {
+.check_no_substitutions <- function(grl) {
   if (inherits(grl, "CompressedGRangesList")) {
     gr <- unlist(grl)
   } else if (inherits(grl, "GRanges")) {
@@ -69,7 +69,7 @@
   } else {
     .not_gr_or_grl(grl)
   }
-  .check_no_snvs_gr(gr)
+  .check_no_substitutions_gr(gr)
   invisible(grl)
 }
 
@@ -84,12 +84,16 @@
 #' @return Invisibly returns its input when it succeeds.
 #'
 
-.check_no_snvs_gr <- function(gr) {
-  snv_f <- .find_snv(gr)
+.check_no_substitutions_gr <- function(gr) {
+  snv_f <- .find_substitution(gr)
   nr_snv <- sum(snv_f)
   snv_present <- nr_snv >= 1
   if (snv_present) {
-    stop(stringr::str_c("There seem to be ", nr_snv, " SNVs present in your data. Make sure to remove all SNVs with the `get_mut_type` function."), call. = FALSE)
+    stop(stringr::str_c("There seem to be ", 
+                        nr_snv, 
+                        " substitutions present in your data. ",
+                        "Make sure to remove all substitutions with the `get_mut_type` function."), 
+         call. = FALSE)
   }
   invisible(gr)
 }
@@ -128,7 +132,7 @@
 #' @return Invisibly returns its input when it succeeds.
 #'
 .check_no_indels_gr <- function(gr) {
-  snv_f <- .find_snv(gr)
+  snv_f <- .find_substitution(gr)
   nr_indel <- sum(!snv_f)
   snv_present <- nr_indel >= 1
   if (snv_present) {
@@ -187,14 +191,14 @@
 #' @param grl GRanges/GRangesList object
 #' @noRd
 #' @return A filtered version of the input GRanges/GrangesList object.
-.remove_snvs <- function(grl) {
+.remove_substitutions <- function(grl) {
   if (inherits(grl, "CompressedGRangesList")) {
     gr_l <- as.list(grl)
-    grl <- purrr::map(gr_l, .remove_snvs_gr) %>%
+    grl <- purrr::map(gr_l, .remove_substitutions_gr) %>%
       GRangesList()
     return(grl)
   } else if (inherits(grl, "GRanges")) {
-    gr <- .remove_snvs_gr(grl)
+    gr <- .remove_substitutions_gr(grl)
     return(gr)
   } else {
     .not_gr_or_grl(grl)
@@ -210,8 +214,8 @@
 #' @noRd
 #' @return A filtered version of the input GRanges object.
 #'
-.remove_snvs_gr <- function(gr) {
-  snv_f <- .find_snv(gr)
+.remove_substitutions_gr <- function(gr) {
+  snv_f <- .find_substitution(gr)
   gr <- gr[!snv_f]
   return(gr)
 }
@@ -248,7 +252,7 @@
 #' @return A filtered version of the input GRanges object.
 #'
 .remove_indels_gr <- function(gr) {
-  snv_f <- .find_snv(gr)
+  snv_f <- .find_substitution(gr)
   gr <- gr[snv_f]
   return(gr)
 }
@@ -263,7 +267,7 @@
 #' @noRd
 #' @return A boolean vector. It's TRUE for SNVs/MNVs and FALSE for Indels
 #'
-.find_snv <- function(gr) {
+.find_substitution <- function(gr) {
   .check_no_multi_alts(gr)
   snv_f <- width(.get_ref(gr)) == width(unlist(.get_alt(gr)))
   return(snv_f)

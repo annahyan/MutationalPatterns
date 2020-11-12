@@ -23,6 +23,7 @@ Get indel contexts
 \details{
 Determines the COSMIC context from a GRanges or GRangesList object containing Indel mutations.
 It applies the get_indel_context_gr function to each gr in the input.
+It searches for repeat units both to the left and right of the indel.
 }
 \examples{
 
