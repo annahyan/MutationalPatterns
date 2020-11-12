@@ -45,7 +45,7 @@ plot_river = function(mut_matrix, condensed = FALSE){
     
     context_m <- .river_create_context_matrix(mut_matrix)
     lodes_tb <- .river_create_lodes(mut_matrix, context_m)
-    fig <- .river_plot_river(lodes_tb, condensed)
+    fig <- .river_plot_river(lodes_tb, mut_matrix, condensed)
     
     return(fig)
 }
@@ -111,7 +111,8 @@ plot_river = function(mut_matrix, condensed = FALSE){
                             values_to = "nrmuts") %>% 
         dplyr::mutate(pos = stringr::str_remove(pos, "pos_"),
             pos = factor(pos, levels = unique(pos)),
-            type = factor(type, levels = unique(type)))
+            type = factor(type, levels = unique(type)),
+            sample_name = factor(sample_name, levels = unique(sample_name)))
     return(lodes_tb)
 }
 
@@ -126,7 +127,7 @@ plot_river = function(mut_matrix, condensed = FALSE){
 #' @import ggplot2
 #' @import ggalluvial
 #' 
-.river_plot_river = function(lodes_tb, condensed){
+.river_plot_river = function(lodes_tb, mut_matrix, condensed){
     
     # These variables use non standard evaluation.
     # To avoid R CMD check complaints we initialize them to NULL.
@@ -148,6 +149,11 @@ plot_river = function(mut_matrix, condensed = FALSE){
         spacing <- 0.5
     }
     
+    # Create facet texts
+    nr_muts <- colSums(mut_matrix)
+    facet_labs_y <- stringr::str_c(colnames(mut_matrix), " (n = ", nr_muts, ")")
+    names(facet_labs_y) <- colnames(mut_matrix)
+    
     #Add stratum stat.
     StatStratum <- ggalluvial::StatStratum
     
@@ -161,7 +167,8 @@ plot_river = function(mut_matrix, condensed = FALSE){
         geom_stratum() + 
         geom_flow() + 
         geom_text(stat = StatStratum, size = 3, colour = "white") +
-        facet_grid(sample_name ~ ., scales = "free_y") +
+        facet_grid(sample_name ~ ., scales = "free_y",
+                   labeller = labeller(sample_name = facet_labs_y)) +
         scale_fill_manual(values = used_colours) +
         labs(x = "Position", y = "Nr mutations") +
         theme_bw() +
