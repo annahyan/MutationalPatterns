@@ -12,6 +12,9 @@ signatures <- get_known_signatures()
 # Run function
 output <- rename_nmf_signatures(nmf_res, signatures)
 
+# Run without a suffix
+output_suffix <- rename_nmf_signatures(nmf_res, signatures, suffix = "")
+
 # Change how similar the signatures have to be, before they are considered similar.
 output_strict <- rename_nmf_signatures(nmf_res, signatures, cutoff = 0.95)
 
@@ -21,12 +24,14 @@ output_basename <- rename_nmf_signatures(nmf_res, signatures, cutoff = 0.95, bas
 # Tests that nmf_res is still nmf_res
 test_that("Outputs a list", {
   expect_true(inherits(output, c("list")))
+  expect_true(inherits(output_suffix, c("list")))
   expect_true(inherits(output_strict, c("list")))
   expect_true(inherits(output_basename, c("list")))
 })
 
 test_that("Output contains signatures, contribution and reconstructed", {
   expect_identical(names(output), c("signatures", "contribution", "reconstructed"))
+  expect_identical(names(output_suffix), c("signatures", "contribution", "reconstructed"))
   expect_identical(names(output_strict), c("signatures", "contribution", "reconstructed"))
   expect_identical(names(output_basename), c("signatures", "contribution", "reconstructed"))
 })
@@ -35,6 +40,9 @@ test_that("Output elements are matrixes", {
   expect_true(inherits(output$signatures, "matrix"))
   expect_true(inherits(output$contribution, "matrix"))
   expect_true(inherits(output$reconstructed, "matrix"))
+  expect_true(inherits(output_suffix$signatures, "matrix"))
+  expect_true(inherits(output_suffix$contribution, "matrix"))
+  expect_true(inherits(output_suffix$reconstructed, "matrix"))
   expect_true(inherits(output_strict$signatures, "matrix"))
   expect_true(inherits(output_strict$contribution, "matrix"))
   expect_true(inherits(output_strict$reconstructed, "matrix"))
@@ -45,8 +53,10 @@ test_that("Output elements are matrixes", {
 
 # Test that names are correctly changed
 test_that("New signature names are correct", {
-  expect_equal(colnames(output$signatures), c("SBS5", "SBS1"))
-  expect_equal(rownames(output$contribution), c("SBS5", "SBS1"))
+  expect_equal(colnames(output$signatures), c("SBS5-like", "SBS1-like"))
+  expect_equal(rownames(output$contribution), c("SBS5-like", "SBS1-like"))
+  expect_equal(colnames(output_suffix$signatures), c("SBS5", "SBS1"))
+  expect_equal(rownames(output_suffix$contribution), c("SBS5", "SBS1"))
   expect_equal(colnames(output_strict$signatures), c("SBSA", "SBSB"))
   expect_equal(rownames(output_strict$contribution), c("SBSA", "SBSB"))
   expect_equal(colnames(output_basename$signatures), c("Signature_A", "Signature_B"))
