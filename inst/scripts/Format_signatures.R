@@ -93,10 +93,6 @@ format_COSMIC_signatures = function(in_fname, extra_sigs, out_fname, muttype){
                 quote = FALSE)
     invisible(0)
 }
-format_COSMIC_signatures("~/Downloads/sigProfiler_SBS_signatures_2019_05_22.csv",
-                         paste0("SBS", c(86:90)),
-                         "snv_COSMIC_reference.txt",
-                         "SBS")
 
 format_COSMIC_signatures("~/Downloads/sigProfiler_ID_signatures.csv",
                          paste0("ID", c(18)),
@@ -111,3 +107,22 @@ format_COSMIC_signatures("~/Downloads/sigProfiler_DBS_signatures.csv",
 format_COSMIC_signatures("~/Downloads/sigProfiler_TSB_signatures.csv",
                          NA,
                          "tsb_snv_COSMIC_reference.txt")
+
+
+# Format Cosmic signatures for the SNVs
+mut_mat <- readRDS(system.file("states/mut_mat_data.rds",
+                               package = "MutationalPatterns"
+))
+
+# Read in Cosmic signatures 3.1
+sbs_sigs = read.table("~/Downloads/cosmic_v3.1.txt", dec = ",", header = T) %>% 
+    dplyr::mutate(cont = paste0(str_sub(Subtype, 1, 1), "[", Type, "]", str_sub(Subtype, 3))) %>% 
+    dplyr::mutate(cont = factor(cont, levels = rownames(mut_mat))) %>% 
+    dplyr::arrange(cont) %>% 
+    dplyr::select(-cont)
+
+
+sbs_sigs = as.matrix(sbs_sigs[,-c(1,2)])
+write.table(sbs_sigs, 
+            "~/surfdrive/Shared/Boxtel_General/Scripts/Git_submission/Freek_MutationalPatterns/MutationalPatterns/inst/extdata/signatures/snv_COSMIC_reference.txt",
+            quote = F, row.names = F, sep = "\t")
