@@ -8,12 +8,17 @@
 #' This only changes the names of signatures, not their actual values.
 #' This function can be help with identifying whether signatures found with NMF are already known,
 #' which can be usefull for interpretation.
-#'
+#' An extracted signature that is not similar to any previously defined signatures,
+#' is not proof of a "novel" signature. The extracted signature might be a
+#' combination of known signatures, that could not be split by NMF. This can happen
+#' when, for example, too few samples were used for the NMF.
+#' 
 #' @param nmf_res Named list of mutation matrix, signatures and signature contribution
 #' @param signatures A signature matrix
 #' @param cutoff Cutoff at which signatures are considered similar. Default: 0.85
 #' @param base_name The base part of a letter based signature name. Default: "SBS"
-#'
+#' @param suffix String. The suffix added to the name of a renamed signature. Default: "-like"
+#' 
 #' @return A nmf_res whith changed signature names
 #' @export
 #'
@@ -33,13 +38,20 @@
 #' signatures <- get_known_signatures()
 #'
 #' rename_nmf_signatures(nmf_res, signatures)
+#' 
+#' ## You can change or remove the suffix of the renamed signatures.
+#' rename_nmf_signatures(nmf_res, signatures, suffix = "")
 #'
 #' ## You can change how similar the signatures have to be, before they are considered similar.
 #' rename_nmf_signatures(nmf_res, signatures, cutoff = 0.95)
 #'
 #' ## You can also change the base_name of the signatures that end up with a letter name.
 #' rename_nmf_signatures(nmf_res, signatures, cutoff = 0.95, base_name = "Signature_")
-rename_nmf_signatures <- function(nmf_res, signatures, cutoff = 0.85, base_name = "SBS") {
+rename_nmf_signatures <- function(nmf_res, 
+                                  signatures, 
+                                  cutoff = 0.85, 
+                                  base_name = "SBS", 
+                                  suffix = "-like") {
   rownames(nmf_res$contribution) <- seq_len(nrow(nmf_res$contribution))
   colnames(nmf_res$signatures) <- seq_len(ncol(nmf_res$signatures))
   sim_matrix <- cos_sim_matrix(signatures, nmf_res$signatures)
@@ -58,6 +70,9 @@ rename_nmf_signatures <- function(nmf_res, signatures, cutoff = 0.85, base_name 
       # Determine most similar signature
       row <- which.max(sig_sim)
       sig <- names(sig_sim)[row]
+      
+      # Add suffix
+      sig <- paste0(sig, suffix)
 
       # Change name of nmf_res signature
       rownames(nmf_res$contribution)[i] <- sig
