@@ -198,6 +198,19 @@ indel_grl <- read_vcfs_as_granges(blood_vcf_fnames, blood_sample_names,
                                   ref_genome, type = "indel")
 ```
 
+By default the package assumes that DBS and MBS variants are present in your
+vcfs as separate neighbouring SNVs. MutationalPatterns merges these to get DBS
+and MBS variants. If DBS and MBS variants have already been defined in your vcf
+or if you don't want any variants to be merged, then you can use the
+`predefined_dbs_mbs` argument, when using `read_vcfs_as_granges` or
+`get_mut_type`.
+(In this example the result will be empty, because the dbs variants were not predefined)
+```{r read predefined dbs, eval=FALSE}
+predefined_dbs_grl <- read_vcfs_as_granges(blood_vcf_fnames, blood_sample_names, 
+                                  ref_genome, type = "dbs",
+                                  predefined_dbs_mbs = TRUE)
+```
+
 
 # Mutation characteristics
 

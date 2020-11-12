@@ -10,7 +10,8 @@ read_vcfs_as_granges(
   genome,
   group = c("auto+sex", "auto", "sex", "circular", "all", "none"),
   type = c("snv", "indel", "dbs", "mbs", "all"),
-  change_seqnames = TRUE
+  change_seqnames = TRUE,
+  predefined_dbs_mbs = FALSE
 )
 }
 \arguments{
@@ -32,20 +33,22 @@ of this group will be removed.  Possible values:
   seqlevels from the VCF file.}
 
 \item{type}{The mutation type that will be loaded. All other variants will be filtered out.
-            Possible values:
-            * 'snv'
-            * 'indel'
-            * 'dbs'
-            * 'mbs'
-            * 'all'
-This function assumes that dbs and mbs variants are present in the vcf as SNVs,
-which are positioned next to each other. If your dbs/mbs variants are called
-separately you should use type = 'all' to prevent incorrect filtering.
-In those cases SNVs could be selected per sample by something like:
-'gr[width(gr) == 1]'}
+          Possible values:
+          * 'snv'
+          * 'indel'
+          * 'dbs'
+          * 'mbs'
+          * 'all'
+When you use 'all', no filtering or merging of variants is performed.}
 
-\item{change_seqnames}{Boolean. Whether to change the seqnamesStyle of the vcf
-to that of the BSgenome object. (default = TRUE)}
+\item{change_seqnames}{Boolean. Whether to change the seqnamesStyle of the
+vcf to that of the BSgenome object. (default = TRUE)}
+
+\item{predefined_dbs_mbs}{Boolean. Whether dbs and mbs variants have been
+predefined in your vcf. This function by default assumes that dbs and mbs
+variants are present in the vcf as snvs, which are positioned next to each
+other. If your dbs/mbs variants are called separately you should set this
+argument to TRUE. (default = FALSE)}
 }
 \value{
 A GRangesList containing the GRanges obtained from 'vcf_files'

@@ -25,13 +25,14 @@
 #'              * 'dbs'
 #'              * 'mbs'
 #'              * 'all'
-#'  This function assumes that dbs and mbs variants are present in the vcf as SNVs,
-#'  which are positioned next to each other. If your dbs/mbs variants are called
-#'  separately you should use type = 'all' to prevent incorrect filtering.
-#'  In those cases SNVs could be selected per sample by something like:
-#'  'gr[width(gr) == 1]'
-#' @param change_seqnames Boolean. Whether to change the seqnamesStyle of the vcf
-#' to that of the BSgenome object. (default = TRUE)
+#'    When you use 'all', no filtering or merging of variants is performed.
+#' @param change_seqnames Boolean. Whether to change the seqnamesStyle of the
+#'   vcf to that of the BSgenome object. (default = TRUE)
+#' @param predefined_dbs_mbs Boolean. Whether dbs and mbs variants have been
+#'    predefined in your vcf. This function by default assumes that dbs and mbs
+#'    variants are present in the vcf as snvs, which are positioned next to each
+#'    other. If your dbs/mbs variants are called separately you should set this
+#'    argument to TRUE. (default = FALSE)
 #'
 #' @return A GRangesList containing the GRanges obtained from 'vcf_files'
 #'
@@ -84,7 +85,8 @@ read_vcfs_as_granges <- function(vcf_files,
                                  genome,
                                  group = c("auto+sex", "auto", "sex", "circular", "all", "none"),
                                  type = c("snv", "indel", "dbs", "mbs", "all"),
-                                 change_seqnames = TRUE) {
+                                 change_seqnames = TRUE,
+                                 predefined_dbs_mbs = FALSE) {
 
   # Match argument
   type <- match.arg(type)
@@ -111,7 +113,7 @@ read_vcfs_as_granges <- function(vcf_files,
 
   # Filter for mutation type
   if (type != "all") {
-    grl <- get_mut_type(grl, type)
+    grl <- get_mut_type(grl, type, predefined_dbs_mbs)
   }
 
   # Set the provided names for the samples.

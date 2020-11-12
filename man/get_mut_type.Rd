@@ -4,12 +4,22 @@
 \alias{get_mut_type}
 \title{Get variants with mut_type from GRanges}
 \usage{
-get_mut_type(vcf_list, type = c("snv", "indel", "dbs", "mbs"))
+get_mut_type(
+  vcf_list,
+  type = c("snv", "indel", "dbs", "mbs"),
+  predefined_dbs_mbs = FALSE
+)
 }
 \arguments{
 \item{vcf_list}{GRanges/GRangesList}
 
 \item{type}{The type of variant that will be returned.}
+
+\item{predefined_dbs_mbs}{Boolean. Whether dbs and mbs variants have been
+predefined in your vcf. This function by default assumes that dbs and mbs
+variants are present in the vcf as snvs, which are positioned next to each
+other. If your dbs/mbs variants are called separately you should set this
+argument to TRUE. (default = FALSE)}
 }
 \value{
 GRanges/GRangesList of the desired mutation type.

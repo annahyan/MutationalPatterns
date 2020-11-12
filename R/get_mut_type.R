@@ -8,7 +8,12 @@
 #'
 #' @param vcf_list GRanges/GRangesList
 #' @param type The type of variant that will be returned.
-#'
+#' @param predefined_dbs_mbs Boolean. Whether dbs and mbs variants have been
+#'    predefined in your vcf. This function by default assumes that dbs and mbs
+#'    variants are present in the vcf as snvs, which are positioned next to each
+#'    other. If your dbs/mbs variants are called separately you should set this
+#'    argument to TRUE. (default = FALSE)
+
 #' @return GRanges/GRangesList of the desired mutation type.
 #'
 #' @examples
@@ -28,9 +33,16 @@
 #'
 #' @importFrom magrittr %>%
 #' @export
-get_mut_type <- function(vcf_list, type = c("snv", "indel", "dbs", "mbs")) {
+get_mut_type <- function(vcf_list, 
+                         type = c("snv", "indel", "dbs", "mbs"), 
+                         predefined_dbs_mbs = FALSE) {
   type <- match.arg(type)
 
+  if (predefined_dbs_mbs == FALSE & type != "indel"){
+    message(paste0("Any neighbouring SNVs will be merged into DBS/MBS variants.\n",
+                   "Set the 'predefined_dbs_mbs' to 'TRUE' if you don't want this."))
+  }
+  
 
   # Turn grl into list.
   if (inherits(vcf_list, "CompressedGRangesList")) {
@@ -39,11 +51,11 @@ get_mut_type <- function(vcf_list, type = c("snv", "indel", "dbs", "mbs")) {
 
   # Get muttype per sample
   if (inherits(vcf_list, "list")) {
-    grl <- purrr::map(vcf_list, .get_mut_type_gr, type) %>%
+    grl <- purrr::map(vcf_list, .get_mut_type_gr, type, predefined_dbs_mbs) %>%
       GenomicRanges::GRangesList()
     return(grl)
   } else if (inherits(vcf_list, "GRanges")) {
-    gr <- .get_mut_type_gr(vcf_list, type)
+    gr <- .get_mut_type_gr(vcf_list, type, predefined_dbs_mbs)
     return(gr)
   } else {
     .not_gr_or_grl(vcf_list)
@@ -61,12 +73,19 @@ get_mut_type <- function(vcf_list, type = c("snv", "indel", "dbs", "mbs")) {
 #'
 #' @param gr GRanges
 #' @param type The type of variant that will be returned.
-#'
+#' @param predefined_dbs_mbs Boolean. Whether dbs and mbs variants have been
+#'    predefined in your vcf. This function by default assumes that dbs and mbs
+#'    variants are present in the vcf as snvs, which are positioned next to each
+#'    other. If your dbs/mbs variants are called separately you should set this
+#'    argument to TRUE. (default = FALSE)
+
 #' @noRd
 #'
 #' @return GRanges of the desired mutation type.
-
-.get_mut_type_gr <- function(gr, type = c("snv", "indel", "dbs", "mbs")) {
+#' 
+.get_mut_type_gr <- function(gr, 
+                             type = c("snv", "indel", "dbs", "mbs"), 
+                             predefined_dbs_mbs) {
   type <- match.arg(type)
 
   # Filter out bad variants
@@ -74,26 +93,41 @@ get_mut_type <- function(vcf_list, type = c("snv", "indel", "dbs", "mbs")) {
 
   # Indels
   if (type == "indel") {
-    gr <- .remove_snvs(gr)
+    gr <- .remove_substitutions(gr)
     return(gr)
   }
 
-  # Split SNVs into SNVs/DBS/MNVs
+  # Substitutions
   gr <- .remove_indels(gr)
-  gr_l <- .split_mbs_gr(gr)
-
-  not_mbs_f <- names(gr_l) %in% c(1, 2) # Determine which elements of the list are MNVs
-  if (type == "snv" & "1" %in% names(gr_l)) {
-    gr <- gr_l$`1`
-  } else if (type == "dbs" & "2" %in% names(gr_l)) {
-    gr <- gr_l$`2`
-  } else if (type == "mbs" & sum(!not_mbs_f) != 0) {
-    gr_l <- gr_l[!not_mbs_f]
-    gr <- unlist(GenomicRanges::GRangesList(gr_l))
-  } else { # Return empty gr when no variants are present.
-    gr <- gr[0]
+  
+  if (predefined_dbs_mbs == TRUE) {
+    if (type == "snv"){
+      gr <- gr[width(.get_ref(gr)) == 1]
+    } else if (type == "dbs"){
+      gr <- gr[width(.get_ref(gr)) == 2]
+    } else if (type == "mbs"){
+      gr <- gr[width(.get_ref(gr)) >= 3]
+    }
+    return(gr)
   }
-  return(gr)
+  
+  if (predefined_dbs_mbs == FALSE) {
+    # Merge neighbouring SNVs into DBS and MBS variants. Then select the desired type. 
+    gr_l <- .split_mbs_gr(gr)
+  
+    not_mbs_f <- names(gr_l) %in% c(1, 2) # Determine which elements of the list are MNVs
+    if (type == "snv" & "1" %in% names(gr_l)) {
+      gr <- gr_l$`1`
+    } else if (type == "dbs" & "2" %in% names(gr_l)) {
+      gr <- gr_l$`2`
+    } else if (type == "mbs" & sum(!not_mbs_f) != 0) {
+      gr_l <- gr_l[!not_mbs_f]
+      gr <- unlist(GenomicRanges::GRangesList(gr_l))
+    } else { # Return empty gr when no variants are present.
+      gr <- gr[0]
+    }
+    return(gr)
+    }
 }
 
 #' Split SNV/MNV into SNV, DBS and MNVs of different sizes

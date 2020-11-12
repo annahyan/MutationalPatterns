@@ -122,6 +122,17 @@ test_that("all mutation types work", {
   expect_true(inherits(output, "CompressedGRangesList"))
 })
 
+test_that("predefined_dbs_mbs argument works", {
+  output <- read_vcfs_as_granges(vcf_fnames, 
+                                 sample_names, 
+                                 ref_genome, 
+                                 type = "dbs",
+                                 predefined_dbs_mbs = TRUE)
+  expect_that(length(output), equals(3))
+  expect_that(as.double(S4Vectors::elementNROWS(output)), equals(c(0, 0, 0)))
+  expect_true(inherits(output, "CompressedGRangesList"))
+})
+
 # Test function works on an empty vcf
 empty_vcf <- list.files(system.file("extdata", package = "MutationalPatterns"),
   pattern = "empty.vcf", full.names = TRUE
