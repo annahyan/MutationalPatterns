@@ -104,8 +104,9 @@ plot_correlation_bootstrap <- function(contri_boots, per_sample = TRUE) {
 
   # Create figure
   fig <- ggplot(data = sig_cor_tb, aes(x = sig_column, y = sig_row, fill = cor), order = NULL) +
-    geom_tile(color = "white") +
-    scale_fill_distiller(palette = "RdYlBu", direction = -1, name = "Correlation") +
+    geom_raster() +
+    scale_fill_distiller(palette = "RdYlBu", direction = -1, name = "Correlation",
+                         na.value = "grey85") +
     labs(x = NULL, y = NULL, title = sample) +
     theme_classic() +
     theme(
