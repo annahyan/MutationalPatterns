@@ -1,3 +1,17 @@
+MutationalPatterns v3.1.2
+
+Changes:
+* The plot_correlation_bootstrap output now shows less dominant colours for the
+absent signatures.
+* The rename_nmf_signatures function now adds the "-like" suffix to renamed signatures,
+by default.
+* The plot_river function now shows the number of mutations per sample.
+* The read_vcfs_as_granges function now has a "predefined_dbs_mbs" argument, for when
+dbs and mbs variants are already defined in the vcfs. This prevents merging of snvs.
+* The get_indel_context function now looks for repeats both to the left and to the right of the
+indel. Previously it only looked to the right of the indel.
+
+
 MutationalPatterns v2.99.7 (Release date: 2020-10-28)
 
 Changes:
