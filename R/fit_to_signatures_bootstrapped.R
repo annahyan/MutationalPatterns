@@ -68,7 +68,7 @@
 fit_to_signatures_bootstrapped <- function(mut_matrix,
                                            signatures,
                                            n_boots = 1000,
-                                           max_delta = 0.05,
+                                           max_delta = 0.004,
                                            method = c("strict", "regular", "regular_10+"),
                                            verbose = TRUE) {
 
