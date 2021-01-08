@@ -55,14 +55,13 @@
 #' contri_boots <- fit_to_signatures_bootstrapped(mut_mat,
 #'   signatures,
 #'   n_boots = 10,
-#'   max_delta = 0.05
+#'   max_delta = 0.004
 #' )
 #'
 #' ## Use the regular refit method
 #' contri_boots <- fit_to_signatures_bootstrapped(mut_mat,
 #'   signatures,
 #'   n_boots = 10,
-#'   max_delta = 0.05,
 #'   method = "regular"
 #' )
 fit_to_signatures_bootstrapped <- function(mut_matrix,
