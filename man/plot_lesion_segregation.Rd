@@ -4,14 +4,25 @@
 \alias{plot_lesion_segregation}
 \title{Plot the strands of variants to show lesion segregation}
 \usage{
-plot_lesion_segregation(vcf, per_chrom = FALSE, sample_name = NA)
+plot_lesion_segregation(
+  vcf,
+  per_chrom = FALSE,
+  sample_name = NA,
+  min_muts_mean = 10,
+  chromosomes = NA
+)
 }
 \arguments{
-\item{vcf}{GRanges object}
+\item{vcf}{GRanges or RGrangesList object.}
 
-\item{per_chrom}{Boolean. Determines whether to create a separate plot per chromosome}
+\item{per_chrom}{Boolean. Determines whether to create a separate plot per chromosome.}
 
-\item{sample_name}{Name of the sample}
+\item{sample_name}{Name of the sample.}
+
+\item{min_muts_mean}{Integer. The minimum of mutations, required for the mean strand 
+of a chromosome to be calculated.}
+
+\item{chromosomes}{Character vector. Determines chromosomes to be used and their order.}
 }
 \value{
 ggplot2 object
@@ -19,6 +30,13 @@ ggplot2 object
 \description{
 The strands of variants in a GRanges object is plotted.
 This way the presence of any lesion segregation is visualized.
+The function can plot either a single or multiple samples.
+Per chromosome, the ratio of the mutations on the chromosomal strands is
+visualised by a line. The position of this line is calculated as the mean of
+the "+" and "-" strand, where "+" equals 1 and "-" equals 0. In other words:
+this line lies between the two strands if the mutations are equally
+distributed between them, and approaches a strand if the majority of
+mutations on a chromosome lie on that strand.
 }
 \examples{
 
@@ -27,14 +45,23 @@ This way the presence of any lesion segregation is visualized.
 grl <- readRDS(system.file("states/read_vcfs_as_granges_output.rds",
   package = "MutationalPatterns"
 ))
+
+## Plot lesion segregation
+plot_lesion_segregation(grl)
+
 ## Select a single GRanges object to plot.
 gr <- grl[[1]]
 
-## Plot lesion segregation
+## Plot lesion segregation for a single sample. 
+## Also add a title to the plot
 plot_lesion_segregation(gr, sample_name = "Colon1")
 
 ## Plot lesion segregation per chromosome
 plot_lesion_segregation(gr, per_chrom = TRUE, sample_name = "Colon1")
+
+## Plot specific chromosomes in a user specified order
+plot_lesion_segregation(grl, chromosomes = c(2,3))
+
 }
 \seealso{
 \code{\link{calculate_lesion_segregation}}

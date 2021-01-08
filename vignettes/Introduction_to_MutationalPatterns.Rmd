@@ -1487,13 +1487,13 @@ bias.
 
 ## Visualizing lesion segregation
 
-You can visualize possible lesion segregation for a single sample. If lesion
-segregation is present, then it will generally be quite clear that the mutations
-are not randomly distributed over the strands. In this example no lesion
-segregation is present. ("+" and "-" are used instead of "Watson" and "Crick" to
-save space.)
+You can visualize possible lesion segregation for a single or multiple samples.
+If lesion segregation is present, then it will generally be quite clear that the
+mutations are not randomly distributed over the strands. In this example no
+lesion segregation is present. ("+" and "-" are used instead of "Watson" and
+"Crick" to save space.)
 ```{r plot_lesion_segregation}
-plot_lesion_segregation(grl[[1]])
+plot_lesion_segregation(grl[1:2])
 ```
 
 ## Calculating lesion segregation
