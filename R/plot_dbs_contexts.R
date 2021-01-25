@@ -71,7 +71,8 @@ plot_dbs_contexts <- function(counts, same_y = FALSE, condensed = FALSE) {
   }
 
   # Create facet labs
-  facet_labs_y <- stringr::str_c(nr_muts$sample, " (n = ", nr_muts$nr_muts, ")")
+                                                 # Stop in the 
+  facet_labs_y <- stringr::str_c(nr_muts$sample) #, " (n = ", nr_muts$nr_muts, ")")
   names(facet_labs_y) <- nr_muts$sample
   facet_labs_x <- stringr::str_c(levels(counts$REF), ">NN")
   names(facet_labs_x) <- levels(counts$REF)
