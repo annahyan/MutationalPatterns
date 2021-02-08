@@ -54,7 +54,7 @@ plot_lesion_segregation(grl)
 gr <- grl[[1]]
 
 ## Plot lesion segregation for a single sample. 
-## Also add a title to the plot
+## Also add a title to the plot.
 plot_lesion_segregation(gr, sample_name = "Colon1")
 
 ## Plot lesion segregation per chromosome

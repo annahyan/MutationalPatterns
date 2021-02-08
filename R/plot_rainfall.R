@@ -80,7 +80,7 @@ plot_rainfall <- function(vcf,
       "Chromosome lengths missing from vcf object.\n",
       "Likely cause: contig lengths missing from the header of your vcf file(s).\n",
       "Please evaluate: seqinfo(vcf)\n",
-      "To add seqlengths to your vcf GRanges object use: seqlengths(vcf) <-  "
+      "To add seqlengths to your vcf GRanges object use: seqlengths(vcf) <- my_chr_lengths" 
     ), call. = FALSE)
   }
 
@@ -95,7 +95,10 @@ plot_rainfall <- function(vcf,
 
   # Plot chromosome labels without "chr"
   names(chr_cum) <- names(chr_length)
-  labels <- gsub("chr", "", names(chr_length), ignore.case = TRUE)
+  labels <- gsub("chr|chromosome_|chromosome|group|group_|chrom", 
+                 "", 
+                 names(chr_length), 
+                 ignore.case = TRUE)
 
   # position of chromosome labels.
   # Calculated by taking the average between two adjacent chr_cums.
