@@ -215,7 +215,6 @@ plot_lesion_segregation <- function(vcf,
           axis.text.y = element_text(size = 16),
           panel.grid = element_blank(),
           panel.grid.major.y = element_line(),
-          strip.background = element_blank(),
           panel.border = element_blank(),
           legend.position = 'none') +
     scale_color_gradientn(colors = c('#446DF6', 'grey90', '#FFBC63'),limits = c(0,1))
