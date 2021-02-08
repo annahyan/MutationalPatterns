@@ -1,7 +1,7 @@
 #' Count DBS contexts
 #'
 #' @details
-#' Counts the number of dbs per COSMIC context from a GRanges or GRangesList object containing dbs variants.
+#' Counts the number of DBS per COSMIC context from a GRanges or GRangesList object containing DBS variants.
 #' This function applies the count_dbs_contexts_gr function to each gr in its input.
 #' It then combines the results in a single tibble and returns this.
 #'
@@ -10,13 +10,13 @@
 #' @return A tibble containing the number of DBS per COSMIC context per gr.
 #'
 #' @examples
-#' ## Get a GRangesList or GRanges object with dbs contexts.
+#' ## Get a GRangesList or GRanges object with DBS contexts.
 #' ## See 'dbs_get_context' for more info on how to do this.
 #' grl_dbs_context <- readRDS(system.file("states/blood_grl_dbs_context.rds",
 #'   package = "MutationalPatterns"
 #' ))
 #'
-#' # Count the dbs contexts
+#' # Count the DBS contexts
 #' count_dbs_contexts(grl_dbs_context)
 #' @family DBS
 #' @seealso \code{\link{get_dbs_context}}
@@ -76,16 +76,16 @@ count_dbs_contexts <- function(vcf_list) {
 
 
 
-#' Count dbs contexts from a single GRanges object.
+#' Count DBS contexts from a single GRanges object.
 #'
 #' @details
 #' Counts the number of DBS per COSMIC context from a GRanges object containing DBS mutations.
 #' The function is called by count_dbs_contexts
 #'
 #' @param gr GRanges object containing DBS mutations in which the context was added with 'get_dbs_context()'.
-#' @param categories A tibble containing all possible dbs context categories
+#' @param categories A tibble containing all possible DBS context categories
 #'
-#' @return A single column tibble containing the number of dbs per COSMIC context.
+#' @return A single column tibble containing the number of DBS per COSMIC context.
 #'
 #' @importFrom magrittr %>%
 #'

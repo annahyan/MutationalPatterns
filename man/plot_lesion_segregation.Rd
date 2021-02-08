@@ -18,7 +18,7 @@ plot_lesion_segregation(
 \item{per_chrom}{Boolean. Determines whether to create a separate plot per chromosome.}
 
 \item{sample_name}{Name of the sample. Is used as the title of the plot.
-Not very usefull if you have more than one sample.}
+Not very useful if you have more than one sample.}
 
 \item{min_muts_mean}{Integer. The minimum of mutations, required for the mean strand 
 of a chromosome to be calculated.}

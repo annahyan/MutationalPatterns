@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_compare_dbs.R
 \name{plot_compare_dbs}
 \alias{plot_compare_dbs}
-\title{Compare two dbs mutation profiles}
+\title{Compare two DBS mutation profiles}
 \usage{
 plot_compare_dbs(
   profile1,
@@ -32,18 +32,18 @@ default = c(-0.1, 0.1)}
 A ggplot2 object
 }
 \description{
-Plots two dbs mutation profiles and their difference, reports the residual
+Plots two DBS mutation profiles and their difference, reports the residual
 sum of squares (RSS).
 }
 \examples{
 
-## Get the dbs counts
+## Get the DBS counts
 ## See 'count_dbs_contexts()' for more info on how to do this.
 dbs_counts <- readRDS(system.file("states/blood_dbs_counts.rds",
   package = "MutationalPatterns"
 ))
 
-## Get dbs refit info.
+## Get DBS refit info.
 ## See 'fit_to_signatures()' for more info on how to do this.
 fit_res <- readRDS(system.file("states/dbs_refit.rds",
   package = "MutationalPatterns"

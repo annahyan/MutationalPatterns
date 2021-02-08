@@ -11,12 +11,12 @@
 #'
 #'
 #' @param vcf_list GRangesList or GRanges object.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param nrbins The number of bins in which to separate the genome
 #' @param man_dens_cutoffs Manual density cutoffs to use.
 #'
 #' @family genomic_regions
-#' @return GrangesList
+#' @return GRangesList
 #' @export
 #' @importFrom magrittr %>%
 #'
@@ -100,7 +100,7 @@ bin_mutation_density <- function(vcf_list,
 #' It returns a GRanges object, containing the densities.
 #'
 #' @param chrom String describing a chromosome
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param gr GRanges object
 #' @param chroms String vector of chromosomes
 #'

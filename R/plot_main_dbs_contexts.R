@@ -13,7 +13,7 @@
 #' @return A ggplot figure.
 #'
 #' @examples
-#' ## Get The dbs counts
+#' ## Get The DBS counts
 #' ## See 'count_dbs_contexts()' for more info on how to do this.
 #' dbs_counts <- readRDS(system.file("states/blood_dbs_counts.rds",
 #'   package = "MutationalPatterns"

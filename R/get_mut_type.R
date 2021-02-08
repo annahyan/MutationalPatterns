@@ -73,10 +73,10 @@ get_mut_type <- function(vcf_list,
 #'
 #' @param gr GRanges
 #' @param type The type of variant that will be returned.
-#' @param predefined_dbs_mbs Boolean. Whether dbs and mbs variants have been
-#'    predefined in your vcf. This function by default assumes that dbs and mbs
-#'    variants are present in the vcf as snvs, which are positioned next to each
-#'    other. If your dbs/mbs variants are called separately you should set this
+#' @param predefined_dbs_mbs Boolean. Whether DBS and MBS variants have been
+#'    predefined in your vcf. This function by default assumes that DBS and MBS
+#'    variants are present in the vcf as SNVs, which are positioned next to each
+#'    other. If your DBS/MBS variants are called separately you should set this
 #'    argument to TRUE. (default = FALSE)
 
 #' @noRd
@@ -187,13 +187,13 @@ get_mut_type <- function(vcf_list,
   sequential <- c(0, sequential)
 
   # Sequence is a numeric vector. A n means that a mutations is the Nth sequential base in a mutations.
-  # Example: 0100123. Here the second mutation is sequential to the first. So the first two muts are a dbs.
+  # Example: 0100123. Here the second mutation is sequential to the first. So the first two muts are a DBS.
   # Next is a sbs. Then there is another 0 and then 3 sequential muts. This means that together they form a 4 base substitution.
   seq_rle <- rle(sequential)
   sequence <- sequence(seq_rle$lengths)
   sequence[sequential == 0] <- 0
 
-  # Find the maximum number of sequential mutations. (This is one less than the final mut size. So 1 for a dbs.)
+  # Find the maximum number of sequential mutations. (This is one less than the final mut size. So 1 for a DBS.)
   max_seq_l <- max(sequence)
   mut_l <- max_seq_l + 1
 
@@ -203,7 +203,7 @@ get_mut_type <- function(vcf_list,
   full_muts_i_l <- purrr::map2(start_i_muts, end_i_muts, seq)
   full_muts_i <- unlist(full_muts_i_l)
 
-  # Merge dbs and mbs if the user wants this.
+  # Merge DBS and MBS if the user wants this.
   if (mut_l != 1 & merge_muts == TRUE) {
     gr_sub <- purrr::map(full_muts_i_l, function(i_v) .merge_muts(gr[i_v])) %>%
       do.call(base::c, .)

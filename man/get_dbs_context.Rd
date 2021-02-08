@@ -24,7 +24,7 @@ dbs_grl <- readRDS(system.file("states/blood_grl_dbs.rds",
   package = "MutationalPatterns"
 ))
 
-## Set context dbs
+## Set context DBS
 get_dbs_context(dbs_grl)
 }
 \seealso{

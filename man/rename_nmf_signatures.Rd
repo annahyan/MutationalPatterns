@@ -24,7 +24,7 @@ rename_nmf_signatures(
 \item{suffix}{String. The suffix added to the name of a renamed signature. Default: "-like"}
 }
 \value{
-A nmf_res whith changed signature names
+A nmf_res with changed signature names
 }
 \description{
 This function renames signatures identified with NMF based on previously defined signatures.
@@ -34,7 +34,7 @@ of the previously defined signature. If not the NMF signature will receive a let
 For example: SBSA.
 This only changes the names of signatures, not their actual values.
 This function can be help with identifying whether signatures found with NMF are already known,
-which can be usefull for interpretation.
+which can be useful for interpretation.
 An extracted signature that is not similar to any previously defined signatures,
 is not proof of a "novel" signature. The extracted signature might be a
 combination of known signatures, that could not be split by NMF. This can happen

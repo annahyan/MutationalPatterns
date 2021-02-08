@@ -11,12 +11,12 @@
 #' The y-axis can be plotted with three different modes. With
 #' 'relative_sample_feature', the number of variants will be shown divided by
 #' the total number of variants in that sample and genomic region. This is
-#' generally the most usefull, because it allows you to compare the spectra off
+#' generally the most useful, because it allows you to compare the spectra off
 #' different regions. When you use 'relative_sample', the number of variants
 #' will be shown divided by the total number of variants in that sample. This
-#' can be usefull when you want to compare the number of mutations between
+#' can be useful when you want to compare the number of mutations between
 #' regions. Finally, when you use 'absolute', the absolute mutation numbers are
-#' shown. This can be usefull when you want to compare the mutation load between
+#' shown. This can be useful when you want to compare the mutation load between
 #' different groups of samples.
 #'
 #'

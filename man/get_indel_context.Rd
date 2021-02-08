@@ -10,7 +10,7 @@ get_indel_context(vcf_list, ref_genome)
 \item{vcf_list}{GRanges or GRangesList object containing Indel mutations.
 The mutations should be called similarly to HaplotypeCaller.}
 
-\item{ref_genome}{BSGenome reference genome object}
+\item{ref_genome}{BSgenome reference genome object}
 }
 \value{
 A modified version of the input grl. In each gr two columns have been added.

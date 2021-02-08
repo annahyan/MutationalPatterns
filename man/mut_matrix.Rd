@@ -9,7 +9,7 @@ mut_matrix(vcf_list, ref_genome, extension = 1)
 \arguments{
 \item{vcf_list}{GRangesList or GRanges object.}
 
-\item{ref_genome}{BSGenome reference genome object}
+\item{ref_genome}{BSgenome reference genome object}
 
 \item{extension}{The number of bases, that's extracted upstream and
 downstream of the base substitutions. (Default: 1).}

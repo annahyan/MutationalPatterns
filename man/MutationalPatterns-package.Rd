@@ -19,7 +19,7 @@ signatures de novo and inferring the contribution of previously
 identified mutational signatures. Furthermore, MutationalPatterns allows
 for easy exploration and visualization of other types of patterns such
 as transcriptional strand asymmetry, genomic distribution and
-associations with (publically available) annotations such as chromatin
+associations with (publicly available) annotations such as chromatin
 organization. In addition to identification of active mutation-inducing
 processes, this approach also allows for determining the involvement of
 specific DNA repair pathways. For example, presence of a transcriptional

@@ -2,11 +2,11 @@
 #' Count indel contexts
 #'
 #' @details
-#' Counts the number of indels per COSMIC context from a GRanges or GRangesList object containing Indel mutations.
+#' Counts the number of indels per COSMIC context from a GRanges or GRangesList object containing indel mutations.
 #' This function applies the count_indel_contexts_gr function to each gr in its input.
 #' It then combines the results in a single tibble and returns this.
 #'
-#' @param vcf_list GRanges or GRangesList object containing Indel mutations in which the context was added with get_indel_context.
+#' @param vcf_list GRanges or GRangesList object containing indel mutations in which the context was added with get_indel_context.
 #'
 #' @return A tibble containing the number of indels per COSMIC context per gr.
 #'
@@ -78,10 +78,10 @@ count_indel_contexts <- function(vcf_list) {
 #' Count indel contexts from a single GRanges object.
 #'
 #' @details
-#' Counts the number of indels per COSMIC context from a GRanges object containing Indel mutations.
+#' Counts the number of indels per COSMIC context from a GRanges object containing indel mutations.
 #' The function is called by count_indel_contexts
 #'
-#' @param gr GRanges object containing Indel mutations in which the context was added with get_indel_context.
+#' @param gr GRanges object containing indel mutations in which the context was added with get_indel_context.
 #' @param categories A tibble containing all possible indel context categories
 #'
 #' @return A single column tibble containing the number of indels per COSMIC context.

@@ -26,7 +26,7 @@
 #' annotation per location.
 #'
 #' For each base substitution it is determined on which strand it is located.
-#' No strand information "-" is returned for base substitutions in un-annotated
+#' No strand information "-" is returned for base substitutions in unannotated
 #' genomic regions.
 #'
 #' With the package we provide an example dataset, see example code.

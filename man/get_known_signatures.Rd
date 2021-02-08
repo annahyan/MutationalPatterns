@@ -43,9 +43,9 @@ A signature matrix
 }
 \description{
 This function loads a signature matrix of pre-defined signatures.
-It can retreive signatures for different types of mutations.
-It can also retreive signatures from different sources.
-Additionally, different signature types can be retreived.
+It can retrieve signatures for different types of mutations.
+It can also retrieve signatures from different sources.
+Additionally, different signature types can be retrieved.
 (The possible types are: Reference, tissue specific or drug exposure signatures.)
 Finally, the user can choose whether to include possible artifacts.
 If no signatures have been defined for a specific combination of options,
@@ -59,12 +59,12 @@ COSMIC:
 - Can include possible artifacts for SNVs
 
 SIGNAL:
- - snv. (+ dbs, when using exposure signatures.)
+ - SNV. (+ DBS, when using exposure signatures.)
  - all signature types
  - Can include possible artifacts for reference SNVs
 
 SPARSE:
- - snv
+ - SNV
  - reference
 
  Artifacts can be included when using reference signatures for
@@ -99,7 +99,7 @@ get_known_signatures()
 ## including potential artifacts.
 get_known_signatures(incl_poss_artifacts = TRUE)
 
-## Get dbs signatures
+## Get DBS signatures
 get_known_signatures("dbs")
 
 ## Get indel signatures

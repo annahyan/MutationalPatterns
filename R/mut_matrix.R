@@ -2,7 +2,7 @@
 #'
 #' @description Make 96 trinucleotide mutation count matrix
 #' @param vcf_list GRangesList or GRanges object.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param extension The number of bases, that's extracted upstream and
 #' downstream of the base substitutions. (Default: 1).
 #' @return 96 mutation count matrix

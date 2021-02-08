@@ -9,14 +9,14 @@ bin_mutation_density(vcf_list, ref_genome, nrbins = 3, man_dens_cutoffs = NA)
 \arguments{
 \item{vcf_list}{GRangesList or GRanges object.}
 
-\item{ref_genome}{BSGenome reference genome object}
+\item{ref_genome}{BSgenome reference genome object}
 
 \item{nrbins}{The number of bins in which to separate the genome}
 
 \item{man_dens_cutoffs}{Manual density cutoffs to use.}
 }
 \value{
-GrangesList
+GRangesList
 }
 \description{
 This function splits the genome based on the mutation density.

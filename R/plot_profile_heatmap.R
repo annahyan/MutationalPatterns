@@ -1,7 +1,7 @@
 #' Plot a mutation matrix as a heatmap
 #'
 #' Function to plot a SNV mutation matrix as a heatmap.
-#' This is especially usefull when looking at a wide mutational context.
+#' This is especially useful when looking at a wide mutational context.
 #'
 #'
 #' @param mut_matrix Matrix containing mutation counts.

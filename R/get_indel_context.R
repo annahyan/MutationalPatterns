@@ -7,7 +7,7 @@
 #'
 #' @param vcf_list GRanges or GRangesList object containing Indel mutations.
 #' The mutations should be called similarly to HaplotypeCaller.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #'
 #' @return A modified version of the input grl. In each gr two columns have been added.
 #' "muttype" showing the main indel type and "muttype_sub" which shows the subtype.
@@ -77,7 +77,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #'
 #' @param gr GRanges object containing Indel mutations.
 #' The mutations should be called similarly to HaplotypeCaller.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #'
 #' @return A modified version of the input gr. In the gr two columns have been added.
 #' "muttype" showing the main indel type and "muttype_sub" which shows the subtype.
@@ -125,7 +125,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #' @param gr GRanges object containing Indel mutations.
 #' The mutations should be called similarly to HaplotypeCaller.
 #' @param mut_size A double vector containing the size of each Indel.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #'
 #' @return A modified version of the input gr.
 #' All variants that are not a 1bp deletion are removed.
@@ -176,7 +176,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #' @param gr GRanges object containing Indel mutations.
 #' The mutations should be called similarly to HaplotypeCaller.
 #' @param mut_size A double vector containing the size of each Indel.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #'
 #' @return A modified version of the input gr.
 #' All variants that are not a 1bp insertion are removed.
@@ -231,7 +231,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #' @param gr GRanges object containing Indel mutations.
 #' The mutations should be called similarly to HaplotypeCaller.
 #' @param mut_size A double vector containing the size of each Indel.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #'
 #' @return A modified version of the input gr.
 #' All variants that are not insertions larger than 1bp are removed.
@@ -287,7 +287,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #' @param gr GRanges object containing Indel mutations.
 #' The mutations should be called similarly to HaplotypeCaller.
 #' @param mut_size A double vector containing the size of each Indel.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #'
 #' @return A modified version of the input gr.
 #' All variants that are not a deletion larger than 1bp are removed.
@@ -404,7 +404,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #' The mutations should be called similarly to HaplotypeCaller.
 #' @param flank_dist A numeric vector of length one containing 
 #' the number of flanking base pairs.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param changed_bases String of the mutated bases.
 #' @param type Indel type. Either deletion or insertion.
 #'
@@ -427,7 +427,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #' The mutations should be called similarly to HaplotypeCaller.
 #' @param flank_dist A numeric vector of length one containing 
 #' the number of flanking base pairs.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param changed_bases String of the mutated bases.
 #' @param type Indel type. Either deletion or insertion.
 #'
@@ -448,7 +448,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #' The mutations should be called similarly to HaplotypeCaller.
 #' @param flank_dist A numeric vector of length one containing 
 #' the number of flanking base pairs.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param changed_bases String of the mutated bases.
 #' @param type Indel type. Either deletion or insertion.
 #'
@@ -479,7 +479,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #' @param gr GRanges object containing Indel mutations.
 #' The mutations should be called similarly to HaplotypeCaller.
 #' @param flank_dist A numeric vector of length one containing the number of flanking base pairs.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param direction Whether to flank to the right or left of the indel
 #' @return A DNAStringSet containing the flanking bases.
 #'

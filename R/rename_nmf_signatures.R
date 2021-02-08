@@ -7,7 +7,7 @@
 #' For example: SBSA.
 #' This only changes the names of signatures, not their actual values.
 #' This function can be help with identifying whether signatures found with NMF are already known,
-#' which can be usefull for interpretation.
+#' which can be useful for interpretation.
 #' An extracted signature that is not similar to any previously defined signatures,
 #' is not proof of a "novel" signature. The extracted signature might be a
 #' combination of known signatures, that could not be split by NMF. This can happen
@@ -19,7 +19,7 @@
 #' @param base_name The base part of a letter based signature name. Default: "SBS"
 #' @param suffix String. The suffix added to the name of a renamed signature. Default: "-like"
 #' 
-#' @return A nmf_res whith changed signature names
+#' @return A nmf_res with changed signature names
 #' @export
 #'
 #' @importFrom magrittr %>%

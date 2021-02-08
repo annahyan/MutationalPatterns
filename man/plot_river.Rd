@@ -16,7 +16,7 @@ A ggplot object
 }
 \description{
 Function to plot a SNV mutation matrix as a riverplot.
-This is especially usefull when looking at a wide
+This is especially useful when looking at a wide
 mutational context
 }
 \examples{

@@ -13,7 +13,7 @@
 #' @param vcf GRanges or RGrangesList object.
 #' @param per_chrom Boolean. Determines whether to create a separate plot per chromosome.
 #' @param sample_name Name of the sample. Is used as the title of the plot.
-#' Not very usefull if you have more than one sample.
+#' Not very useful if you have more than one sample.
 #' @param min_muts_mean Integer. The minimum of mutations, required for the mean strand 
 #' of a chromosome to be calculated.
 #' @param chromosomes Character vector. Determines chromosomes to be used and their order.

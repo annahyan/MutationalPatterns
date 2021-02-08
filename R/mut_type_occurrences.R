@@ -1,7 +1,7 @@
 #' Count the occurrences of each base substitution type
 #'
 #' @param vcf_list GRangesList or GRanges object.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @return data.frame with counts of each base substitution type for
 #' each sample in vcf_list
 #'

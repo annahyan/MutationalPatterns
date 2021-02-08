@@ -17,7 +17,7 @@ context_potential_damage_analysis(
 
 \item{txdb}{Transcription annotation database}
 
-\item{ref_genome}{BSGenome reference genome object}
+\item{ref_genome}{BSgenome reference genome object}
 
 \item{gene_ids}{Entrez gene ids}
 

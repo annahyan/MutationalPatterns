@@ -44,10 +44,10 @@ When you use 'all', no filtering or merging of variants is performed.}
 \item{change_seqnames}{Boolean. Whether to change the seqnamesStyle of the
 vcf to that of the BSgenome object. (default = TRUE)}
 
-\item{predefined_dbs_mbs}{Boolean. Whether dbs and mbs variants have been
-predefined in your vcf. This function by default assumes that dbs and mbs
-variants are present in the vcf as snvs, which are positioned next to each
-other. If your dbs/mbs variants are called separately you should set this
+\item{predefined_dbs_mbs}{Boolean. Whether DBS and MBS variants have been
+predefined in your vcf. This function by default assumes that DBS and MBS
+variants are present in the vcf as SNVs, which are positioned next to each
+other. If your DBS/MBS variants are called separately you should set this
 argument to TRUE. (default = FALSE)}
 }
 \value{

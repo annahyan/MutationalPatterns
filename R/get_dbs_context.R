@@ -19,7 +19,7 @@
 #'   package = "MutationalPatterns"
 #' ))
 #'
-#' ## Set context dbs
+#' ## Set context DBS
 #' get_dbs_context(dbs_grl)
 #' @importFrom magrittr %>%
 #' @export

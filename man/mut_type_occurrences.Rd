@@ -9,7 +9,7 @@ mut_type_occurrences(vcf_list, ref_genome)
 \arguments{
 \item{vcf_list}{GRangesList or GRanges object.}
 
-\item{ref_genome}{BSGenome reference genome object}
+\item{ref_genome}{BSgenome reference genome object}
 }
 \value{
 data.frame with counts of each base substitution type for

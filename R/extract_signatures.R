@@ -14,7 +14,7 @@
 #' The 'regular' method comes from the NMF package.
 #' The 'variational_bayes' method comes from the ccfindR package.
 #' This method uses bayesian inference, which makes it easier to determine the
-#' mathmatically optimal number of signatures.
+#' mathematically optimal number of signatures.
 #' @param single_core Boolean. If TRUE, it forces the NMF algorithm to
 #' use only a single core. This can sometimes prevent issues.
 #' Doesn't apply to variational-bayes NMF

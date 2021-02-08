@@ -36,7 +36,7 @@
 #' 
 #' @param contexts Vector of mutational contexts to use for the analysis.
 #' @param txdb Transcription annotation database
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param gene_ids Entrez gene ids
 #' @param verbose Boolean. Determines whether progress is printed. (Default: FALSE)
 #'
@@ -175,7 +175,7 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
 #' Per gene the longest transcript is used.
 #'
 #' @param cds_tx GRangesList object containing the cds ranges of genes
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #'
 #' @return DNAStringSet containing the cds sequences
 #' @noRd
@@ -532,7 +532,7 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
 #' 
 #' @param contexts_tb A tibble containing the mutational contexts
 #' @param cds_tx GRangesList object containing the cds ranges of genes
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #'
 #' @return tibble containing splice site damage
 #' @noRd
@@ -620,7 +620,7 @@ context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_i
 #' the 4 bases can be found.
 #'
 #' @param cds_tx GRangesList object containing the cds ranges of genes
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param context_l Mutation context length
 #'
 #' @return DNAStringSet containing the splice site sequences

@@ -20,7 +20,7 @@ calculate_lesion_segregation(
 
 \item{test}{The statistical test that should be used. Possible values:
 * 'binomial' Binomial test based on the number of strand switches. (Default);
-* 'wald-wolfowitz' Statistical test that checks if the strands are randomly distibuted.;
+* 'wald-wolfowitz' Statistical test that checks if the strands are randomly distributed.;
 * 'rl20' Calculates rl20 value and the genomic span of the associated runs set.;}
 
 \item{split_by_type}{Boolean describing whether the lesion
@@ -49,7 +49,7 @@ The 'binomial' test is based on how often consecutive mutations are on different
 The 'wald-wolfowitz' test checks if the strands are randomly distributed. It's not known
 which method is superior.
 The 'rl20' test looks at run sizes (The number of consecutive mutations on the same strand).
-This is less suspectible to local strand assymetries and kataegis, but doesn't generate a p-value.
+This is less susceptible to local strand asymetries and kataegis, but doesn't generate a p-value.
 }
 \details{
 The amount of lesion segregation is calculated per GRanges object.

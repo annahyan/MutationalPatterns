@@ -5,7 +5,7 @@
 #' these can be transcription or replication strand
 #'
 #' @param vcf_list GRangesList or GRanges object.
-#' @param ref_genome BSGenome reference genome object
+#' @param ref_genome BSgenome reference genome object
 #' @param ranges GRanges object with the genomic ranges of:
 #' 1. (transcription mode) the gene bodies with strand (+/-) information, or
 #' 2. (replication mode) the replication strand with 'strand_info' metadata

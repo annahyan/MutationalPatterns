@@ -16,7 +16,7 @@ mut_matrix_stranded(
 \arguments{
 \item{vcf_list}{GRangesList or GRanges object.}
 
-\item{ref_genome}{BSGenome reference genome object}
+\item{ref_genome}{BSgenome reference genome object}
 
 \item{ranges}{GRanges object with the genomic ranges of:
 1. (transcription mode) the gene bodies with strand (+/-) information, or

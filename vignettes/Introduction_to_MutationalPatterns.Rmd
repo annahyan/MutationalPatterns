@@ -153,16 +153,16 @@ grl <- read_vcfs_as_granges(vcf_files, sample_names, ref_genome)
 ```
 
 Here we define relevant metadata on the samples, such as tissue type. 
-This will be usefull later.
+This will be useful later.
 ```{r store tissue variable}
 tissue <- c(rep("colon", 3), rep("intestine", 3), rep("liver", 3))
 ```
 
 
-## Load example data Indels, DBSs and MBSs
+## Load example data indels, DBSs and MBSs
 
 We will now locate the VCF files of the example data from the second set. 
-These will be used for the Indels, DBS and MBS examples.
+These will be used for the indels, DBS and MBS examples.
 ```{r locate blood data}
 blood_vcf_fnames <- list.files(
   system.file("extdata", package = "MutationalPatterns"), 
@@ -204,7 +204,7 @@ and MBS variants. If DBS and MBS variants have already been defined in your vcf
 or if you don't want any variants to be merged, then you can use the
 `predefined_dbs_mbs` argument, when using `read_vcfs_as_granges` or
 `get_mut_type`.
-(In this example the result will be empty, because the dbs variants were not predefined)
+(In this example the result will be empty, because the DBS variants were not predefined)
 ```{r read predefined dbs, eval=FALSE}
 predefined_dbs_grl <- read_vcfs_as_granges(blood_vcf_fnames, blood_sample_names, 
                                   ref_genome, type = "dbs",
@@ -319,7 +319,7 @@ grid.arrange(p4, p5, ncol = 2, widths = c(4, 2.3))
 
 ### 96 mutational profile
 
-First you should make a 96 trinucleodide mutation count matrix.
+First you should make a 96 trinucleotide mutation count matrix.
 (In contrast to previous versions this also works for single samples.)
 ```{r mut_matrix}
 mut_mat <- mut_matrix(vcf_list = grl, ref_genome = ref_genome)
@@ -336,7 +336,7 @@ plot_96_profile(mut_mat[, c(1, 7)])
 ### Larger contexts
 
 It's also possible to look at larger mutational contexts. 
-However, this is only usefull if you have a large number of mutations.
+However, this is only useful if you have a large number of mutations.
 ```{r mut_mat_extendend_context}
 mut_mat_ext_context <- mut_matrix(grl, ref_genome, extension = 2)
 head(mut_mat_ext_context)
@@ -373,7 +373,7 @@ indel_counts <- count_indel_contexts(indel_grl)
 head(indel_counts)
 ```
 
-Now you can plot the Indel spectra. The facets at the top show the indel types. 
+Now you can plot the indel spectra. The facets at the top show the indel types. 
 First the C and T deletions.
 Then the C and T insertions. Next are the multi base deletions and insertions. 
 Finally the deletions with microhomology are shown.
@@ -436,9 +436,9 @@ plot_mbs_contexts(mbs_counts, same_y = TRUE)
 ## Pooling samples
 
 Sometimes you have very few mutations per sample. 
-In these cases it might be usefull to combine multiple samples.
+In these cases it might be useful to combine multiple samples.
 This can be done with `pool_mut_mat`. 
-This works on the matrixes of SNVS, Indels, DBSs and MBSs.
+This works on the matrixes of SNVs, indels, DBSs and MBSs.
 ```{r pool_mut_mat}
 pooled_mut_mat <- pool_mut_mat(mut_mat, grouping = tissue)
 head(pooled_mut_mat)
@@ -454,7 +454,7 @@ mutation count matrix, with non-negative matrix factorization (NMF).
 It's also possible to identify the exposure of your mutation count matrix to 
 previously defined mutational signatures. 
 This is often referred to as signature refitting. 
-NMF is most usefull for large amounts of samples, 
+NMF is most useful for large amounts of samples, 
 while signature refitting can also be used on single samples. 
 We will first discuss NMF and then signature refitting. 
 Finally we will discuss analyzing the similarity between a mutational profile 
@@ -481,7 +481,7 @@ In general, larger datasets allow you to use a higher rank.
 Here we will show NMF for SNVs. Performing NMF on other mutation types works the
 same way.
 
-First add a small psuedocount to your mutation count matrix:
+First add a small pseudocount to your mutation count matrix:
 ```{r psuedo_count}
 mut_mat <- mut_mat + 0.0001
 ```
@@ -507,9 +507,9 @@ changing the nrun parameter to achieve stability and avoid bad local minima):
 nmf_res <- extract_signatures(mut_mat, rank = 2, nrun = 10, single_core = TRUE)
 ```
 
-NMF also works on other mutation types like Indels and DBS. You can even combine
+NMF also works on other mutation types like indels and DBS. You can even combine
 matrixes from different mutation types to, for example, extract combined
-Indel/DBS signatures.
+indel/DBS signatures.
 ```{r extract_signatures_snv_indel}
 combi_mat = rbind(indel_counts, dbs_counts)
 nmf_res_combi <- extract_signatures(combi_mat, rank = 2, nrun = 10, single_core = TRUE)
@@ -554,7 +554,7 @@ rownames(nmf_res$contribution) <- c("Signature A", "Signature B")
 ```
 
 It's possible that some of the signatures extracted by NMF are very similar to
-signatures that are already known. Therefore, it might be usefull to change the
+signatures that are already known. Therefore, it might be useful to change the
 names of the NMF signatures to these already known signatures. This often makes
 it easier to interpret your results.
 
@@ -937,7 +937,7 @@ head(sig_damage)
 ## Using other signature matrixes
 
 So far we have used the SNV signatures from COSMIC. For your convenience we have
-also included Indel, DBS and transcription strand bias signatures in this
+also included indel, DBS and transcription strand bias signatures in this
 package. Additionally, we included signatures from SIGNAL [@Kucab2019, @Degasperi2020].
 These signature matrixes can all be loaded using the
 `get_known_signature` function. If you use any of these signature matrixes,
@@ -954,7 +954,7 @@ signatures_indel[1:5, 1:5]
 
 It's also possible to include signatures, that might be artifacts. Including
 these signatures can lead to more overfitting. Therefore we recommend against
-using them for most analyses. However, these signatures can be usefull to see if
+using them for most analyses. However, these signatures can be useful to see if
 your data contains many sequencing artifacts, if you doubt the quality of your
 data.
 ```{r load_signatures_artifacts}
@@ -980,7 +980,7 @@ signatures_stomach = get_known_signatures(source = "SIGNAL", sig_type = "tissue"
 signatures_stomach[1:5, 1:5]
 ```
 
-Using an incorrect `tissue_type` will result in an error. This is usefull,
+Using an incorrect `tissue_type` will result in an error. This is useful,
 because it shows all possible tissue types. (Not run here, to prevent the
 error.):
 ```{r load_signatures_tissue_error, eval=FALSE}
@@ -1458,7 +1458,7 @@ names(regions_density) <- c("Low", "Medium", "High")
 ```
 
 These regions can then be used in the same way as the previous regions. This can
-be usefull to, for example, compare the spectrum of regions with kataegis with
+be useful to, for example, compare the spectrum of regions with kataegis with
 that of the rest of the genome.
 ```{r split_muts_region_density}
 grl_region_dens <- split_muts_region(grl, regions_density, include_other = FALSE)
@@ -1511,7 +1511,7 @@ recommend you to always confirm any suspected lesion segregation by visualizing
 it.
 
 `calculate_lesion_segregation` has three different modes. The first mode is
-based on how often two suqsequent mutations occur on the same strand. The
+based on how often two subsequent mutations occur on the same strand. The
 function assumes that when no lesion segregation is present, there is a 50%
 chance of two subsequent mutations occurring on the same strand. A two-sided
 binomial test is used to calculate whether the strand between subsequent
@@ -1523,15 +1523,15 @@ head(lesion_segretation)
 ```
 
 This statistical test can be influenced by events such as kataegis and local
-strand assymetries like replication-associated strand bias. As a result the
+strand asymetries like replication-associated strand bias. As a result the
 p-value can incorrectly suggest that lesion segregation is present. Therefore,
-it can be usefull to also look at the fraction of strand switches. In samples
+it can be useful to also look at the fraction of strand switches. In samples
 with lesion segregation this is generally below 0.4.
 
 By default this mode calculates the lesion segregation for all mutations
 together. However, a mutational process might cause multiple types of base
 substitutions, which aren't necessarily considered to be on the same strand.
-Therefore, it might be usefull to calculate the number of strand switches per
+Therefore, it might be useful to calculate the number of strand switches per
 mutation type and then sum up the results. In this case the reference genome
 also needs to be set. We recommend using this when you have a sample with
 suspected lesion segregation and multiple common types of base substitutions.
@@ -1554,7 +1554,7 @@ head(lesion_segretation_wald)
 ```
 
 This statistical test can also be influenced by events such as kataegis and 
-local strand assymetries like replication-associated strand bias. 
+local strand asymetries like replication-associated strand bias. 
 
 The third mode of `calculate_lesion_segregation` can calculate the rl20 value
 and the associated genomic span, which together are somewhat less sensitive to

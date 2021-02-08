@@ -7,7 +7,7 @@
 count_indel_contexts(vcf_list)
 }
 \arguments{
-\item{vcf_list}{GRanges or GRangesList object containing Indel mutations in which the context was added with get_indel_context.}
+\item{vcf_list}{GRanges or GRangesList object containing indel mutations in which the context was added with get_indel_context.}
 }
 \value{
 A tibble containing the number of indels per COSMIC context per gr.
@@ -16,7 +16,7 @@ A tibble containing the number of indels per COSMIC context per gr.
 Count indel contexts
 }
 \details{
-Counts the number of indels per COSMIC context from a GRanges or GRangesList object containing Indel mutations.
+Counts the number of indels per COSMIC context from a GRanges or GRangesList object containing indel mutations.
 This function applies the count_indel_contexts_gr function to each gr in its input.
 It then combines the results in a single tibble and returns this.
 }

@@ -12,7 +12,7 @@
 #' The 'wald-wolfowitz' test checks if the strands are randomly distributed. It's not known
 #' which method is superior.
 #' The 'rl20' test looks at run sizes (The number of consecutive mutations on the same strand).
-#' This is less suspectible to local strand assymetries and kataegis, but doesn't generate a p-value.
+#' This is less susceptible to local strand asymetries and kataegis, but doesn't generate a p-value.
 #'
 #' The amount of lesion segregation is calculated per GRanges object.
 #' The results are then combined in a table.
@@ -32,7 +32,7 @@
 #' @param sample_names The name of the sample
 #' @param test The statistical test that should be used. Possible values:
 #'              * 'binomial' Binomial test based on the number of strand switches. (Default);
-#'              * 'wald-wolfowitz' Statistical test that checks if the strands are randomly distibuted.;
+#'              * 'wald-wolfowitz' Statistical test that checks if the strands are randomly distributed.;
 #'              * 'rl20' Calculates rl20 value and the genomic span of the associated runs set.;
 #' @param split_by_type Boolean describing whether the lesion
 #' segregation should be calculated for all SNVs together or per 96 substitution context. (Default: FALSE)

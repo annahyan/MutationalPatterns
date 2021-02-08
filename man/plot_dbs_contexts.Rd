@@ -26,7 +26,7 @@ Each sample is plotted in a separate facet.
 The same y axis can be used for all samples or a separate y axis can be used.
 }
 \examples{
-## Get The dbs counts
+## Get The DBS counts
 ## See 'count_dbs_contexts()' for more info on how to do this.
 dbs_counts <- readRDS(system.file("states/blood_dbs_counts.rds",
   package = "MutationalPatterns"
