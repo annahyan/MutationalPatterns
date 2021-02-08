@@ -739,8 +739,10 @@ MutationalPatterns it can be used with `fit_to_signatures_strict`.
 
 
 A downside of this method is that the cutoff you should use is somewhat
-subjective. Here we use a cutoff of 0.02. Decreasing this number will make the
-refitting less strict, while increasing it will make the refitting more strict.
+subjective and depends on the data. Here we use a cutoff of 0.004. Decreasing
+this number will make the refitting less strict, while increasing it will make
+the refitting more strict. Trying out different values can sometimes be useful
+to achieve the best results.
 ```{r fit_to_signatures_strict}
 strict_refit <- fit_to_signatures_strict(mut_mat, signatures, max_delta = 0.004)
 ```
