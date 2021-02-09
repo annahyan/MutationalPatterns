@@ -14,6 +14,7 @@
 #' @param colors Optional color vector with 7 values
 #' @param legend Plot legend, default = TRUE
 #' @param condensed More condensed plotting format. Default = F.
+#' @param sample_labels Labels to include for sample annotation with e.g. TeX.
 #' @return Spectrum plot
 #'
 #' @import ggplot2

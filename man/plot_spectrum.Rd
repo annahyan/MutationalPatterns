@@ -12,7 +12,8 @@ plot_spectrum(
   error_bars = c("95\%_CI", "stdev", "SEM", "none"),
   colors = NA,
   legend = TRUE,
-  condensed = FALSE
+  condensed = FALSE,
+  sample_labels = NA
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ as points, default = FALSE}
 \item{legend}{Plot legend, default = TRUE}
 
 \item{condensed}{More condensed plotting format. Default = F.}
+
+\item{sample_labels}{Labels to include for sample annotation with e.g. TeX.}
 }
 \value{
 Spectrum plot
