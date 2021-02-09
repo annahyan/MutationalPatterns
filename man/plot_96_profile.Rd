@@ -4,7 +4,13 @@
 \alias{plot_96_profile}
 \title{Plot 96 trinucleotide profile}
 \usage{
-plot_96_profile(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE)
+plot_96_profile(
+  mut_matrix,
+  colors = NA,
+  ymax = 0.2,
+  condensed = FALSE,
+  sample_labels = NA
+)
 }
 \arguments{
 \item{mut_matrix}{96 trinucleotide profile matrix}
@@ -14,6 +20,8 @@ plot_96_profile(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE)
 \item{ymax}{Y axis maximum value, default = 0.2}
 
 \item{condensed}{More condensed plotting format. Default = F.}
+
+\item{sample_labels}{Labels to include for sample annotation with e.g. TeX.}
 }
 \value{
 96 trinucleotide profile plot

@@ -75,6 +75,6 @@ Suggests:
 biocViews: Genetics, SomaticMutation
 ZipData: NA
 LazyData: false
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
