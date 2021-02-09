@@ -91,7 +91,8 @@ plot_spectrum <- function(type_occurrences,
                           error_bars = c("95%_CI", "stdev", "SEM", "none"), 
                           colors = NA, 
                           legend = TRUE,
-                          condensed = FALSE) {
+                          condensed = FALSE,
+                          sample_labels = NA) {
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
   value <- nmuts <- sub_type <- variable <- error_pos <- stdev <- total_mutations <- NULL
@@ -149,11 +150,17 @@ plot_spectrum <- function(type_occurrences,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate( # Make pretty and add subtypes
-      total_mutations = prettyNum(total_mutations, big.mark = ","),
-      total_mutations = paste("No. mutations = ", total_mutations),
+      total_mutations = prettyNum(total_mutations, big.mark = ""),
+      total_mutations = paste("No.~mutations~`=`", 
+                                             total_mutations, sep = "~"),
       error_pos = mean
     )
-
+  
+  if (! is.na (sample_labels)) {
+    tb$by = factor(tb$by)
+    levels(tb$by) = sample_labels
+  }
+  
   # Change some settings based on whether CT should be plotted separately.
   if (CT == FALSE) {
     # Define colors for plotting
@@ -246,7 +253,8 @@ plot_spectrum <- function(type_occurrences,
   if (length(by) == 1) {
     plot <- plot + facet_wrap(~total_mutations)
   } else {
-    plot <- plot + facet_wrap(by ~ total_mutations)
+
+    plot <- plot + facet_wrap(by ~ total_mutations, labeller = label_parsed)
   }
 
   # Remove legend if required
