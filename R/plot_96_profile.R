@@ -5,6 +5,7 @@
 #' @param ymax Y axis maximum value, default = 0.2
 #' @param colors Optional 6 value color vector.
 #' @param condensed More condensed plotting format. Default = F.
+#' @param sample_labels Labels to include for sample annotation with e.g. TeX.
 #' @return 96 trinucleotide profile plot
 #'
 #' @import ggplot2
@@ -42,7 +43,8 @@
 #'
 #' @export
 
-plot_96_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE) {
+plot_96_profile <- function(mut_matrix,  colors = NA, ymax = 0.2, condensed = FALSE, 
+                            sample_labels = NA) {
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
@@ -81,6 +83,11 @@ plot_96_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FAL
     spacing <- 0.5
   }
 
+  if (! is.na (sample_labels)) {
+    tb$sample = factor(tb$sample) 
+    levels(tb$sample) = sample_labels
+  }
+  
   # Create figure
   plot <- ggplot(data = tb, aes(
     x = context,
@@ -90,7 +97,7 @@ plot_96_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FAL
   )) +
     geom_bar(stat = "identity", colour = "black", size = .2) +
     scale_fill_manual(values = colors) +
-    facet_grid(sample ~ substitution) +
+    facet_grid(sample ~ substitution, labeller = label_parsed) +
     ylab("Relative contribution") +
     coord_cartesian(ylim = c(0, ymax)) +
     scale_y_continuous(breaks = seq(0, ymax, 0.1)) +
