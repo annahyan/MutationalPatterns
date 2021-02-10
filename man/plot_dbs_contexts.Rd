@@ -4,7 +4,12 @@
 \alias{plot_dbs_contexts}
 \title{Plot the DBS contexts}
 \usage{
-plot_dbs_contexts(counts, same_y = FALSE, condensed = FALSE)
+plot_dbs_contexts(
+  counts,
+  same_y = FALSE,
+  condensed = FALSE,
+  sample_labels = NA
+)
 }
 \arguments{
 \item{counts}{A tibble containing the number of DBS per COSMIC context.}
@@ -12,6 +17,8 @@ plot_dbs_contexts(counts, same_y = FALSE, condensed = FALSE)
 \item{same_y}{A boolean describing whether the same y axis should be used for all samples.}
 
 \item{condensed}{More condensed plotting format. Default = F.}
+
+\item{sample_labels}{Labels to include for sample annotation with e.g. TeX.}
 }
 \value{
 A ggplot figure.

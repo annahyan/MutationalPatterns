@@ -9,6 +9,7 @@
 #' @param counts A tibble containing the number of DBS per COSMIC context.
 #' @param same_y A boolean describing whether the same y axis should be used for all samples.
 #' @param condensed More condensed plotting format. Default = F.
+#' @param sample_labels Labels to include for sample annotation with e.g. TeX.
 #'
 #' @return A ggplot figure.
 #'
@@ -34,7 +35,9 @@
 #' @seealso \code{\link{count_dbs_contexts}}, \code{\link{plot_main_dbs_contexts}}
 #'
 #' @export
-plot_dbs_contexts <- function(counts, same_y = FALSE, condensed = FALSE) {
+plot_dbs_contexts <- function(counts, same_y = FALSE, 
+                              condensed = FALSE,
+                              sample_labels = NA) {
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
@@ -71,11 +74,20 @@ plot_dbs_contexts <- function(counts, same_y = FALSE, condensed = FALSE) {
   }
 
   # Create facet labs
-                                                 # Stop in the 
-  facet_labs_y <- stringr::str_c(nr_muts$sample) #, " (n = ", nr_muts$nr_muts, ")")
-  names(facet_labs_y) <- nr_muts$sample
+
+  # names(facet_labs_y) <- nr_muts$sample
+  
+  if(! is.na(sample_labels)) {
+    levels(counts$sample) = sample_labels
+    # facet_labs_y <- stringr::str_c(nr_muts$sample) #, " (n = ", nr_muts$nr_muts, ")")    
+  } else {
+    # Stop in the 
+    facet_labs_y <- stringr::str_c(nr_muts$sample) #, " (n = ", nr_muts$nr_muts, ")")    
+  }
+  
   facet_labs_x <- stringr::str_c(levels(counts$REF), ">NN")
   names(facet_labs_x) <- levels(counts$REF)
+  
 
   # Change plotting parameters based on whether plot should be condensed.
   if (condensed == TRUE) {
@@ -98,8 +110,7 @@ plot_dbs_contexts <- function(counts, same_y = FALSE, condensed = FALSE) {
     facet_grid(sample ~ REF,
       scales = facet_scale,
       space = "free_x",
-      labeller = labeller(REF = facet_labs_x, sample = facet_labs_y)
-    ) +
+      labeller = labeller(REF = facet_labs_x, .rows = label_parsed)) +
     scale_fill_manual(guide = FALSE, values = colors) +
     labs(fill = "Mutation type", title = "", y = "Nr of DBSs", x = "") +
     theme_bw() +
