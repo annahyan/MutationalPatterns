@@ -17,6 +17,7 @@
 #'     These can clarify the plot, but will shift when different plot widths are used.
 #'     We recommend saving a plot with a width of 12, when using this argument.
 #' @param condensed More condensed plotting format. Default = F.
+#' @param sample_labels Labels to include for sample annotation with e.g. TeX.
 #'
 #' @return A ggplot figure.
 #'
@@ -45,7 +46,9 @@
 #' @seealso \code{\link{count_indel_contexts}}, \code{\link{plot_main_indel_contexts}}
 #'
 #' @export
-plot_indel_contexts <- function(counts, same_y = FALSE, extra_labels = FALSE, condensed = FALSE) {
+plot_indel_contexts <- function(counts, same_y = FALSE, extra_labels = FALSE, 
+                                condensed = FALSE,
+                                sample_labels = NA) {
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
   count <- muttype <- muttype_sub <- muttype_total <- sample <- NULL
@@ -65,8 +68,15 @@ plot_indel_contexts <- function(counts, same_y = FALSE, extra_labels = FALSE, co
     dplyr::summarise(nr_muts = round(sum(count)))
 
   # Create facet texts
-  facet_labs_y <- stringr::str_c(nr_muts$sample, " (n = ", nr_muts$nr_muts, ")")
-  names(facet_labs_y) <- nr_muts$sample
+  
+  if(! is.na(sample_labels)) {
+    levels(counts$sample) = sample_labels
+    # facet_labs_y <- stringr::str_c(nr_muts$sample) #, " (n = ", nr_muts$nr_muts, ")")    
+  } else {
+    # Stop in the 
+    facet_labs_y <- stringr::str_c(nr_muts$sample) #, " (n = ", nr_muts$nr_muts, ")")  
+    names(facet_labs_y) <- nr_muts$sample
+  }
   facet_labs_x <- c("1: C", "1: T", "1: C", "1: T", 2, 3, 4, "5+", 2, 3, 4, "5+", 2, 3, 4, "5+")
   names(facet_labs_x) <- levels(counts$muttype)
 
@@ -115,7 +125,8 @@ plot_indel_contexts <- function(counts, same_y = FALSE, extra_labels = FALSE, co
     geom_bar(stat = "identity") +
     facet_grid(sample ~ muttype,
       scales = facet_scale, space = "free_x",
-      labeller = labeller(muttype = facet_labs_x, sample = facet_labs_y)
+      labeller = labeller(muttype = facet_labs_x, # sample = facet_labs_y
+                          .rows = label_parsed)
     ) +
     scale_fill_manual(values = colors) +
     theme_bw() +

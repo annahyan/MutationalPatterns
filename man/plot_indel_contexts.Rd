@@ -8,7 +8,8 @@ plot_indel_contexts(
   counts,
   same_y = FALSE,
   extra_labels = FALSE,
-  condensed = FALSE
+  condensed = FALSE,
+  sample_labels = NA
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ These can clarify the plot, but will shift when different plot widths are used.
 We recommend saving a plot with a width of 12, when using this argument.}
 
 \item{condensed}{More condensed plotting format. Default = F.}
+
+\item{sample_labels}{Labels to include for sample annotation with e.g. TeX.}
 }
 \value{
 A ggplot figure.
