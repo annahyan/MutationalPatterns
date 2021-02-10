@@ -21,6 +21,10 @@ grl <- readRDS(system.file("states/read_vcfs_as_granges_output.rds",
   package = "MutationalPatterns"
 ))
 
+# Only use two samples to reduce runtime
+grl <- grl[1:2]
+
+
 # Run function
 output <- split_muts_region(grl, regions)
 output_single_gr <- split_muts_region(grl[[1]], regions)
@@ -49,8 +53,7 @@ test_that("Output GRangesList has correct length", {
 
 expected <- readRDS(system.file("states/grl_split_region.rds",
   package = "MutationalPatterns"
-))
+))[1:8]
 test_that("Output transforms correctly", {
-  output <- split_muts_region(grl, regions)
   expect_equal(output, expected)
 })

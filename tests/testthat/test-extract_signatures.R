@@ -4,7 +4,7 @@ context("test-extract_signatures")
 mut_mat <- readRDS(system.file("states/mut_mat_data.rds",
   package = "MutationalPatterns"
 ))
-
+mut_mat <- mut_mat[1:10,]
 
 # extract signatures
 output <- extract_signatures(mut_mat, rank = 2, nrun = 1)
@@ -13,6 +13,8 @@ output <- extract_signatures(mut_mat, rank = 2, nrun = 1)
 indel_counts <- readRDS(system.file("states/blood_indel_counts.rds",
   package = "MutationalPatterns"
 ))
+indel_counts <- indel_counts[1:8,]
+
 output_indel <- extract_signatures(indel_counts, rank = 2, nrun = 1)
 
 # Check that the variational bayes method works
@@ -44,15 +46,15 @@ test_that("Output elements are matrixes", {
 })
 
 test_that("Output elements have correct size", {
-  expect_equal(dim(output$signatures), c(96, 2))
+  expect_equal(dim(output$signatures), c(10, 2))
   expect_equal(dim(output$contribution), c(2, 9))
-  expect_equal(dim(output$reconstructed), c(96, 9))
-  expect_equal(dim(output_indel$signatures), c(83, 2))
+  expect_equal(dim(output$reconstructed), c(10, 9))
+  expect_equal(dim(output_indel$signatures), c(8, 2))
   expect_equal(dim(output_indel$contribution), c(2, 3))
-  expect_equal(dim(output_indel$reconstructed), c(83, 3))
-  expect_equal(dim(output_bayes$signatures), c(96, 2))
+  expect_equal(dim(output_indel$reconstructed), c(8, 3))
+  expect_equal(dim(output_bayes$signatures), c(10, 2))
   expect_equal(dim(output_bayes$contribution), c(2, 9))
-  expect_equal(dim(output_bayes$reconstructed), c(96, 9))
+  expect_equal(dim(output_bayes$reconstructed), c(10, 9))
 })
 
 # Test that an error is given when using a incorrect rank

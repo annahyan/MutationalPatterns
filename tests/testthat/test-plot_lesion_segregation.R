@@ -6,6 +6,9 @@ grl <- readRDS(system.file("states/read_vcfs_as_granges_output.rds",
   package = "MutationalPatterns"
 ))
 
+# Only use two samples to reduce runtime
+grl <- grl[1:2]
+
 # Select sample
 gr <- grl[[1]]
 

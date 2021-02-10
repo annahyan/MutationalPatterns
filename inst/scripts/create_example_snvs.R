@@ -74,7 +74,7 @@ contri_boots <- fit_to_signatures_bootstrapped(mut_mat, signatures, n_boots = 2,
 saveRDS(contri_boots, "inst/states/bootstrapped_snv_refit.rds")
 
 # Calculate lesion segregation
-lesion_segretation <- calculate_lesion_segregation(grl, sample_names)
+lesion_segretation <- calculate_lesion_segregation(grl[1:2], sample_names[1:2])
 saveRDS(lesion_segretation, "inst/states/lesion_segregation.rds")
 
 
@@ -115,8 +115,8 @@ saveRDS(mut_mat_longregion, "inst/states/mut_mat_longregions.rds")
 #Create context potential damage tibble
 txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
 
-contexts = rownames(mut_mat)
-gene_ids = c(7157, 3845, 4893, 673, 675, 1029, 8289, 5728, 7015)
+contexts = rownames(mut_mat)[1:6]
+gene_ids = c(7157)
 context_mismatches = context_potential_damage_analysis(contexts, txdb, ref_genome, gene_ids)
 saveRDS(context_mismatches, "inst/states/context_mismatches.rds")
 

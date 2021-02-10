@@ -56,12 +56,10 @@
 #'   package = "MutationalPatterns"
 #' ))
 #'
+#' ## To reduce the runtime we take only the first two samples
+#' grl <- grl[1:2]
 #' ## Set the sample names
-#' sample_names <- c(
-#'   "colon1", "colon2", "colon3",
-#'   "intestine1", "intestine2", "intestine3",
-#'   "liver1", "liver2", "liver3"
-#' )
+#' sample_names <- c("colon1", "colon2")
 #'
 #' ## Load the corresponding reference genome.
 #' ref_genome <- "BSgenome.Hsapiens.UCSC.hg19"

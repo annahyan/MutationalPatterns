@@ -52,16 +52,18 @@
 #' signatures <- get_known_signatures()
 #'
 #' ## Fit to signatures with bootstrapping
+#' ## Here we use a very low "n_boots" to reduce the runtime.
+#' ## For real uses, a much higher value is required.
 #' contri_boots <- fit_to_signatures_bootstrapped(mut_mat,
 #'   signatures,
-#'   n_boots = 10,
+#'   n_boots = 2,
 #'   max_delta = 0.004
 #' )
 #'
 #' ## Use the regular refit method
 #' contri_boots <- fit_to_signatures_bootstrapped(mut_mat,
 #'   signatures,
-#'   n_boots = 10,
+#'   n_boots = 2,
 #'   method = "regular"
 #' )
 fit_to_signatures_bootstrapped <- function(mut_matrix,

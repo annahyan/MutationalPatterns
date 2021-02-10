@@ -8,7 +8,7 @@ mut_mat <- readRDS(system.file("states/mut_mat_data.rds",
   package = "MutationalPatterns"
 ))
 
-contexts <- rownames(mut_mat)
+contexts <- rownames(mut_mat)[1:6]
 
 # Get context mismatches
 context_mismatches <- readRDS(system.file("states/context_mismatches.rds",

@@ -15,6 +15,10 @@ sample_names <- c(
 )
 
 
+## Only look at some samples, to reduce the runtime
+grl <- grl[1:2]
+sample_names <- sample_names[1:2]
+
 # Perform lesion segregation calculations
 output <- calculate_lesion_segregation(grl, sample_names)
 output_per_type <- calculate_lesion_segregation(grl, sample_names,
@@ -43,10 +47,10 @@ test_that("Output has correct class", {
 })
 
 test_that("Output has correct dimensions", {
-  expect_equal(dim(output), c(9, 8))
-  expect_equal(dim(output_per_type), c(9, 8))
-  expect_equal(dim(output_wald), c(9, 5))
-  expect_equal(dim(output_rl20), c(9, 5))
+  expect_equal(dim(output), c(2, 8))
+  expect_equal(dim(output_per_type), c(2, 8))
+  expect_equal(dim(output_wald), c(2, 5))
+  expect_equal(dim(output_rl20), c(2, 5))
 })
 
 expected <- readRDS(system.file("states/lesion_segregation.rds",

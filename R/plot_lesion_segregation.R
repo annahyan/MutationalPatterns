@@ -32,7 +32,7 @@
 #' ))
 #' 
 #' ## Plot lesion segregation
-#' plot_lesion_segregation(grl)
+#' plot_lesion_segregation(grl[1:3])
 #' 
 #' ## Select a single GRanges object to plot.
 #' gr <- grl[[1]]
@@ -41,11 +41,12 @@
 #' ## Also add a title to the plot.
 #' plot_lesion_segregation(gr, sample_name = "Colon1")
 #'
-#' ## Plot lesion segregation per chromosome
-#' plot_lesion_segregation(gr, per_chrom = TRUE, sample_name = "Colon1")
+#' ## Plot lesion segregation per chromosome.
+#' ## We here store the results in a list.
+#' figure_l = plot_lesion_segregation(gr, per_chrom = TRUE, sample_name = "Colon1")
 #' 
 #' ## Plot specific chromosomes in a user specified order
-#' plot_lesion_segregation(grl, chromosomes = c(2,3))
+#' plot_lesion_segregation(grl[1:3], chromosomes = c(2,3))
 #' 
 plot_lesion_segregation <- function(vcf, 
                                     per_chrom = FALSE, 

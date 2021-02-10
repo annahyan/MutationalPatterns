@@ -67,10 +67,10 @@
 #'
 #' ## Here we will use the Entrez Gene IDs from several cancer
 #' ## genes. In practice you might want to use larger gene lists,
-#' ## but here we only use a few to keep the run-time low.
+#' ## but here we only use a few to keep the runtime low.
 #' ## In this example we are using:
-#' ## TP53, KRAS, NRAS, BRAF, BRCA2, CDKN2A, ARID1A, PTEN and TERT
-#' gene_ids <- c(7157, 3845, 4893, 673, 675, 1029, 8289, 5728, 7015)
+#' ## TP53, KRAS, NRAS, BRAF, BRCA2
+#' gene_ids <- c(7157, 3845, 4893, 673, 675)
 #'
 #' ## Run the function
 #' context_potential_damage_analysis(contexts, txdb, ref_genome, gene_ids)
@@ -78,7 +78,8 @@
 #' ## The function can provide updates about its progress.
 #' ## This can be usefull when it's running slowly,
 #' ## which can happen when you are using many gene_ids.
-#' context_potential_damage_analysis(contexts, txdb, ref_genome, gene_ids, verbose = TRUE)
+#' ## To reduce the example runtime, we don't re-run the analysis, but only show the command
+#' ## context_potential_damage_analysis(contexts, txdb, ref_genome, gene_ids, verbose = TRUE)
 #' 
 context_potential_damage_analysis <- function(contexts, txdb, ref_genome, gene_ids, verbose = FALSE) {
 

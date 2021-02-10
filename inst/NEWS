@@ -1,3 +1,8 @@
+MutationalPatterns v3.1.5
+
+Changes:
+* Reduced the runtime of several long examples and unit-tests.
+
 MutationalPatterns v3.1.4
 
 Changes:

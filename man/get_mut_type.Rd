@@ -38,6 +38,9 @@ grl <- readRDS(system.file("states/blood_grl.rds",
   package = "MutationalPatterns"
 ))
 
+## Here we only use two samples to reduce runtime
+grl <- grl[1:2]
+
 ## Get a specific mutation type.
 snv_grl <- get_mut_type(grl, "snv")
 indel_grl <- get_mut_type(grl, "indel")
