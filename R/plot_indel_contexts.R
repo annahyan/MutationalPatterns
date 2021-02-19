@@ -13,6 +13,7 @@
 #'
 #' @param counts A tibble containing the number of indels per COSMIC context.
 #' @param same_y A boolean describing whether the same y axis should be used for all samples.
+#' @param ratios Plot ratios on the y-axis instead of counts. Default = F. 
 #' @param extra_labels A boolean describing whether extra labels should be added.
 #'     These can clarify the plot, but will shift when different plot widths are used.
 #'     We recommend saving a plot with a width of 12, when using this argument.
@@ -46,11 +47,14 @@
 #' @seealso \code{\link{count_indel_contexts}}, \code{\link{plot_main_indel_contexts}}
 #'
 #' @export
-plot_indel_contexts <- function(counts, same_y = FALSE, extra_labels = FALSE, 
+plot_indel_contexts <- function(counts, same_y = FALSE, ratios = FALSE, extra_labels = FALSE, 
                                 condensed = FALSE,
                                 sample_labels = NA) {
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
+  
+  if(ratios == TRUE) counts = prop.table(counts, margin = 2)
+  
   count <- muttype <- muttype_sub <- muttype_total <- sample <- NULL
 
   # Separate muttype and muttype_sub. Then make data long

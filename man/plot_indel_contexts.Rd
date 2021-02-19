@@ -7,6 +7,7 @@
 plot_indel_contexts(
   counts,
   same_y = FALSE,
+  ratios = FALSE,
   extra_labels = FALSE,
   condensed = FALSE,
   sample_labels = NA
@@ -16,6 +17,8 @@ plot_indel_contexts(
 \item{counts}{A tibble containing the number of indels per COSMIC context.}
 
 \item{same_y}{A boolean describing whether the same y axis should be used for all samples.}
+
+\item{ratios}{Plot ratios on the y-axis instead of counts. Default = F.}
 
 \item{extra_labels}{A boolean describing whether extra labels should be added.
 These can clarify the plot, but will shift when different plot widths are used.
