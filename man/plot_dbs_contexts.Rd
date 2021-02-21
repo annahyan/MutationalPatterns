@@ -7,6 +7,7 @@
 plot_dbs_contexts(
   counts,
   same_y = FALSE,
+  ratios = FALSE,
   condensed = FALSE,
   sample_labels = NA
 )
@@ -15,6 +16,8 @@ plot_dbs_contexts(
 \item{counts}{A tibble containing the number of DBS per COSMIC context.}
 
 \item{same_y}{A boolean describing whether the same y axis should be used for all samples.}
+
+\item{ratios}{Plot ratios on the y-axis instead of counts. Default = F.}
 
 \item{condensed}{More condensed plotting format. Default = F.}
 

@@ -8,6 +8,7 @@
 #'
 #' @param counts A tibble containing the number of DBS per COSMIC context.
 #' @param same_y A boolean describing whether the same y axis should be used for all samples.
+#' @param ratios Plot ratios on the y-axis instead of counts. Default = F. 
 #' @param condensed More condensed plotting format. Default = F.
 #' @param sample_labels Labels to include for sample annotation with e.g. TeX.
 #'
@@ -35,12 +36,13 @@
 #' @seealso \code{\link{count_dbs_contexts}}, \code{\link{plot_main_dbs_contexts}}
 #'
 #' @export
-plot_dbs_contexts <- function(counts, same_y = FALSE, 
+plot_dbs_contexts <- function(counts, same_y = FALSE, ratios = FALSE,
                               condensed = FALSE,
                               sample_labels = NA) {
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
+  if(ratios == TRUE) counts = prop.table(counts, margin = 2)
   count <- REF <- ALT <- muttype_total <- sample <- NULL
 
   # Transform to data frame
