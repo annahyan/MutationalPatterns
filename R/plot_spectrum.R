@@ -152,7 +152,7 @@ plot_spectrum <- function(type_occurrences,
     dplyr::ungroup() %>%
     dplyr::mutate( # Make pretty and add subtypes
       total_mutations = prettyNum(total_mutations, big.mark = ""),
-      total_mutations = paste("No.~mutations~`=`", 
+      total_mutations = paste("No.~muts~`=`", 
                                              total_mutations, sep = "~"),
       error_pos = mean
     )
