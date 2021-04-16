@@ -42,7 +42,7 @@
 #'
 #' @export
 
-plot_192_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE) {
+plot_192_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE, position = "stack") {
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
   freq <- full_context <- substitution <- context <- strand <- full_context_strand <- NULL
@@ -91,7 +91,8 @@ plot_192_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FA
         width = width,
         alpha = strand
       )) +
-        geom_bar(stat = "identity", colour = "black", size = .2) +
+        geom_bar(stat = "identity", colour = "black", size = .2,
+                 position = position) +
         scale_alpha_discrete(range = c(0.1, 1)) +
         scale_fill_manual(values = colors) +
         facet_grid(sample ~ substitution) +
