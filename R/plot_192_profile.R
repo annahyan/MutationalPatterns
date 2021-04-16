@@ -5,6 +5,7 @@
 #' @param ymax Y axis maximum value, default = 0.2
 #' @param colors 6 value color vector
 #' @param condensed More condensed plotting format. Default = F.
+#' @param sample_labels Labels to include for sample annotation with e.g. TeX.
 #' @param position Position of the bars. Default = "stack"
 #' @return 192 trinucleotide profile plot
 #'
@@ -43,7 +44,8 @@
 #'
 #' @export
 
-plot_192_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE, position = "stack") {
+plot_192_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE, position = "stack",
+sample_labels = NA) {
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
   freq <- full_context <- substitution <- context <- strand <- full_context_strand <- NULL
@@ -85,6 +87,11 @@ plot_192_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FA
   # Create plot. The warning about using alhpa as a discrete variable is muffled.
   withCallingHandlers(
     {
+    if (! is.na (sample_labels)) {
+    tb$sample = factor(tb$sample) 
+    levels(tb$sample) = sample_labels
+  }
+  
       plot <- ggplot(data = tb, aes(
         x = context,
         y = freq,
@@ -96,7 +103,7 @@ plot_192_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FA
                  position = position) +
         scale_alpha_discrete(range = c(0.1, 1)) +
         scale_fill_manual(values = colors) +
-        facet_grid(sample ~ substitution) +
+        facet_grid(sample ~ substitution,  labeller = label_parsed) +
         ylab("Relative contribution") +
         coord_cartesian(ylim = c(0, ymax)) +
         scale_y_continuous(breaks = seq(0, ymax, 0.1)) +

@@ -9,7 +9,8 @@ plot_192_profile(
   colors = NA,
   ymax = 0.2,
   condensed = FALSE,
-  position = "stack"
+  position = "stack",
+  sample_labels = NA
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ plot_192_profile(
 \item{condensed}{More condensed plotting format. Default = F.}
 
 \item{position}{Position of the bars. Default = "stack"}
+
+\item{sample_labels}{Labels to include for sample annotation with e.g. TeX.}
 }
 \value{
 192 trinucleotide profile plot
