@@ -4,7 +4,13 @@
 \alias{plot_192_profile}
 \title{Plot 192 trinucleotide profile}
 \usage{
-plot_192_profile(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE)
+plot_192_profile(
+  mut_matrix,
+  colors = NA,
+  ymax = 0.2,
+  condensed = FALSE,
+  position = "stack"
+)
 }
 \arguments{
 \item{mut_matrix}{192 trinucleotide profile matrix}
@@ -14,6 +20,8 @@ plot_192_profile(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE)
 \item{ymax}{Y axis maximum value, default = 0.2}
 
 \item{condensed}{More condensed plotting format. Default = F.}
+
+\item{position}{Position of the bars. Default = "stack"}
 }
 \value{
 192 trinucleotide profile plot

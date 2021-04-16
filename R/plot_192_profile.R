@@ -5,6 +5,7 @@
 #' @param ymax Y axis maximum value, default = 0.2
 #' @param colors 6 value color vector
 #' @param condensed More condensed plotting format. Default = F.
+#' @param position Position of the bars. Default = "stack"
 #' @return 192 trinucleotide profile plot
 #'
 #' @import ggplot2
