@@ -7,17 +7,21 @@
 plot_96_profile(
   mut_matrix,
   colors = NA,
-  ymax = 0.2,
+  same_y = TRUE,
+  ratios = TRUE,
   condensed = FALSE,
   sample_labels = NA
 )
 }
 \arguments{
-\item{mut_matrix}{96 trinucleotide profile matrix}
+\item{mut_matrix}{96 trinucleotide profile matrix
+# @param ymax Y axis maximum value, default = 0.2.}
 
 \item{colors}{Optional 6 value color vector.}
 
-\item{ymax}{Y axis maximum value, default = 0.2}
+\item{same_y}{A boolean describing whether the same y axis should be used for all samples.}
+
+\item{ratios}{Plot ratios of variants or counts. default = TRUE.}
 
 \item{condensed}{More condensed plotting format. Default = F.}
 
