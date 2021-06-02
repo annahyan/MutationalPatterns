@@ -2,7 +2,9 @@
 #'
 #' @param type_occurrences Type occurrences matrix
 #' @param CT Distinction between C>T at CpG and C>T at other
-#' sites, default = FALSE
+#' sites, default = FALSE.
+#' @param sidebyside When CT == TRUE plot C>T at CpG and C>T at other
+#' sites sidebyside. Default = FALSE
 #' @param by Optional grouping variable
 #' @param indv_points Whether to plot the individual samples
 #' as points, default = FALSE
@@ -86,7 +88,8 @@
 #' @export
 
 plot_spectrum <- function(type_occurrences, 
-                          CT = FALSE, 
+                          CT = FALSE,
+                          sidebyside = FALSE,
                           by = NA, 
                           indv_points = FALSE,
                           error_bars = c("95%_CI", "stdev", "SEM", "none"), 
@@ -166,8 +169,8 @@ plot_spectrum <- function(type_occurrences,
   if (CT == FALSE) {
     # Define colors for plotting
     colors <- colors[c(1, 2, 3, 5, 6, 7)]
-  } # C>T stacked bar (distinction between CpG sites and other)
-  else {
+  } else if ( sidebyside == FALSE ) { # C>T stacked bar (distinction between CpG sites and other)
+  
     # Adjust positioning of error bars for stacked bars
     # mean of C>T at CpG should be plus the mean of C>T at other
     CpG <- which(tb$variable == "C>T at CpG")
@@ -189,14 +192,30 @@ plot_spectrum <- function(type_occurrences,
     spacing <- 0.5
   }
   
-  # Make barplot
-  plot <- ggplot(data = tb, aes(
-    x = sub_type,
-    y = mean,
-    fill = variable,
-    group = sub_type,
-    width = width
-  )) +
+    ## Make barplot
+
+    if (CT == TRUE & sidebyside == TRUE ) {
+
+        plot <- ggplot(data = tb,
+                       aes(
+                           x = variable,
+                           y = mean,
+                           fill = variable,
+                           # group = sub_type,
+                           width = width
+                       ))
+    } else {
+        plot <- ggplot(data = tb,
+                       aes(
+                           x = sub_type,
+                           y = mean,
+                           fill = variable,
+                           group = sub_type,
+                           width = width
+                       ))
+    }
+    
+    plot = plot +
     geom_bar(stat = "identity") +
     scale_fill_manual(values = colors, name = "Point mutation type") +
     theme_bw() +
@@ -229,8 +248,7 @@ plot_spectrum <- function(type_occurrences,
               Use the argument: `error_bars = 'none'`, if you want to avoid this warning.",
       call. = FALSE
     )
-  }
-  else {
+  } else {
     if (error_bars == "stdev") {
       plot <- plot + geom_errorbar(aes(
         ymin = error_pos - stdev,
