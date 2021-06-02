@@ -44,7 +44,8 @@
 #'
 #' @export
 
-plot_192_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FALSE, position = "stack",
+plot_192_profile <- function(mut_matrix,same_y = FALSE, ratios = FALSE,
+                             colors = NA, ymax = 0.2, condensed = FALSE, position = "stack",
 sample_labels = NA) {
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
@@ -60,10 +61,11 @@ sample_labels = NA) {
   }
 
   # Relative contribution
-  norm_mut_matrix <- apply(mut_matrix, 2, function(x) x / sum(x))
-
+    if (ratios == TRUE) { # normalizting the mut_matrix
+        mut_matrix <- apply(mut_matrix, 2, function(x) x / sum(x))
+    }
   # Get substitution, context and strand from rownames. Then make long
-  tb <- norm_mut_matrix %>%
+  tb <- mut_matrix %>%
     as.data.frame() %>%
     tibble::rownames_to_column("full_context_strand") %>%
     tidyr::separate(full_context_strand, into = c("full_context", "strand"), sep = "-") %>%
